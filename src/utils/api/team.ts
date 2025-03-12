@@ -2,8 +2,9 @@
 import { Team } from '@/lib/types';
 import { supabase } from '@/lib/supabase';
 import { toast } from "@/hooks/use-toast";
+import { mlbTeams } from '../staticData';
 
-// Fetch all MLB teams
+// Fetch all MLB teams with fallback to static data
 export const fetchTeams = async (): Promise<Team[]> => {
   try {
     const { data, error } = await supabase
@@ -12,14 +13,15 @@ export const fetchTeams = async (): Promise<Team[]> => {
       .order('name');
     
     if (error) throw error;
-    return data || [];
+    return data || mlbTeams;
   } catch (error) {
     console.error('Error fetching teams:', error);
     toast({
-      title: "Data Error",
-      description: "Failed to load teams data",
-      variant: "destructive"
+      title: "Using offline data",
+      description: "Couldn't connect to the database, showing cached teams",
+      variant: "default"
     });
-    return [];
+    // Return static data when API fails
+    return mlbTeams;
   }
 };
