@@ -9,6 +9,8 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { fetchTeams } from '@/utils/api';
 import { Team } from '@/lib/types';
+import { toast } from "@/hooks/use-toast";
+import { mlbTeams } from '@/utils/staticData';
 
 export default function TeamView() {
   const { teamId } = useParams<{ teamId: string }>();
@@ -20,10 +22,26 @@ export default function TeamView() {
       if (!teamId) return;
       
       setLoading(true);
-      const teams = await fetchTeams();
-      const foundTeam = teams.find((t) => t.id === teamId);
-      setTeam(foundTeam || null);
-      setLoading(false);
+      try {
+        // First try to fetch from API
+        const teams = await fetchTeams();
+        const foundTeam = teams.find((t) => t.id === teamId);
+        setTeam(foundTeam || null);
+      } catch (error) {
+        console.error('Error loading team data:', error);
+        // If API fails, try to find team in static data
+        const staticTeam = mlbTeams.find(t => t.id === teamId);
+        if (staticTeam) {
+          setTeam(staticTeam);
+          toast({
+            title: "Using offline data",
+            description: "Connection to database failed. Using cached team information.",
+            variant: "default"
+          });
+        }
+      } finally {
+        setLoading(false);
+      }
     };
 
     loadTeam();
@@ -50,14 +68,17 @@ export default function TeamView() {
               </div>
             ) : team ? (
               <div className="flex items-center gap-4 animate-fade-in">
-                <img
-                  src={team.logo}
-                  alt={team.name}
-                  className="w-16 h-16 object-contain"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = 'none';
-                  }}
-                />
+                <div className="w-16 h-16 flex items-center justify-center rounded-full overflow-hidden bg-primary/10">
+                  <img
+                    src={team.logo}
+                    alt={team.name}
+                    className="w-16 h-16 object-contain"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.parentElement!.innerHTML = `<div class="w-full h-full flex items-center justify-center font-bold text-2xl text-primary">${team.name.charAt(0)}</div>`;
+                    }}
+                  />
+                </div>
                 <div>
                   <h1 className="text-3xl font-bold">{team.name}</h1>
                   <p className="text-muted-foreground">{team.city}</p>
