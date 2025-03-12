@@ -1,4 +1,3 @@
-
 import { Team } from '@/lib/types';
 import { supabase } from '@/lib/supabase';
 import { toast } from "@/hooks/use-toast";
@@ -13,7 +12,15 @@ export const fetchTeams = async (): Promise<Team[]> => {
       .order('name');
     
     if (error) throw error;
-    return data || mlbTeams;
+    
+    // If we have data from Supabase, use it
+    if (data && data.length > 0) {
+      return data;
+    }
+    
+    // Otherwise fall back to static data
+    console.log('No teams found in database, using static data');
+    return mlbTeams;
   } catch (error) {
     console.error('Error fetching teams:', error);
     toast({

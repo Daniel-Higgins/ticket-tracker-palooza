@@ -17,6 +17,7 @@ import { Team } from '@/lib/types';
 export function TeamSelector() {
   const [teams, setTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState(true);
+  const [imgErrors, setImgErrors] = useState<Record<string, boolean>>({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,6 +33,13 @@ export function TeamSelector() {
 
   const handleTeamChange = (teamId: string) => {
     navigate(`/teams/${teamId}`);
+  };
+
+  const handleImageError = (teamId: string) => {
+    setImgErrors(prev => ({
+      ...prev,
+      [teamId]: true
+    }));
   };
 
   if (loading) {
@@ -50,14 +58,18 @@ export function TeamSelector() {
             {teams.map((team) => (
               <SelectItem key={team.id} value={team.id} className="flex items-center">
                 <div className="flex items-center">
-                  <img 
-                    src={team.logo} 
-                    alt={team.name} 
-                    className="w-5 h-5 mr-2"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = 'none';
-                    }}
-                  />
+                  {!imgErrors[team.id] ? (
+                    <img 
+                      src={team.logo} 
+                      alt={team.name} 
+                      className="w-5 h-5 mr-2"
+                      onError={() => handleImageError(team.id)}
+                    />
+                  ) : (
+                    <div className="w-5 h-5 mr-2 flex items-center justify-center bg-gray-200 rounded-full text-xs">
+                      {team.shortName.substring(0, 1)}
+                    </div>
+                  )}
                   {team.name}
                 </div>
               </SelectItem>
