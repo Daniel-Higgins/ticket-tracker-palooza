@@ -33,7 +33,7 @@ export default function TeamView() {
     <div className="min-h-screen flex flex-col">
       <Header />
       
-      <main className="flex-1 container py-24 px-4">
+      <main className="flex-1 container py-16 px-4 md:py-24">
         <div className="max-w-4xl mx-auto">
           <div className="mb-8">
             <Link to="/teams">
