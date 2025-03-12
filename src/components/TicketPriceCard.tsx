@@ -4,7 +4,7 @@ import { ExternalLink, ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { fetchTicketPrices } from '@/utils/ticketApi';
+import { fetchTicketPrices } from '@/utils/api';
 import { TicketPriceByCategory, TicketPriceWithSource } from '@/lib/types';
 
 interface TicketPriceCardProps {

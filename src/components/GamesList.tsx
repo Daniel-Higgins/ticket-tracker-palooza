@@ -4,7 +4,7 @@ import { format } from 'date-fns';
 import { ChevronDown, ChevronUp, Calendar, MapPin } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import { fetchTeamGames } from '@/utils/ticketApi';
+import { fetchTeamGames } from '@/utils/api';
 import { Game } from '@/lib/types';
 import { TicketPriceCard } from '@/components/TicketPriceCard';
 import { Switch } from '@/components/ui/switch';

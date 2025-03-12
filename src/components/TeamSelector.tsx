@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
-import { fetchTeams } from '@/utils/ticketApi';
+import { fetchTeams } from '@/utils/api';
 import { Team } from '@/lib/types';
 
 export function TeamSelector() {

@@ -7,7 +7,7 @@ import { Footer } from '@/components/layout/Footer';
 import { GamesList } from '@/components/GamesList';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { fetchTeams } from '@/utils/ticketApi';
+import { fetchTeams } from '@/utils/api';
 import { Team } from '@/lib/types';
 
 export default function TeamView() {

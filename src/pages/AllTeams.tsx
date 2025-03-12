@@ -5,7 +5,7 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
-import { fetchTeams } from '@/utils/ticketApi';
+import { fetchTeams } from '@/utils/api';
 import { Team } from '@/lib/types';
 import { Search } from 'lucide-react';
 
