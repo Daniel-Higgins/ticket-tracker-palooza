@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Facebook, X, Github } from 'lucide-react';
+import { Facebook, X } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
 interface AuthModalProps {
@@ -21,13 +21,21 @@ export function AuthModal({ trigger }: AuthModalProps) {
   const { signInWithGoogle, signInWithFacebook, isLoading } = useAuth();
 
   const handleGoogleSignIn = async () => {
-    await signInWithGoogle();
-    setOpen(false);
+    try {
+      await signInWithGoogle();
+      setOpen(false);
+    } catch (error) {
+      console.error('Error in Google sign in:', error);
+    }
   };
 
   const handleFacebookSignIn = async () => {
-    await signInWithFacebook();
-    setOpen(false);
+    try {
+      await signInWithFacebook();
+      setOpen(false);
+    } catch (error) {
+      console.error('Error in Facebook sign in:', error);
+    }
   };
 
   return (
@@ -67,7 +75,7 @@ export function AuthModal({ trigger }: AuthModalProps) {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
               />
             </svg>
-            Continue with Google
+            {isLoading ? 'Signing in...' : 'Continue with Google'}
           </Button>
           <Button
             variant="outline"
@@ -76,7 +84,7 @@ export function AuthModal({ trigger }: AuthModalProps) {
             disabled={isLoading}
           >
             <Facebook className="mr-2 h-5 w-5" />
-            Continue with Facebook
+            {isLoading ? 'Signing in...' : 'Continue with Facebook'}
           </Button>
         </div>
         <div className="flex items-center justify-center">

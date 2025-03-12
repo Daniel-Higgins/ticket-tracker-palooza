@@ -1,7 +1,7 @@
 
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { Session, User } from '@supabase/supabase-js';
-import { supabase, subscribeToAuthChanges } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase';
 import { toast } from "@/hooks/use-toast";
 
 interface AuthContextProps {
@@ -21,18 +21,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Get initial session
     const getInitialSession = async () => {
-      setIsLoading(true);
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) throw error;
         setSession(session);
         setUser(session?.user || null);
       } catch (error) {
         console.error('Error getting initial session:', error);
         toast({
           title: "Session Error",
-          description: "Failed to retrieve your session",
+          description: "Failed to retrieve your session. Please try signing in again.",
           variant: "destructive"
         });
       } finally {
@@ -42,13 +41,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     getInitialSession();
 
-    // Listen for auth changes
-    const { data: { subscription } } = subscribeToAuthChanges((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth state changed:', event, session?.user?.email);
       setSession(session);
       setUser(session?.user || null);
+      
+      if (event === 'SIGNED_IN') {
+        toast({
+          title: "Welcome!",
+          description: "Successfully signed in"
+        });
+      } else if (event === 'SIGNED_OUT') {
+        toast({
+          title: "Goodbye!",
+          description: "Successfully signed out"
+        });
+      }
     });
 
-    // Cleanup subscription
     return () => {
       subscription.unsubscribe();
     };
@@ -60,8 +70,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-        },
+          redirectTo: `${window.location.origin}/auth/callback`
+        }
       });
       
       if (error) throw error;
@@ -69,7 +79,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.error('Error signing in with Google:', error);
       toast({
         title: "Sign In Failed",
-        description: "Failed to sign in with Google",
+        description: "Could not sign in with Google. Please try again.",
         variant: "destructive"
       });
     } finally {
@@ -83,8 +93,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'facebook',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-        },
+          redirectTo: `${window.location.origin}/auth/callback`
+        }
       });
       
       if (error) throw error;
@@ -92,7 +102,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.error('Error signing in with Facebook:', error);
       toast({
         title: "Sign In Failed",
-        description: "Failed to sign in with Facebook",
+        description: "Could not sign in with Facebook. Please try again.",
         variant: "destructive"
       });
     } finally {
@@ -101,23 +111,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const handleSignOut = async () => {
-    setIsLoading(true);
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
       toast({
         title: "Success",
-        description: "Signed out successfully"
+        description: "Successfully signed out"
       });
     } catch (error) {
       console.error('Error signing out:', error);
       toast({
         title: "Sign Out Failed",
-        description: "Failed to sign out",
+        description: "Could not sign out. Please try again.",
         variant: "destructive"
       });
-    } finally {
-      setIsLoading(false);
     }
   };
 
