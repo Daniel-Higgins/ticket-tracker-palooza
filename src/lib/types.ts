@@ -46,6 +46,7 @@ export interface TicketCategory {
 
 export interface TicketPriceWithSource extends TicketPrice {
   source: TicketSource;
+  displayPrice?: number; // Added displayPrice property
 }
 
 export interface TicketPriceByCategory {

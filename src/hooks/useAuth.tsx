@@ -2,7 +2,7 @@
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase, subscribeToAuthChanges } from '@/lib/supabase';
-import { toast } from '@/components/ui/sonner';
+import { toast } from "@/hooks/use-toast";
 
 interface AuthContextProps {
   session: Session | null;
@@ -30,7 +30,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(session?.user || null);
       } catch (error) {
         console.error('Error getting initial session:', error);
-        toast.error('Failed to retrieve your session');
+        toast({
+          title: "Session Error",
+          description: "Failed to retrieve your session",
+          variant: "destructive"
+        });
       } finally {
         setIsLoading(false);
       }
@@ -63,7 +67,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (error) throw error;
     } catch (error) {
       console.error('Error signing in with Google:', error);
-      toast.error('Failed to sign in with Google');
+      toast({
+        title: "Sign In Failed",
+        description: "Failed to sign in with Google",
+        variant: "destructive"
+      });
     } finally {
       setIsLoading(false);
     }
@@ -82,7 +90,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (error) throw error;
     } catch (error) {
       console.error('Error signing in with Facebook:', error);
-      toast.error('Failed to sign in with Facebook');
+      toast({
+        title: "Sign In Failed",
+        description: "Failed to sign in with Facebook",
+        variant: "destructive"
+      });
     } finally {
       setIsLoading(false);
     }
@@ -93,10 +105,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-      toast.success('Signed out successfully');
+      toast({
+        title: "Success",
+        description: "Signed out successfully"
+      });
     } catch (error) {
       console.error('Error signing out:', error);
-      toast.error('Failed to sign out');
+      toast({
+        title: "Sign Out Failed",
+        description: "Failed to sign out",
+        variant: "destructive"
+      });
     } finally {
       setIsLoading(false);
     }

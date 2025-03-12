@@ -1,7 +1,7 @@
 
 import { Game, Team, TicketPriceByCategory, TicketCategory, TicketSource, TicketPrice } from '@/lib/types';
 import { supabase } from '@/lib/supabase';
-import { toast } from '@/components/ui/sonner';
+import { toast } from "@/hooks/use-toast";
 
 // Fetch all MLB teams
 export const fetchTeams = async (): Promise<Team[]> => {
@@ -15,7 +15,11 @@ export const fetchTeams = async (): Promise<Team[]> => {
     return data || [];
   } catch (error) {
     console.error('Error fetching teams:', error);
-    toast.error('Failed to load teams data');
+    toast({
+      title: "Data Error",
+      description: "Failed to load teams data",
+      variant: "destructive"
+    });
     return [];
   }
 };
@@ -41,7 +45,11 @@ export const fetchTeamGames = async (teamId: string): Promise<Game[]> => {
     return data || [];
   } catch (error) {
     console.error('Error fetching team games:', error);
-    toast.error('Failed to load game data');
+    toast({
+      title: "Data Error",
+      description: "Failed to load game data",
+      variant: "destructive"
+    });
     return [];
   }
 };
@@ -58,7 +66,11 @@ export const fetchTicketCategories = async (): Promise<TicketCategory[]> => {
     return data || [];
   } catch (error) {
     console.error('Error fetching ticket categories:', error);
-    toast.error('Failed to load ticket categories');
+    toast({
+      title: "Data Error",
+      description: "Failed to load ticket categories",
+      variant: "destructive"
+    });
     return [];
   }
 };
@@ -75,7 +87,11 @@ export const fetchTicketSources = async (): Promise<TicketSource[]> => {
     return data || [];
   } catch (error) {
     console.error('Error fetching ticket sources:', error);
-    toast.error('Failed to load ticket sources');
+    toast({
+      title: "Data Error",
+      description: "Failed to load ticket sources",
+      variant: "destructive"
+    });
     return [];
   }
 };
@@ -122,7 +138,11 @@ export const fetchTicketPrices = async (
     return pricesByCategory.filter(item => item.prices.length > 0);
   } catch (error) {
     console.error('Error fetching ticket prices:', error);
-    toast.error('Failed to load ticket pricing data');
+    toast({
+      title: "Data Error",
+      description: "Failed to load ticket pricing data",
+      variant: "destructive"
+    });
     return [];
   }
 };
@@ -135,11 +155,18 @@ export const saveUserFavoriteTeam = async (userId: string, teamId: string): Prom
       .upsert({ userId, teamId });
     
     if (error) throw error;
-    toast.success('Team saved to favorites');
+    toast({
+      title: "Success",
+      description: "Team saved to favorites"
+    });
     return true;
   } catch (error) {
     console.error('Error saving favorite team:', error);
-    toast.error('Failed to save team to favorites');
+    toast({
+      title: "Error",
+      description: "Failed to save team to favorites",
+      variant: "destructive"
+    });
     return false;
   }
 };
@@ -158,11 +185,18 @@ export const updateUserPreferences = async (
       });
     
     if (error) throw error;
-    toast.success('Preferences updated');
+    toast({
+      title: "Success",
+      description: "Preferences updated"
+    });
     return true;
   } catch (error) {
     console.error('Error updating preferences:', error);
-    toast.error('Failed to update preferences');
+    toast({
+      title: "Error",
+      description: "Failed to update preferences",
+      variant: "destructive"
+    });
     return false;
   }
 };

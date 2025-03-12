@@ -1,6 +1,6 @@
 
 import { createClient } from '@supabase/supabase-js';
-import { toast } from '@/components/ui/sonner';
+import { toast } from "@/hooks/use-toast";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -30,7 +30,11 @@ export const signInWithProvider = async (provider: 'google' | 'facebook') => {
     return { data, error: null };
   } catch (error) {
     console.error('Error signing in with provider:', error);
-    toast.error('Authentication failed. Please try again.');
+    toast({
+      title: "Authentication failed",
+      description: "Please try again.",
+      variant: "destructive"
+    });
     return { data: null, error };
   }
 };
@@ -44,7 +48,11 @@ export const signOut = async () => {
     return { error: null };
   } catch (error) {
     console.error('Error signing out:', error);
-    toast.error('Sign out failed. Please try again.');
+    toast({
+      title: "Sign out failed",
+      description: "Please try again.",
+      variant: "destructive"
+    });
     return { error };
   }
 };
