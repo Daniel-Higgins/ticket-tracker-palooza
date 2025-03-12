@@ -9,6 +9,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.error('Missing Supabase environment variables');
 }
 
+// Initialize the Supabase client with your Higgins-sw organization
 export const supabase = createClient(
   supabaseUrl || '',
   supabaseAnonKey || ''
