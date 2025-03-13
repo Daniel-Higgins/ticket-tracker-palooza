@@ -1,6 +1,6 @@
 
 import { useEffect, useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
@@ -12,6 +12,7 @@ export default function Index() {
   const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
   const heroRef = useRef<HTMLDivElement>(null);
   const featuresRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setIsVisible(true);
@@ -42,7 +43,8 @@ export default function Index() {
 
   const handleSelectTeam = (teamId: string) => {
     setSelectedTeamId(teamId);
-    // Navigate to team page or handle selection as needed
+    // Navigate to team page when a team is selected
+    navigate(`/team/${teamId}`);
   };
 
   return (
