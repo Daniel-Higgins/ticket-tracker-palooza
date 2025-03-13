@@ -52,7 +52,7 @@ export default function Index() {
       <Header />
       
       <main className="flex-1">
-        {/* Hero Section with Stadium Background Box */}
+        {/* Hero Section */}
         <section 
           ref={heroRef}
           className="relative min-h-[80vh] flex flex-col items-center justify-center text-center px-4 pt-20 overflow-hidden"
@@ -65,11 +65,8 @@ export default function Index() {
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-foreground">
               Find the Perfect MLB Tickets at the Best Price
             </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground mb-10 max-w-2xl mx-auto">
-              Track ticket prices across major platforms and never miss a deal on your favorite MLB games.
-            </p>
             
-            {/* Stadium Background Box */}
+            {/* Stadium Background Box - Made larger to include the paragraph */}
             <div className="relative rounded-xl overflow-hidden mb-12">
               {/* Stadium background image */}
               <div className="absolute inset-0 z-0">
@@ -78,20 +75,26 @@ export default function Index() {
                   alt="Baseball stadium" 
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"></div>
+                <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]"></div>
               </div>
               
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 p-8 relative z-10">
-                <TeamSelector 
-                  selectedTeamId={selectedTeamId} 
-                  onSelectTeam={handleSelectTeam}
-                />
-                <span className="text-white/70">or</span>
-                <Link to="/teams">
-                  <Button size="lg" className="rounded-full">
-                    Browse All Teams
-                  </Button>
-                </Link>
+              <div className="p-8 relative z-10">
+                <p className="text-xl md:text-2xl text-white font-medium mb-10 max-w-2xl mx-auto">
+                  Track ticket prices across major platforms and never miss a deal on your favorite MLB games.
+                </p>
+                
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
+                  <TeamSelector 
+                    selectedTeamId={selectedTeamId} 
+                    onSelectTeam={handleSelectTeam}
+                  />
+                  <span className="text-white font-medium">or</span>
+                  <Link to="/teams">
+                    <Button size="lg" className="rounded-full">
+                      Browse All Teams
+                    </Button>
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
@@ -120,7 +123,7 @@ export default function Index() {
                   </svg>
                 </div>
                 <h3 className="text-xl font-medium mb-2">Select Your Team</h3>
-                <p className="text-muted-foreground">
+                <p className="text-foreground">
                   Choose your favorite MLB team to see all upcoming games and available ticket options.
                 </p>
               </div>
@@ -132,7 +135,7 @@ export default function Index() {
                   </svg>
                 </div>
                 <h3 className="text-xl font-medium mb-2">Compare Prices</h3>
-                <p className="text-muted-foreground">
+                <p className="text-foreground">
                   View and compare ticket prices from StubHub, Ticketmaster, Gametime, and more in real-time.
                 </p>
               </div>
@@ -144,7 +147,7 @@ export default function Index() {
                   </svg>
                 </div>
                 <h3 className="text-xl font-medium mb-2">Track Over Time</h3>
-                <p className="text-muted-foreground">
+                <p className="text-foreground">
                   Monitor how prices change as game day approaches and get notified of drops for your saved games.
                 </p>
               </div>
@@ -156,7 +159,7 @@ export default function Index() {
         <section className="py-20 px-4 relative">          
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl font-bold mb-6">Ready to Find the Best Deals?</h2>
-            <p className="text-xl text-muted-foreground mb-10">
+            <p className="text-xl text-foreground mb-10">
               Create an account to save your favorite teams, track price changes, and get alerts when prices drop.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
