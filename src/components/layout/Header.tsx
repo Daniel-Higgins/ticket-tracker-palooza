@@ -39,8 +39,9 @@ export function Header() {
     <header className="w-full border-b border-border sticky top-0 bg-[#D3E4FD]/90 backdrop-blur supports-[backdrop-filter]:bg-[#D3E4FD]/70 z-50">
       <div className="container flex h-16 items-center justify-between relative">
         {/* Left side - Brand */}
-        <div className="w-1/3 flex justify-start">
+        <div className="w-1/3 flex justify-start items-center">
           <Link to="/" className="flex items-center gap-2">
+            <AnimatedLogo className="text-primary" />
             <span className="font-bold text-xl text-gray-800">FindGuy</span>
           </Link>
         </div>
@@ -100,11 +101,6 @@ export function Header() {
             </Link>
           )}
         </div>
-
-        {/* Center logo */}
-        <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <AnimatedLogo className="text-primary" />
-        </div>
       </div>
     </header>
   );
@@ -122,7 +118,7 @@ function NavLink({ to, children }: NavLinkProps) {
       className={({ isActive }) =>
         isActive
           ? "text-foreground font-medium transition-colors hover:text-foreground/80"
-          : "text-muted-foreground transition-colors hover:text-foreground/80"
+          : "text-gray-700 transition-colors hover:text-foreground/80"
       }
     >
       {children}
