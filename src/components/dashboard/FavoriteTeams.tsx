@@ -16,10 +16,14 @@ interface FavoriteTeamsProps {
 export function FavoriteTeams({ userId, onDataUpdated }: FavoriteTeamsProps) {
   const [favoriteTeams, setFavoriteTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const loadFavoriteTeams = async () => {
+    if (!userId) return;
+    
     setLoading(true);
     try {
+      console.log("Loading favorite teams for user:", userId);
       const teams = await fetchUserFavoriteTeams(userId);
       console.log("Loaded favorite teams:", teams);
       setFavoriteTeams(teams);
@@ -36,13 +40,22 @@ export function FavoriteTeams({ userId, onDataUpdated }: FavoriteTeamsProps) {
   };
 
   useEffect(() => {
+    console.log("FavoriteTeams component mounted or userId changed:", userId);
     loadFavoriteTeams();
-  }, [userId]);
+  }, [userId, refreshTrigger]);
 
-  const handleFavoriteToggle = () => {
-    console.log("FavoriteToggle callback triggered, refreshing teams");
-    loadFavoriteTeams();
-    if (onDataUpdated) onDataUpdated();
+  const handleFavoriteToggle = (teamId: string) => {
+    console.log("FavoriteToggle callback triggered with teamId:", teamId);
+    setRefreshTrigger(prev => prev + 1);
+    if (onDataUpdated) {
+      console.log("Calling parent onDataUpdated callback");
+      onDataUpdated();
+    }
+  };
+
+  const handleTeamSelect = (teamId: string) => {
+    console.log("Team selected from selector:", teamId);
+    // This is intentionally empty as the TeamSelector component will handle favoriting
   };
 
   const favoriteTeamsContent = (
@@ -72,7 +85,7 @@ export function FavoriteTeams({ userId, onDataUpdated }: FavoriteTeamsProps) {
           </p>
           <TeamSelector
             selectedTeamId={null}
-            onSelectTeam={() => {}}
+            onSelectTeam={handleTeamSelect}
             showFavoriteOption={true}
             userId={userId}
             onFavoriteToggle={handleFavoriteToggle}
@@ -85,7 +98,7 @@ export function FavoriteTeams({ userId, onDataUpdated }: FavoriteTeamsProps) {
   const teamSelectorDialog = (
     <TeamSelector 
       selectedTeamId={null}
-      onSelectTeam={() => {}}
+      onSelectTeam={handleTeamSelect}
       onFavoriteToggle={handleFavoriteToggle}
       showFavoriteOption={true}
       userId={userId}

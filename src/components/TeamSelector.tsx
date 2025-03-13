@@ -42,10 +42,17 @@ export function TeamSelector({
 
   useEffect(() => {
     const loadTeams = async () => {
-      setLoading(true);
-      const teamsData = await fetchTeams();
-      setTeams(teamsData);
-      setLoading(false);
+      try {
+        setLoading(true);
+        console.log("Loading teams data");
+        const teamsData = await fetchTeams();
+        console.log("Teams loaded:", teamsData.length);
+        setTeams(teamsData);
+      } catch (error) {
+        console.error("Error loading teams:", error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     loadTeams();
@@ -54,12 +61,14 @@ export function TeamSelector({
   useEffect(() => {
     // Load favorite status for each team if userId is provided
     const loadFavorites = async () => {
-      if (!userId || !showFavoriteOption) return;
+      if (!userId || !showFavoriteOption || teams.length === 0) return;
       
+      console.log("Loading favorite status for teams with userId:", userId);
       const favStatus: Record<string, boolean> = {};
       for (const team of teams) {
         favStatus[team.id] = await isTeamFavorite(userId, team.id);
       }
+      console.log("Favorites status loaded:", favStatus);
       setFavorites(favStatus);
     };
 
@@ -67,12 +76,13 @@ export function TeamSelector({
   }, [teams, userId, showFavoriteOption]);
 
   const handleTeamChange = async (teamId: string) => {
+    console.log(`Team selected: ${teamId}`);
     onSelectTeam(teamId);
     
     // If favorites are enabled and user is logged in, automatically favorite the selected team
-    if (showFavoriteOption && userId && !favorites[teamId]) {
-      console.log("Auto-favoriting team:", teamId);
+    if (showFavoriteOption && userId) {
       try {
+        console.log(`Auto-favoriting team: ${teamId} for user: ${userId}`);
         await addFavoriteTeam(userId, teamId);
         
         // Update local state
@@ -88,6 +98,7 @@ export function TeamSelector({
         
         // Call the callback if provided
         if (onFavoriteToggle) {
+          console.log("Calling onFavoriteToggle callback");
           onFavoriteToggle(teamId);
         }
       } catch (error) {
@@ -112,15 +123,18 @@ export function TeamSelector({
     if (e) e.stopPropagation();
     if (!userId) return;
     
+    console.log(`Toggling favorite for team: ${teamId}`);
     setToggleLoading(teamId);
     try {
       if (favorites[teamId]) {
+        console.log(`Removing team ${teamId} from favorites`);
         await removeFavoriteTeam(userId, teamId);
         toast({
           title: "Team removed from favorites",
           description: "Team has been removed from your favorites"
         });
       } else {
+        console.log(`Adding team ${teamId} to favorites`);
         await addFavoriteTeam(userId, teamId);
         toast({
           title: "Team added to favorites",
@@ -136,6 +150,7 @@ export function TeamSelector({
       
       // Call the callback if provided
       if (onFavoriteToggle) {
+        console.log("Calling onFavoriteToggle callback after toggle");
         onFavoriteToggle(teamId);
       }
     } catch (error) {
@@ -175,7 +190,7 @@ export function TeamSelector({
                     />
                   ) : (
                     <div className="w-5 h-5 mr-2 flex items-center justify-center bg-gray-200 rounded-full text-xs">
-                      {team.shortName.substring(0, 1)}
+                      {team.shortName?.substring(0, 1) || team.name.substring(0, 1)}
                     </div>
                   )}
                   {team.name}
