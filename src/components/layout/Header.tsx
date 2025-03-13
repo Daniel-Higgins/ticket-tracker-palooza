@@ -4,6 +4,7 @@ import { Link, NavLink as RouterNavLink } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { AnimatedLogo } from '@/components/ui/AnimatedLogo';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,7 +36,7 @@ export function Header() {
 
   return (
     <header className="w-full border-b border-border sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50">
-      <div className="container flex h-16 items-center justify-between">
+      <div className="container flex h-16 items-center justify-between relative">
         <div className="flex gap-6 items-center">
           <Link to="/" className="flex items-center gap-2">
             <span className="font-bold text-xl">FindGuy</span>
@@ -45,6 +46,11 @@ export function Header() {
             {user && <NavLink to="/dashboard">Dashboard</NavLink>}
             {user && <NavLink to="/upload-images">Upload Images</NavLink>}
           </nav>
+        </div>
+
+        {/* Center logo */}
+        <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <AnimatedLogo className="text-primary" />
         </div>
 
         {user ? (
