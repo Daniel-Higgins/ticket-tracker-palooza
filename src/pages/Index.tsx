@@ -66,35 +66,22 @@ export default function Index() {
               Find the Perfect MLB Tickets at the Best Price
             </h1>
             
-            {/* Stadium Background Box - Made larger to include the paragraph */}
-            <div className="relative rounded-xl overflow-hidden mb-12">
-              {/* Stadium background image */}
-              <div className="absolute inset-0 z-0">
-                <img 
-                  src="/public/lovable-uploads/21bec244-581f-4ec8-b504-420088b562c8.png" 
-                  alt="Baseball stadium" 
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]"></div>
-              </div>
+            <div className="bg-white rounded-xl shadow-lg p-8 mb-12">
+              <p className="text-xl md:text-2xl text-black font-medium mb-10 max-w-2xl mx-auto">
+                Track ticket prices across major platforms and never miss a deal on your favorite MLB games.
+              </p>
               
-              <div className="p-8 relative z-10">
-                <p className="text-xl md:text-2xl text-white font-medium mb-10 max-w-2xl mx-auto">
-                  Track ticket prices across major platforms and never miss a deal on your favorite MLB games.
-                </p>
-                
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
-                  <TeamSelector 
-                    selectedTeamId={selectedTeamId} 
-                    onSelectTeam={handleSelectTeam}
-                  />
-                  <span className="text-white font-medium">or</span>
-                  <Link to="/teams">
-                    <Button size="lg" className="rounded-full">
-                      Browse All Teams
-                    </Button>
-                  </Link>
-                </div>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
+                <TeamSelector 
+                  selectedTeamId={selectedTeamId} 
+                  onSelectTeam={handleSelectTeam}
+                />
+                <span className="text-black font-medium">or</span>
+                <Link to="/teams">
+                  <Button size="lg" className="rounded-full">
+                    Browse All Teams
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
