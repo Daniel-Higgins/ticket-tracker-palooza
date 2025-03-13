@@ -1,124 +1,131 @@
 
-import { supabase } from '@/integrations/supabase/client';
-import { toast } from "@/hooks/use-toast";
+import { supabase } from '@/lib/supabase';
 import { Team } from '@/lib/types';
 import { fetchTeams } from '../team';
+import { toast } from '@/hooks/use-toast';
 
-// Add a team to user's favorites
+// Add a team to a user's favorites
 export const addFavoriteTeam = async (userId: string, teamId: string): Promise<boolean> => {
   try {
-    console.log(`Adding favorite team: (userId: ${userId}, teamId: ${teamId})`);
+    console.log(`API: Adding team ${teamId} to favorites for user ${userId}`);
     
-    if (!userId) {
-      console.error('Error: userId is required to add favorite team');
+    // Check if the favorite already exists
+    const { data: existingFavorite } = await supabase
+      .from('favorites')
+      .select('*')
+      .eq('userId', userId)
+      .eq('teamId', teamId)
+      .single();
+      
+    if (existingFavorite) {
+      console.log(`Team ${teamId} is already a favorite for user ${userId}`);
+      return true; // Already a favorite, consider it a success
+    }
+    
+    // Add the favorite
+    const { error } = await supabase
+      .from('favorites')
+      .insert([
+        { userId, teamId, type: 'team' }
+      ]);
+    
+    if (error) {
+      console.error('Error adding favorite team:', error);
       return false;
     }
     
-    const { data, error } = await supabase
-      .from('user_favorites')
-      .insert({
-        userid: userId,
-        teamid: teamId
-      })
-      .select();
-    
-    if (error) {
-      // If it's a duplicate entry, don't show an error
-      if (error.code === '23505') {
-        console.log("Team is already a favorite, ignoring duplicate");
-        return true;
-      }
-      console.error('Supabase error adding favorite team:', error);
-      throw error;
-    }
-    
-    console.log("Team successfully added to favorites:", data);
+    console.log(`Successfully added team ${teamId} to favorites for user ${userId}`);
     return true;
   } catch (error) {
     console.error('Error adding favorite team:', error);
-    toast({
-      title: "Error",
-      description: "Failed to add team to favorites",
-      variant: "destructive"
-    });
     return false;
   }
 };
 
-// Remove a team from user's favorites
+// Remove a team from a user's favorites
 export const removeFavoriteTeam = async (userId: string, teamId: string): Promise<boolean> => {
   try {
-    console.log(`Removing favorite team: (userId: ${userId}, teamId: ${teamId})`);
+    console.log(`API: Removing team ${teamId} from favorites for user ${userId}`);
     
-    if (!userId) {
-      console.error('Error: userId is required to remove favorite team');
+    const { error } = await supabase
+      .from('favorites')
+      .delete()
+      .eq('userId', userId)
+      .eq('teamId', teamId)
+      .eq('type', 'team');
+    
+    if (error) {
+      console.error('Error removing favorite team:', error);
       return false;
     }
     
-    const { error } = await supabase
-      .from('user_favorites')
-      .delete()
-      .eq('userid', userId)
-      .eq('teamid', teamId);
-    
-    if (error) {
-      console.error('Supabase error removing favorite team:', error);
-      throw error;
-    }
-    
-    console.log("Team successfully removed from favorites");
+    console.log(`Successfully removed team ${teamId} from favorites for user ${userId}`);
     return true;
   } catch (error) {
     console.error('Error removing favorite team:', error);
-    toast({
-      title: "Error",
-      description: "Failed to remove team from favorites",
-      variant: "destructive"
-    });
     return false;
   }
 };
 
-// Get all favorite teams for a user
+// Toggle a team in a user's favorites (add if not present, remove if present)
+export const toggleFavoriteTeam = async (userId: string, teamId: string): Promise<boolean> => {
+  try {
+    console.log(`API: Toggling favorite status for team ${teamId} for user ${userId}`);
+    
+    // Check if the team is already a favorite
+    const { data: existingFavorite } = await supabase
+      .from('favorites')
+      .select('*')
+      .eq('userId', userId)
+      .eq('teamId', teamId)
+      .eq('type', 'team')
+      .single();
+    
+    if (existingFavorite) {
+      // If it's already a favorite, remove it
+      return await removeFavoriteTeam(userId, teamId);
+    } else {
+      // If it's not a favorite, add it
+      return await addFavoriteTeam(userId, teamId);
+    }
+  } catch (error) {
+    console.error('Error toggling favorite team:', error);
+    return false;
+  }
+};
+
+// Fetch all favorite teams for a user
 export const fetchUserFavoriteTeams = async (userId: string): Promise<Team[]> => {
   try {
-    console.log("Fetching favorite teams for user:", userId);
+    console.log(`API: Fetching favorite teams for user ${userId}`);
     
-    if (!userId) {
-      console.warn('Warning: userId is required to fetch favorite teams');
-      return [];
-    }
-    
-    const { data, error } = await supabase
-      .from('user_favorites')
-      .select('teamid')
-      .eq('userid', userId);
+    // Fetch favorite team IDs
+    const { data: favorites, error } = await supabase
+      .from('favorites')
+      .select('teamId')
+      .eq('userId', userId)
+      .eq('type', 'team');
     
     if (error) {
-      console.error('Supabase error fetching favorite teams:', error);
       throw error;
     }
     
-    if (!data || data.length === 0) {
-      console.log("No favorite teams found for user:", userId);
+    if (!favorites || favorites.length === 0) {
+      console.log(`No favorite teams found for user ${userId}`);
       return [];
     }
     
-    // Get team IDs from favorites
-    const teamIds = data.map(favorite => favorite.teamid);
-    console.log("Found favorite team IDs:", teamIds);
+    const teamIds = favorites.map(fav => fav.teamId);
+    console.log(`Found ${teamIds.length} favorite team IDs for user ${userId}:`, teamIds);
     
-    // Fetch all teams
+    // Fetch full team details for each favorite
     const allTeams = await fetchTeams();
-    console.log(`Fetched ${allTeams.length} teams, filtering to find favorites`);
-    
-    // Filter to get only the favorite teams
     const favoriteTeams = allTeams.filter(team => teamIds.includes(team.id));
-    console.log("Filtered favorite teams:", favoriteTeams.map(t => t.name));
     
+    console.log(`Returning ${favoriteTeams.length} favorite teams for user ${userId}`);
     return favoriteTeams;
   } catch (error) {
-    console.error('Error fetching user favorite teams:', error);
+    console.error('Error fetching favorite teams:', error);
     toast({
       title: "Error loading favorites",
       description: "We couldn't load your favorite teams",
@@ -128,34 +135,24 @@ export const fetchUserFavoriteTeams = async (userId: string): Promise<Team[]> =>
   }
 };
 
-// Check if a team is in user's favorites
+// Check if a team is a favorite for a user
 export const isTeamFavorite = async (userId: string, teamId: string): Promise<boolean> => {
   try {
-    if (!userId || !teamId) {
-      console.warn('Warning: userId and teamId are required to check if team is favorite');
+    if (!userId || !teamId) return false;
+    
+    const { data, error } = await supabase
+      .from('favorites')
+      .select('*')
+      .eq('userId', userId)
+      .eq('teamId', teamId)
+      .eq('type', 'team')
+      .single();
+    
+    if (error && error.code !== 'PGRST116') { // PGRST116 is the error code for "no rows returned"
+      console.error('Error checking if team is favorite:', error);
       return false;
     }
     
-    console.log(`Checking if team ${teamId} is favorite for user ${userId}`);
-    
-    const { data, error } = await supabase
-      .from('user_favorites')
-      .select('id')
-      .eq('userid', userId)
-      .eq('teamid', teamId)
-      .single();
-    
-    if (error) {
-      if (error.code === 'PGRST116') {
-        // No row found error code
-        console.log(`Team ${teamId} is not a favorite for user ${userId}`);
-        return false;
-      }
-      console.error('Supabase error checking if team is favorite:', error);
-      throw error;
-    }
-    
-    console.log(`Team ${teamId} is a favorite for user ${userId}`);
     return !!data;
   } catch (error) {
     console.error('Error checking if team is favorite:', error);

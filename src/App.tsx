@@ -13,7 +13,16 @@ import Account from "./pages/Account";
 import NotFound from "./pages/NotFound";
 import AuthCallback from "./pages/AuthCallback";
 
-const queryClient = new QueryClient();
+// Create a new QueryClient instance with each app launch
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: 1,
+      staleTime: 30000,
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -25,7 +34,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/teams" element={<AllTeams />} />
-            <Route path="/teams/:teamId" element={<TeamView />} />
+            <Route path="/team/:teamId" element={<TeamView />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/account" element={<Account />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
