@@ -1,5 +1,5 @@
 
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from "@/hooks/use-toast";
 import { Team } from '@/lib/types';
 import { fetchTeams } from '../team';
@@ -10,8 +10,8 @@ export const addFavoriteTeam = async (userId: string, teamId: string): Promise<b
     const { error } = await supabase
       .from('user_favorites')
       .insert({
-        user_id: userId,
-        team_id: teamId
+        userId: userId,
+        teamId: teamId
       });
     
     if (error) {
@@ -45,8 +45,8 @@ export const removeFavoriteTeam = async (userId: string, teamId: string): Promis
     const { error } = await supabase
       .from('user_favorites')
       .delete()
-      .eq('user_id', userId)
-      .eq('team_id', teamId);
+      .eq('userId', userId)
+      .eq('teamId', teamId);
     
     if (error) throw error;
     
@@ -72,8 +72,8 @@ export const fetchUserFavoriteTeams = async (userId: string): Promise<Team[]> =>
   try {
     const { data, error } = await supabase
       .from('user_favorites')
-      .select('team_id')
-      .eq('user_id', userId);
+      .select('teamId')
+      .eq('userId', userId);
     
     if (error) throw error;
     
@@ -82,7 +82,7 @@ export const fetchUserFavoriteTeams = async (userId: string): Promise<Team[]> =>
     }
     
     // Get team IDs from favorites
-    const teamIds = data.map(favorite => favorite.team_id);
+    const teamIds = data.map(favorite => favorite.teamId);
     
     // Fetch all teams
     const allTeams = await fetchTeams();
@@ -91,6 +91,11 @@ export const fetchUserFavoriteTeams = async (userId: string): Promise<Team[]> =>
     return allTeams.filter(team => teamIds.includes(team.id));
   } catch (error) {
     console.error('Error fetching user favorite teams:', error);
+    toast({
+      title: "Error loading favorites",
+      description: "We couldn't load your favorite teams",
+      variant: "destructive"
+    });
     return [];
   }
 };
@@ -101,8 +106,8 @@ export const isTeamFavorite = async (userId: string, teamId: string): Promise<bo
     const { data, error } = await supabase
       .from('user_favorites')
       .select('id')
-      .eq('user_id', userId)
-      .eq('team_id', teamId)
+      .eq('userId', userId)
+      .eq('teamId', teamId)
       .single();
     
     if (error) {

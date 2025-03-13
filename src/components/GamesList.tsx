@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { ChevronDown, ChevronUp, Calendar, MapPin } from 'lucide-react';
@@ -8,6 +9,8 @@ import { Game } from '@/lib/types';
 import { TicketPriceCard } from '@/components/TicketPriceCard';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { trackGame, untrackGame, isGameTracked } from '@/utils/api/user/trackedGames';
+import { toast } from '@/hooks/use-toast';
 
 interface GamesListProps {
   teamId?: string;
@@ -22,6 +25,8 @@ export function GamesList({ teamId, games: propGames, showTrackOption, userId, o
   const [loading, setLoading] = useState(true);
   const [expandedGameId, setExpandedGameId] = useState<string | null>(null);
   const [includeFees, setIncludeFees] = useState(true);
+  const [trackedGameIds, setTrackedGameIds] = useState<Set<string>>(new Set());
+  const [trackingLoading, setTrackingLoading] = useState<string | null>(null);
 
   useEffect(() => {
     const loadGames = async () => {
@@ -57,6 +62,27 @@ export function GamesList({ teamId, games: propGames, showTrackOption, userId, o
     loadGames();
   }, [teamId, propGames]);
 
+  // Load tracked game status
+  useEffect(() => {
+    const loadTrackedGames = async () => {
+      if (!showTrackOption || !userId) return;
+
+      const tracked = new Set<string>();
+      
+      // Check tracked status for each game
+      for (const game of games) {
+        const isTracked = await isGameTracked(userId, game.id);
+        if (isTracked) {
+          tracked.add(game.id);
+        }
+      }
+      
+      setTrackedGameIds(tracked);
+    };
+    
+    loadTrackedGames();
+  }, [showTrackOption, userId, games]);
+
   const toggleGameExpand = (gameId: string) => {
     setExpandedGameId(expandedGameId === gameId ? null : gameId);
   };
@@ -64,6 +90,54 @@ export function GamesList({ teamId, games: propGames, showTrackOption, userId, o
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return format(date, 'EEEE, MMMM d, yyyy');
+  };
+
+  const handleTrackToggle = async (gameId: string) => {
+    if (!userId) {
+      toast({
+        title: "Authentication required",
+        description: "You need to sign in to track games",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    setTrackingLoading(gameId);
+    
+    try {
+      const isCurrentlyTracked = trackedGameIds.has(gameId);
+      let success;
+      
+      if (isCurrentlyTracked) {
+        success = await untrackGame(userId, gameId);
+        if (success) {
+          const newTracked = new Set(trackedGameIds);
+          newTracked.delete(gameId);
+          setTrackedGameIds(newTracked);
+        }
+      } else {
+        success = await trackGame(userId, gameId);
+        if (success) {
+          const newTracked = new Set(trackedGameIds);
+          newTracked.add(gameId);
+          setTrackedGameIds(newTracked);
+        }
+      }
+      
+      // Call the onTrackToggle callback if provided
+      if (success && onTrackToggle) {
+        await onTrackToggle();
+      }
+    } catch (error) {
+      console.error('Error toggling game tracking:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update tracking status",
+        variant: "destructive"
+      });
+    } finally {
+      setTrackingLoading(null);
+    }
   };
 
   if (loading) {
@@ -107,6 +181,31 @@ export function GamesList({ teamId, games: propGames, showTrackOption, userId, o
           key={game.id}
           className="glass-card overflow-hidden transition-all duration-300 animate-fade-in"
         >
+          <div className="flex justify-between items-center px-4 pt-4">
+            {showTrackOption && userId && (
+              <div className="flex items-center gap-2">
+                <Switch
+                  id={`track-${game.id}`}
+                  checked={trackedGameIds.has(game.id)}
+                  onCheckedChange={() => handleTrackToggle(game.id)}
+                  disabled={trackingLoading === game.id}
+                />
+                <Label htmlFor={`track-${game.id}`} className="text-sm">
+                  {trackedGameIds.has(game.id) ? "Tracking" : "Track"}
+                </Label>
+              </div>
+            )}
+            {!showTrackOption && <div />}
+            
+            <div>
+              <span className="text-xs text-muted-foreground">
+                {trackedGameIds.has(game.id) 
+                  ? "You'll receive price updates for this game" 
+                  : ""}
+              </span>
+            </div>
+          </div>
+          
           <div
             className="p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between cursor-pointer"
             onClick={() => toggleGameExpand(game.id)}

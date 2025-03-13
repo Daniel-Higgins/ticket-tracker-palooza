@@ -1,5 +1,5 @@
 
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from "@/hooks/use-toast";
 import { Game } from '@/lib/types';
 import { fetchTeamGames } from '../game';
@@ -8,10 +8,10 @@ import { fetchTeamGames } from '../game';
 export const trackGame = async (userId: string, gameId: string): Promise<boolean> => {
   try {
     const { error } = await supabase
-      .from('tracked_games')
+      .from('user_tracked_games')
       .insert({
-        user_id: userId,
-        game_id: gameId
+        userId: userId,
+        gameId: gameId
       });
     
     if (error) {
@@ -43,10 +43,10 @@ export const trackGame = async (userId: string, gameId: string): Promise<boolean
 export const untrackGame = async (userId: string, gameId: string): Promise<boolean> => {
   try {
     const { error } = await supabase
-      .from('tracked_games')
+      .from('user_tracked_games')
       .delete()
-      .eq('user_id', userId)
-      .eq('game_id', gameId);
+      .eq('userId', userId)
+      .eq('gameId', gameId);
     
     if (error) throw error;
     
@@ -71,9 +71,9 @@ export const untrackGame = async (userId: string, gameId: string): Promise<boole
 export const fetchUserTrackedGames = async (userId: string): Promise<Game[]> => {
   try {
     const { data, error } = await supabase
-      .from('tracked_games')
-      .select('game_id')
-      .eq('user_id', userId);
+      .from('user_tracked_games')
+      .select('gameId')
+      .eq('userId', userId);
     
     if (error) throw error;
     
@@ -82,7 +82,7 @@ export const fetchUserTrackedGames = async (userId: string): Promise<Game[]> => 
     }
     
     // Get game IDs from tracked games
-    const gameIds = data.map(tracked => tracked.game_id);
+    const gameIds = data.map(tracked => tracked.gameId);
     
     // Get games from favorite teams first
     const favoriteTeams = await import('./favorites').then(m => m.fetchUserFavoriteTeams(userId));
@@ -136,6 +136,11 @@ export const fetchUserTrackedGames = async (userId: string): Promise<Game[]> => 
     return trackedGames;
   } catch (error) {
     console.error('Error fetching user tracked games:', error);
+    toast({
+      title: "Error loading games",
+      description: "We couldn't load your tracked games",
+      variant: "destructive"
+    });
     return [];
   }
 };
@@ -144,10 +149,10 @@ export const fetchUserTrackedGames = async (userId: string): Promise<Game[]> => 
 export const isGameTracked = async (userId: string, gameId: string): Promise<boolean> => {
   try {
     const { data, error } = await supabase
-      .from('tracked_games')
+      .from('user_tracked_games')
       .select('id')
-      .eq('user_id', userId)
-      .eq('game_id', gameId)
+      .eq('userId', userId)
+      .eq('gameId', gameId)
       .single();
     
     if (error) {

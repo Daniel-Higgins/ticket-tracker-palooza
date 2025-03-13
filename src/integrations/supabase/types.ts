@@ -9,7 +9,211 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      games: {
+        Row: {
+          awayteamid: string
+          created_at: string
+          date: string
+          hometeamid: string
+          id: string
+          status: string
+          time: string
+          venue: string
+        }
+        Insert: {
+          awayteamid: string
+          created_at?: string
+          date: string
+          hometeamid: string
+          id: string
+          status?: string
+          time: string
+          venue: string
+        }
+        Update: {
+          awayteamid?: string
+          created_at?: string
+          date?: string
+          hometeamid?: string
+          id?: string
+          status?: string
+          time?: string
+          venue?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "games_awayteamid_fkey"
+            columns: ["awayteamid"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "games_hometeamid_fkey"
+            columns: ["hometeamid"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      price_alerts: {
+        Row: {
+          categoryid: string | null
+          createdat: string
+          gameid: string
+          id: string
+          isactive: boolean
+          notifiedat: string | null
+          targetprice: number
+          userid: string
+        }
+        Insert: {
+          categoryid?: string | null
+          createdat?: string
+          gameid: string
+          id?: string
+          isactive?: boolean
+          notifiedat?: string | null
+          targetprice: number
+          userid: string
+        }
+        Update: {
+          categoryid?: string | null
+          createdat?: string
+          gameid?: string
+          id?: string
+          isactive?: boolean
+          notifiedat?: string | null
+          targetprice?: number
+          userid?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "price_alerts_categoryid_fkey"
+            columns: ["categoryid"]
+            isOneToOne: false
+            referencedRelation: "ticket_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "price_alerts_gameid_fkey"
+            columns: ["gameid"]
+            isOneToOne: false
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      teams: {
+        Row: {
+          city: string
+          id: string
+          logo: string | null
+          name: string
+          primarycolor: string | null
+          secondarycolor: string | null
+          shortname: string
+        }
+        Insert: {
+          city: string
+          id: string
+          logo?: string | null
+          name: string
+          primarycolor?: string | null
+          secondarycolor?: string | null
+          shortname: string
+        }
+        Update: {
+          city?: string
+          id?: string
+          logo?: string | null
+          name?: string
+          primarycolor?: string | null
+          secondarycolor?: string | null
+          shortname?: string
+        }
+        Relationships: []
+      }
+      ticket_categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      user_favorites: {
+        Row: {
+          created_at: string
+          id: string
+          teamid: string
+          userid: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          teamid: string
+          userid: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          teamid?: string
+          userid?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_favorites_teamid_fkey"
+            columns: ["teamid"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_tracked_games: {
+        Row: {
+          created_at: string
+          gameid: string
+          id: string
+          userid: string
+        }
+        Insert: {
+          created_at?: string
+          gameid: string
+          id?: string
+          userid: string
+        }
+        Update: {
+          created_at?: string
+          gameid?: string
+          id?: string
+          userid?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_tracked_games_gameid_fkey"
+            columns: ["gameid"]
+            isOneToOne: false
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

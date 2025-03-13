@@ -1,7 +1,8 @@
 
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import { PriceAlert, PriceAlertWithGame } from '@/lib/types';
 import { toast } from "@/hooks/use-toast";
+import { fetchTeamGames } from './game';
 
 // Create a new price alert
 export const createPriceAlert = async (
@@ -44,8 +45,7 @@ export const createPriceAlert = async (
 // Get all price alerts for a user
 export const fetchUserPriceAlerts = async (userId: string): Promise<PriceAlertWithGame[]> => {
   try {
-    // In a real app, we would join with games and categories tables
-    // For demo, we'll use a simple query and manually construct the response
+    // Get all price alerts for this user
     const { data, error } = await supabase
       .from('price_alerts')
       .select('*')
@@ -54,12 +54,41 @@ export const fetchUserPriceAlerts = async (userId: string): Promise<PriceAlertWi
     
     if (error) throw error;
     
-    // For demo purposes, we'll return demo data since the table might not exist
     if (!data || data.length === 0) {
       return getDemoAlerts(userId);
     }
     
-    return data;
+    // For each alert, we need to fetch the game details
+    const alertsWithGames: PriceAlertWithGame[] = [];
+    
+    for (const alert of data) {
+      // Get all games from tracked teams
+      const teams = await import('./user/favorites').then(m => m.fetchUserFavoriteTeams(userId));
+      let allGames: any[] = [];
+      
+      for (const team of teams) {
+        const games = await fetchTeamGames(team.id);
+        allGames = [...allGames, ...games];
+      }
+      
+      // Find the game that matches this alert
+      const game = allGames.find(g => g.id === alert.gameId);
+      
+      // If we found the game, add it to the result
+      if (game) {
+        alertsWithGames.push({
+          ...alert,
+          game
+        });
+      }
+    }
+    
+    // If we didn't find any games, return demo data
+    if (alertsWithGames.length === 0) {
+      return getDemoAlerts(userId);
+    }
+    
+    return alertsWithGames;
   } catch (error) {
     console.error('Error fetching user price alerts:', error);
     return getDemoAlerts(userId);
