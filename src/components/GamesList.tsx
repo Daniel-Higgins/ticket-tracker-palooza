@@ -155,8 +155,8 @@ export function GamesList({ teamId, games: propGames, showTrackOption, userId, o
   if (games.length === 0) {
     return (
       <div className="text-center py-12 px-4 bg-white">
-        <h3 className="text-xl font-medium mb-2 text-black">No upcoming games found</h3>
-        <p className="text-muted-foreground mb-6">
+        <h3 className="text-xl font-medium mb-2 text-gray-900">No upcoming games found</h3>
+        <p className="text-gray-600 mb-6">
           There are no scheduled games for this team in the near future.
         </p>
       </div>
@@ -171,7 +171,7 @@ export function GamesList({ teamId, games: propGames, showTrackOption, userId, o
           checked={includeFees}
           onCheckedChange={setIncludeFees}
         />
-        <Label htmlFor="include-fees" className="text-sm">
+        <Label htmlFor="include-fees" className="text-sm text-gray-800">
           Include fees
         </Label>
       </div>
@@ -190,7 +190,7 @@ export function GamesList({ teamId, games: propGames, showTrackOption, userId, o
                   onCheckedChange={() => handleTrackToggle(game.id)}
                   disabled={trackingLoading === game.id}
                 />
-                <Label htmlFor={`track-${game.id}`} className="text-sm">
+                <Label htmlFor={`track-${game.id}`} className="text-sm text-gray-800">
                   {trackedGameIds.has(game.id) ? "Tracking" : "Track"}
                 </Label>
               </div>
@@ -198,7 +198,7 @@ export function GamesList({ teamId, games: propGames, showTrackOption, userId, o
             {!showTrackOption && <div />}
             
             <div>
-              <span className="text-xs text-muted-foreground">
+              <span className="text-xs text-gray-600">
                 {trackedGameIds.has(game.id) 
                   ? "You'll receive price updates for this game" 
                   : ""}
@@ -211,7 +211,7 @@ export function GamesList({ teamId, games: propGames, showTrackOption, userId, o
             onClick={() => toggleGameExpand(game.id)}
           >
             <div className="flex-1">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+              <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
                 <Calendar className="h-4 w-4" />
                 <span>{formatDate(game.date)}</span>
                 <span>•</span>
@@ -228,10 +228,10 @@ export function GamesList({ teamId, games: propGames, showTrackOption, userId, o
                       (e.target as HTMLImageElement).style.display = 'none';
                     }}
                   />
-                  <span className="font-medium ml-2">{game.awayTeam.shortName}</span>
+                  <span className="font-medium ml-2 text-gray-900">{game.awayTeam.shortName}</span>
                 </div>
                 
-                <span className="text-muted-foreground">@</span>
+                <span className="text-gray-600">@</span>
                 
                 <div className="flex items-center">
                   <img
@@ -242,11 +242,11 @@ export function GamesList({ teamId, games: propGames, showTrackOption, userId, o
                       (e.target as HTMLImageElement).style.display = 'none';
                     }}
                   />
-                  <span className="font-medium ml-2">{game.homeTeam.shortName}</span>
+                  <span className="font-medium ml-2 text-gray-900">{game.homeTeam.shortName}</span>
                 </div>
               </div>
               
-              <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2">
+              <div className="flex items-center gap-2 text-sm text-gray-600 mt-2">
                 <MapPin className="h-4 w-4" />
                 <span>{game.venue}</span>
               </div>
@@ -255,7 +255,7 @@ export function GamesList({ teamId, games: propGames, showTrackOption, userId, o
             <Button
               variant="ghost"
               size="sm"
-              className="rounded-full p-2 mt-4 sm:mt-0"
+              className="rounded-full p-2 mt-4 sm:mt-0 text-gray-700"
             >
               {expandedGameId === game.id ? (
                 <ChevronUp className="h-5 w-5" />

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { ExternalLink, ArrowUpDown, Target, MapPin, Diamond, Home, User, Ticket, Flag, MapPinCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -47,9 +46,7 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
     
     const sectionNumber = parseInt(section, 10);
     
-    // Common section number patterns in MLB stadiums
     if (isNaN(sectionNumber)) {
-      // Handle non-numeric sections
       const lowerSection = section.toLowerCase();
       
       if (lowerSection.includes('dugout') || lowerSection.includes('box')) {
@@ -66,7 +63,6 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
       return 'Unknown';
     }
     
-    // Basic section number patterns (this is a simplification as actual patterns vary by stadium)
     if (sectionNumber >= 1 && sectionNumber <= 12) return 'Plate';
     if (sectionNumber >= 13 && sectionNumber <= 33) return '1B';
     if (sectionNumber >= 34 && sectionNumber <= 45) return 'RF';
@@ -140,8 +136,8 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
   if (priceData.length === 0) {
     return (
       <div className="text-center py-8 bg-white">
-        <h3 className="text-lg font-medium mb-2 text-black">No ticket prices available</h3>
-        <p className="text-muted-foreground">
+        <h3 className="text-lg font-medium mb-2 text-gray-900">No ticket prices available</h3>
+        <p className="text-gray-600">
           We couldn't find any ticket listings for this game yet. Check back later for updates.
         </p>
       </div>
@@ -165,21 +161,21 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
               (e.target as HTMLImageElement).style.display = 'none';
             }}
           />
-          <span className="font-medium">{price.source.name}</span>
+          <span className="font-medium text-gray-900">{price.source.name}</span>
         </div>
         
-        <div className="price-tag text-right">
+        <div className="price-tag text-right text-gray-900">
           ${price.displayPrice.toFixed(2)}
-          <div className="text-xs text-muted-foreground">
+          <div className="text-xs text-gray-600">
             {includeFees ? 'with fees' : 'before fees'}
           </div>
         </div>
         
-        <div className="text-xs text-muted-foreground col-span-1 text-center">
+        <div className="text-xs text-gray-600 col-span-1 text-center">
           per ticket
         </div>
         
-        <div className="col-span-2 text-xs">
+        <div className="col-span-2 text-xs text-gray-800">
           {price.section ? (
             <div className="flex flex-col">
               <span>Section: {price.section}</span>
@@ -190,7 +186,7 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
               </span>
             </div>
           ) : (
-            <span className="text-muted-foreground italic">Section/Row info not available</span>
+            <span className="text-gray-500 italic">Section/Row info not available</span>
           )}
         </div>
         
@@ -212,11 +208,11 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
   return (
     <div className="space-y-6 bg-white">
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-medium text-black">Ticket Prices</h3>
+        <h3 className="text-lg font-medium text-gray-900">Ticket Prices</h3>
         <Button
           variant="outline"
           size="sm"
-          className="text-xs flex items-center gap-1"
+          className="text-xs flex items-center gap-1 text-gray-800"
           onClick={toggleSort}
         >
           <ArrowUpDown className="h-3 w-3 mr-1" />
@@ -228,9 +224,9 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
         <div className="bg-white border border-gray-100 p-4 rounded-lg mb-4">
           <div className="flex items-center mb-2">
             <Ticket className="h-5 w-5 mr-2 text-primary" />
-            <h4 className="font-medium text-black">{cheapestAvailableCategory.category.name}</h4>
+            <h4 className="font-medium text-gray-900">{cheapestAvailableCategory.category.name}</h4>
           </div>
-          <p className="text-sm text-muted-foreground mb-3">{cheapestAvailableCategory.category.description}</p>
+          <p className="text-sm text-gray-600 mb-3">{cheapestAvailableCategory.category.description}</p>
           
           <div className="divide-y divide-border/50">
             {sortPrices(cheapestAvailableCategory.prices).map((price) => (
@@ -243,7 +239,7 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
       <Tabs defaultValue={tabCategories[0]?.category.id}>
         <TabsList className="grid grid-cols-2 sm:grid-cols-4 mb-4">
           {tabCategories.map((item) => (
-            <TabsTrigger key={item.category.id} value={item.category.id} className="text-xs sm:text-sm flex items-center">
+            <TabsTrigger key={item.category.id} value={item.category.id} className="text-xs sm:text-sm flex items-center text-gray-800">
               {getCategoryIcon(item.category.name)}
               {item.category.name}
             </TabsTrigger>
@@ -253,7 +249,7 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
         {tabCategories.map((item) => (
           <TabsContent key={item.category.id} value={item.category.id} className="animate-fade-in bg-white">
             <div className="space-y-3">
-              <p className="text-sm text-muted-foreground">{item.category.description}</p>
+              <p className="text-sm text-gray-600">{item.category.description}</p>
               
               <div className="divide-y divide-border/50">
                 {sortPrices(item.prices).map((price) => (
@@ -265,7 +261,7 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
         ))}
       </Tabs>
       
-      <div className="text-xs text-muted-foreground italic text-center pt-2">
+      <div className="text-xs text-gray-500 italic text-center pt-2">
         Prices updated {new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}
       </div>
     </div>
