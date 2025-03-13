@@ -48,48 +48,51 @@ export default function Index() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-white">
       <Header />
       
       <main className="flex-1">
-        {/* Hero Section with Stadium Background */}
+        {/* Hero Section with Stadium Background Box */}
         <section 
           ref={heroRef}
-          className="relative min-h-screen flex flex-col items-center justify-center text-center px-4 pt-20 overflow-hidden"
+          className="relative min-h-[80vh] flex flex-col items-center justify-center text-center px-4 pt-20 overflow-hidden"
         >
-          {/* Full-screen stadium background image */}
-          <div className="absolute inset-0 z-0">
-            <img 
-              src="/public/lovable-uploads/21bec244-581f-4ec8-b504-420088b562c8.png" 
-              alt="Baseball stadium" 
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"></div>
-          </div>
-          
           <div 
             className={`relative z-10 max-w-4xl mx-auto transition-all duration-1000 ${
               isVisible ? 'opacity-100' : 'opacity-0 transform translate-y-10'
             }`}
           >
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-white drop-shadow-lg">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-foreground">
               Find the Perfect MLB Tickets at the Best Price
             </h1>
-            <p className="text-xl md:text-2xl text-white/90 mb-10 max-w-2xl mx-auto drop-shadow">
+            <p className="text-xl md:text-2xl text-muted-foreground mb-10 max-w-2xl mx-auto">
               Track ticket prices across major platforms and never miss a deal on your favorite MLB games.
             </p>
             
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mb-12 bg-black/30 p-6 rounded-xl backdrop-blur-sm">
-              <TeamSelector 
-                selectedTeamId={selectedTeamId} 
-                onSelectTeam={handleSelectTeam}
-              />
-              <span className="text-white/70">or</span>
-              <Link to="/teams">
-                <Button size="lg" className="rounded-full">
-                  Browse All Teams
-                </Button>
-              </Link>
+            {/* Stadium Background Box */}
+            <div className="relative rounded-xl overflow-hidden mb-12">
+              {/* Stadium background image */}
+              <div className="absolute inset-0 z-0">
+                <img 
+                  src="/public/lovable-uploads/21bec244-581f-4ec8-b504-420088b562c8.png" 
+                  alt="Baseball stadium" 
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"></div>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 p-8 relative z-10">
+                <TeamSelector 
+                  selectedTeamId={selectedTeamId} 
+                  onSelectTeam={handleSelectTeam}
+                />
+                <span className="text-white/70">or</span>
+                <Link to="/teams">
+                  <Button size="lg" className="rounded-full">
+                    Browse All Teams
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
           
@@ -97,24 +100,15 @@ export default function Index() {
             onClick={scrollToFeatures}
             className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce z-10"
           >
-            <ChevronDown className="h-8 w-8 text-white drop-shadow-md" />
+            <ChevronDown className="h-8 w-8 text-primary drop-shadow-md" />
           </button>
         </section>
         
         {/* Features Section */}
         <section 
           ref={featuresRef} 
-          className="py-20 px-4 bg-accent/50 relative overflow-hidden"
+          className="py-20 px-4 bg-accent/30 relative"
         >
-          {/* Background image for features section */}
-          <div className="absolute inset-0 opacity-10 z-0">
-            <img 
-              src="/public/lovable-uploads/6b1728ff-e3aa-40b8-87c5-3fcc2ed9570f.png" 
-              alt="Baseball field" 
-              className="w-full h-full object-cover"
-            />
-          </div>
-          
           <div className="max-w-7xl mx-auto relative z-10">
             <h2 className="text-3xl font-bold text-center mb-16">How FindGuy Works</h2>
             
@@ -159,9 +153,7 @@ export default function Index() {
         </section>
         
         {/* CTA Section */}
-        <section className="py-20 px-4 relative">
-          <div className="absolute inset-0 -z-10 bg-gradient-to-b from-accent/30 to-transparent"></div>
-          
+        <section className="py-20 px-4 relative">          
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl font-bold mb-6">Ready to Find the Best Deals?</h2>
             <p className="text-xl text-muted-foreground mb-10">
