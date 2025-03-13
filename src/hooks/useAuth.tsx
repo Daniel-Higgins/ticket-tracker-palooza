@@ -2,13 +2,13 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import { signInWithProvider, signOutSupabase } from '@/lib/supabase';
+import { signInWithProvider, signOut } from '@/lib/supabase';
 
 type AuthContextType = {
   user: User | null;
   session: Session | null;
   isLoading: boolean;
-  signIn: (provider: 'google' | 'github') => Promise<void>;
+  signIn: (provider: 'google' | 'facebook') => Promise<void>;
   signOut: () => Promise<{ error: Error | null }>;
 };
 
@@ -41,7 +41,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const signIn = async (provider: 'google' | 'github') => {
+  const signIn = async (provider: 'google' | 'facebook') => {
     try {
       setIsLoading(true);
       await signInWithProvider(provider);
@@ -53,10 +53,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const signOut = async () => {
+  const signOutUser = async () => {
     try {
       setIsLoading(true);
-      return await signOutSupabase();
+      return await signOut();
     } catch (error) {
       console.error('Error signing out:', error);
       return { error: error as Error };
@@ -70,7 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     user,
     isLoading,
     signIn,
-    signOut,
+    signOut: signOutUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
