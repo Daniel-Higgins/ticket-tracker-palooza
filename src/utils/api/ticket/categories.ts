@@ -21,19 +21,9 @@ export const demoCategories: TicketCategory[] = [
     description: "Outfield sections with chances to catch home run balls"
   },
   {
-    id: "cat-5",
-    name: "Fair Territory",
-    description: "Seating along the foul lines with potential for foul ball catches"
-  },
-  {
     id: "cat-2",
     name: "Field Level",
     description: "Excellent views close to the action along the baselines"
-  },
-  {
-    id: "cat-6",
-    name: "Behind the Diamond",
-    description: "Central view of the entire infield and pitcher's mound"
   },
   {
     id: "cat-1",

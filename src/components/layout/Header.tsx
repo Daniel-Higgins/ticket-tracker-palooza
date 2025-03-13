@@ -44,7 +44,7 @@ export function Header() {
           className="flex items-center space-x-2 text-foreground hover:opacity-80 transition-opacity duration-200"
         >
           <AnimatedLogo />
-          <span className="font-semibold text-lg sm:text-xl">TicketTrack</span>
+          <span className="font-semibold text-lg sm:text-xl">FindGuy</span>
         </Link>
 
         <nav className="hidden md:flex items-center space-x-1">

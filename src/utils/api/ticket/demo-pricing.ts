@@ -1,3 +1,4 @@
+
 import { TicketPriceByCategory } from '@/lib/types';
 import { demoCategories } from './categories';
 import { demoSources } from './sources';
@@ -6,7 +7,7 @@ import { demoSources } from './sources';
 export const demoPricing: Record<string, TicketPriceByCategory[]> = {
   "game-1": [
     {
-      category: demoCategories[6], // Behind the Plate
+      category: demoCategories[4], // Behind the Plate
       prices: [
         {
           id: "price-1",
@@ -37,7 +38,7 @@ export const demoPricing: Record<string, TicketPriceByCategory[]> = {
       ]
     },
     {
-      category: demoCategories[4], // Field Level
+      category: demoCategories[3], // Field Level
       prices: [
         {
           id: "price-3",
@@ -130,55 +131,6 @@ export const demoPricing: Record<string, TicketPriceByCategory[]> = {
       ]
     },
     {
-      category: demoCategories[3], // Fair Territory
-      prices: [
-        {
-          id: "price-23",
-          gameId: "game-1",
-          ticketCategoryId: "cat-5",
-          sourceId: "source-1",
-          price: 75.00,
-          serviceFee: 15.00,
-          totalPrice: 90.00,
-          url: "https://www.ticketmaster.com",
-          lastUpdated: new Date().toISOString(),
-          source: demoSources[0],
-          displayPrice: 90.00
-        },
-        {
-          id: "price-24",
-          gameId: "game-1",
-          ticketCategoryId: "cat-5",
-          sourceId: "source-4",
-          price: 72.00,
-          serviceFee: 13.50,
-          totalPrice: 85.50,
-          url: "https://gametime.co",
-          lastUpdated: new Date().toISOString(),
-          source: demoSources[3],
-          displayPrice: 85.50
-        }
-      ]
-    },
-    {
-      category: demoCategories[5], // Behind the Diamond
-      prices: [
-        {
-          id: "price-25",
-          gameId: "game-1",
-          ticketCategoryId: "cat-6",
-          sourceId: "source-2",
-          price: 175.00,
-          serviceFee: 30.00,
-          totalPrice: 205.00,
-          url: "https://www.stubhub.com",
-          lastUpdated: new Date().toISOString(),
-          source: demoSources[1],
-          displayPrice: 205.00
-        }
-      ]
-    },
-    {
       category: demoCategories[0], // Cheapest Available
       prices: [
         {
@@ -212,7 +164,7 @@ export const demoPricing: Record<string, TicketPriceByCategory[]> = {
   ],
   "game-2": [
     {
-      category: demoCategories[6], // Behind the Plate
+      category: demoCategories[4], // Behind the Plate
       prices: [
         {
           id: "price-8",
@@ -243,7 +195,7 @@ export const demoPricing: Record<string, TicketPriceByCategory[]> = {
       ]
     },
     {
-      category: demoCategories[4], // Field Level
+      category: demoCategories[3], // Field Level
       prices: [
         {
           id: "price-9",
@@ -310,42 +262,6 @@ export const demoPricing: Record<string, TicketPriceByCategory[]> = {
       ]
     },
     {
-      category: demoCategories[3], // Fair Territory
-      prices: [
-        {
-          id: "price-30",
-          gameId: "game-2",
-          ticketCategoryId: "cat-5",
-          sourceId: "source-4",
-          price: 65.00,
-          serviceFee: 12.50,
-          totalPrice: 77.50,
-          url: "https://gametime.co",
-          lastUpdated: new Date().toISOString(),
-          source: demoSources[3],
-          displayPrice: 77.50
-        }
-      ]
-    },
-    {
-      category: demoCategories[5], // Behind the Diamond
-      prices: [
-        {
-          id: "price-31",
-          gameId: "game-2",
-          ticketCategoryId: "cat-6",
-          sourceId: "source-2",
-          price: 155.00,
-          serviceFee: 26.00,
-          totalPrice: 181.00,
-          url: "https://www.stubhub.com",
-          lastUpdated: new Date().toISOString(),
-          source: demoSources[1],
-          displayPrice: 181.00
-        }
-      ]
-    },
-    {
       category: demoCategories[0], // Cheapest Available
       prices: [
         {
@@ -379,7 +295,7 @@ export const demoPricing: Record<string, TicketPriceByCategory[]> = {
   ],
   "game-3": [
     {
-      category: demoCategories[6], // Behind the Plate
+      category: demoCategories[4], // Behind the Plate
       prices: [
         {
           id: "price-33",
@@ -397,7 +313,7 @@ export const demoPricing: Record<string, TicketPriceByCategory[]> = {
       ]
     },
     {
-      category: demoCategories[4], // Field Level
+      category: demoCategories[3], // Field Level
       prices: [
         {
           id: "price-34",
@@ -451,82 +367,20 @@ export const demoPricing: Record<string, TicketPriceByCategory[]> = {
       ]
     },
     {
-      category: demoCategories[3], // Fair Territory
+      category: demoCategories[0], // Cheapest Available
       prices: [
         {
           id: "price-13",
           gameId: "game-3",
-          ticketCategoryId: "cat-5",
+          ticketCategoryId: "cat-7",
           sourceId: "source-1",
-          price: 110.00,
-          serviceFee: 20.00,
-          totalPrice: 130.00,
+          price: 52.00,
+          serviceFee: 11.00,
+          totalPrice: 63.00,
           url: "https://www.ticketmaster.com",
           lastUpdated: new Date().toISOString(),
           source: demoSources[0],
-          displayPrice: 130.00
-        },
-        {
-          id: "price-14",
-          gameId: "game-3",
-          ticketCategoryId: "cat-5",
-          sourceId: "source-3",
-          price: 108.00,
-          serviceFee: 18.50,
-          totalPrice: 126.50,
-          url: "https://www.seatgeek.com",
-          lastUpdated: new Date().toISOString(),
-          source: demoSources[2],
-          displayPrice: 126.50
-        }
-      ]
-    },
-    {
-      category: demoCategories[5], // Behind the Diamond
-      prices: [
-        {
-          id: "price-12",
-          gameId: "game-3",
-          ticketCategoryId: "cat-6",
-          sourceId: "source-2",
-          price: 185.00,
-          serviceFee: 32.00,
-          totalPrice: 217.00,
-          url: "https://www.stubhub.com",
-          lastUpdated: new Date().toISOString(),
-          source: demoSources[1],
-          displayPrice: 217.00
-        },
-        {
-          id: "price-37",
-          gameId: "game-3",
-          ticketCategoryId: "cat-6",
-          sourceId: "source-4",
-          price: 182.00,
-          serviceFee: 30.00,
-          totalPrice: 212.00,
-          url: "https://gametime.co",
-          lastUpdated: new Date().toISOString(),
-          source: demoSources[3],
-          displayPrice: 212.00
-        }
-      ]
-    },
-    {
-      category: demoCategories[0], // Cheapest Available
-      prices: [
-        {
-          id: "price-15",
-          gameId: "game-3",
-          ticketCategoryId: "cat-7",
-          sourceId: "source-4",
-          price: 52.00,
-          serviceFee: 13.00,
-          totalPrice: 65.00,
-          url: "https://gametime.co",
-          lastUpdated: new Date().toISOString(),
-          source: demoSources[3],
-          displayPrice: 65.00
+          displayPrice: 63.00
         },
         {
           id: "price-38",
