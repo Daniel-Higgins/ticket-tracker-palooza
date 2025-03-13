@@ -20,7 +20,9 @@ export const demoPricing: Record<string, TicketPriceByCategory[]> = {
           url: "https://www.ticketmaster.com",
           lastUpdated: new Date().toISOString(),
           source: demoSources[0],
-          displayPrice: 322.00
+          displayPrice: 322.00,
+          section: "115",
+          row: "C"
         },
         {
           id: "price-2",
@@ -33,7 +35,9 @@ export const demoPricing: Record<string, TicketPriceByCategory[]> = {
           url: "https://www.stubhub.com",
           lastUpdated: new Date().toISOString(),
           source: demoSources[1],
-          displayPrice: 340.00
+          displayPrice: 340.00,
+          section: "116",
+          row: "D"
         }
       ]
     },
@@ -51,7 +55,9 @@ export const demoPricing: Record<string, TicketPriceByCategory[]> = {
           url: "https://www.ticketmaster.com",
           lastUpdated: new Date().toISOString(),
           source: demoSources[0],
-          displayPrice: 190.00
+          displayPrice: 190.00,
+          section: "132",
+          row: "F"
         },
         {
           id: "price-4",
@@ -64,7 +70,9 @@ export const demoPricing: Record<string, TicketPriceByCategory[]> = {
           url: "https://www.seatgeek.com",
           lastUpdated: new Date().toISOString(),
           source: demoSources[2],
-          displayPrice: 183.00
+          displayPrice: 183.00,
+          section: "129",
+          row: "H"
         }
       ]
     },
@@ -82,7 +90,9 @@ export const demoPricing: Record<string, TicketPriceByCategory[]> = {
           url: "https://gametime.co",
           lastUpdated: new Date().toISOString(),
           source: demoSources[3],
-          displayPrice: 130.00
+          displayPrice: 130.00,
+          section: "142",
+          row: "J"
         },
         {
           id: "price-21",
@@ -95,7 +105,9 @@ export const demoPricing: Record<string, TicketPriceByCategory[]> = {
           url: "https://www.stubhub.com",
           lastUpdated: new Date().toISOString(),
           source: demoSources[1],
-          displayPrice: 137.00
+          displayPrice: 137.00,
+          section: "141",
+          row: "K"
         }
       ]
     },
@@ -113,7 +125,9 @@ export const demoPricing: Record<string, TicketPriceByCategory[]> = {
           url: "https://www.stubhub.com",
           lastUpdated: new Date().toISOString(),
           source: demoSources[1],
-          displayPrice: 103.50
+          displayPrice: 103.50,
+          section: "242",
+          row: "A"
         },
         {
           id: "price-22",
@@ -126,7 +140,9 @@ export const demoPricing: Record<string, TicketPriceByCategory[]> = {
           url: "https://www.seatgeek.com",
           lastUpdated: new Date().toISOString(),
           source: demoSources[2],
-          displayPrice: 99.00
+          displayPrice: 99.00,
+          section: "245",
+          row: "C"
         }
       ]
     },
@@ -144,7 +160,9 @@ export const demoPricing: Record<string, TicketPriceByCategory[]> = {
           url: "https://www.seatgeek.com",
           lastUpdated: new Date().toISOString(),
           source: demoSources[2],
-          displayPrice: 59.00
+          displayPrice: 59.00,
+          section: "342",
+          row: "M"
         },
         {
           id: "price-26",
@@ -157,7 +175,9 @@ export const demoPricing: Record<string, TicketPriceByCategory[]> = {
           url: "https://gametime.co",
           lastUpdated: new Date().toISOString(),
           source: demoSources[3],
-          displayPrice: 55.00
+          displayPrice: 55.00,
+          section: "341",
+          row: "P"
         }
       ]
     }
@@ -177,7 +197,9 @@ export const demoPricing: Record<string, TicketPriceByCategory[]> = {
           url: "https://www.ticketmaster.com",
           lastUpdated: new Date().toISOString(),
           source: demoSources[0],
-          displayPrice: 276.00
+          displayPrice: 276.00,
+          section: "115",
+          row: "B"
         },
         {
           id: "price-27",
@@ -190,7 +212,9 @@ export const demoPricing: Record<string, TicketPriceByCategory[]> = {
           url: "https://www.stubhub.com",
           lastUpdated: new Date().toISOString(),
           source: demoSources[1],
-          displayPrice: 293.00
+          displayPrice: 293.00,
+          section: "114",
+          row: "D"
         }
       ]
     },
@@ -208,7 +232,9 @@ export const demoPricing: Record<string, TicketPriceByCategory[]> = {
           url: "https://www.stubhub.com",
           lastUpdated: new Date().toISOString(),
           source: demoSources[1],
-          displayPrice: 169.00
+          displayPrice: 169.00,
+          section: "131",
+          row: "G"
         },
         {
           id: "price-10",
@@ -221,7 +247,9 @@ export const demoPricing: Record<string, TicketPriceByCategory[]> = {
           url: "https://gametime.co",
           lastUpdated: new Date().toISOString(),
           source: demoSources[3],
-          displayPrice: 160.00
+          displayPrice: 160.00,
+          section: "134",
+          row: "E"
         }
       ]
     },
@@ -239,7 +267,9 @@ export const demoPricing: Record<string, TicketPriceByCategory[]> = {
           url: "https://www.seatgeek.com",
           lastUpdated: new Date().toISOString(),
           source: demoSources[2],
-          displayPrice: 113.00
+          displayPrice: 113.00,
+          section: "144",
+          row: "H"
         }
       ]
     },
@@ -257,7 +287,9 @@ export const demoPricing: Record<string, TicketPriceByCategory[]> = {
           url: "https://www.ticketmaster.com",
           lastUpdated: new Date().toISOString(),
           source: demoSources[0],
-          displayPrice: 87.00
+          displayPrice: 87.00,
+          section: "241",
+          row: "D"
         }
       ]
     },
@@ -275,7 +307,9 @@ export const demoPricing: Record<string, TicketPriceByCategory[]> = {
           url: "https://www.seatgeek.com",
           lastUpdated: new Date().toISOString(),
           source: demoSources[2],
-          displayPrice: 44.00
+          displayPrice: 44.00,
+          section: "345",
+          row: "N"
         },
         {
           id: "price-32",
@@ -288,7 +322,9 @@ export const demoPricing: Record<string, TicketPriceByCategory[]> = {
           url: "https://www.ticketmaster.com",
           lastUpdated: new Date().toISOString(),
           source: demoSources[0],
-          displayPrice: 46.50
+          displayPrice: 46.50,
+          section: "342",
+          row: "Q"
         }
       ]
     }
@@ -308,7 +344,9 @@ export const demoPricing: Record<string, TicketPriceByCategory[]> = {
           url: "https://www.ticketmaster.com",
           lastUpdated: new Date().toISOString(),
           source: demoSources[0],
-          displayPrice: 305.00
+          displayPrice: 305.00,
+          section: "116",
+          row: "C"
         }
       ]
     },
@@ -326,7 +364,9 @@ export const demoPricing: Record<string, TicketPriceByCategory[]> = {
           url: "https://www.seatgeek.com",
           lastUpdated: new Date().toISOString(),
           source: demoSources[2],
-          displayPrice: 170.00
+          displayPrice: 170.00,
+          section: "128",
+          row: "J"
         }
       ]
     },
@@ -344,7 +384,9 @@ export const demoPricing: Record<string, TicketPriceByCategory[]> = {
           url: "https://www.stubhub.com",
           lastUpdated: new Date().toISOString(),
           source: demoSources[1],
-          displayPrice: 140.00
+          displayPrice: 140.00,
+          section: "143",
+          row: "F"
         }
       ]
     },
@@ -362,7 +404,9 @@ export const demoPricing: Record<string, TicketPriceByCategory[]> = {
           url: "https://gametime.co",
           lastUpdated: new Date().toISOString(),
           source: demoSources[3],
-          displayPrice: 94.00
+          displayPrice: 94.00,
+          section: "244",
+          row: "E"
         }
       ]
     },
@@ -380,7 +424,9 @@ export const demoPricing: Record<string, TicketPriceByCategory[]> = {
           url: "https://www.ticketmaster.com",
           lastUpdated: new Date().toISOString(),
           source: demoSources[0],
-          displayPrice: 63.00
+          displayPrice: 63.00,
+          section: "344",
+          row: "L"
         },
         {
           id: "price-38",
@@ -393,7 +439,9 @@ export const demoPricing: Record<string, TicketPriceByCategory[]> = {
           url: "https://www.seatgeek.com",
           lastUpdated: new Date().toISOString(),
           source: demoSources[2],
-          displayPrice: 61.00
+          displayPrice: 61.00,
+          section: "343",
+          row: "M"
         }
       ]
     }

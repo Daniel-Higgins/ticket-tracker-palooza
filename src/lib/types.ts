@@ -36,6 +36,8 @@ export interface TicketPrice {
   totalPrice: number;
   url: string;
   lastUpdated: string;
+  section?: string; // Added section property
+  row?: string; // Added row property
 }
 
 export interface TicketCategory {
@@ -46,7 +48,7 @@ export interface TicketCategory {
 
 export interface TicketPriceWithSource extends TicketPrice {
   source: TicketSource;
-  displayPrice?: number; // Added displayPrice property
+  displayPrice?: number;
 }
 
 export interface TicketPriceByCategory {

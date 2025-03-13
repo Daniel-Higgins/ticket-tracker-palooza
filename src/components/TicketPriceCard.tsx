@@ -88,6 +88,59 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
     );
   }
 
+  const TicketPriceItem = ({ price }: { price: TicketPriceWithSource }) => (
+    <div 
+      key={price.id} 
+      className="py-4 grid grid-cols-7 gap-2 items-center"
+    >
+      <div className="col-span-2 flex items-center">
+        <img
+          src={price.source.logo}
+          alt={price.source.name}
+          className="w-8 h-8 object-contain mr-3 rounded"
+          onError={(e) => {
+            (e.target as HTMLImageElement).style.display = 'none';
+          }}
+        />
+        <span className="font-medium">{price.source.name}</span>
+      </div>
+      
+      <div className="price-tag text-right">
+        ${price.displayPrice.toFixed(2)}
+        <div className="text-xs text-muted-foreground">
+          {includeFees ? 'with fees' : 'before fees'}
+        </div>
+      </div>
+      
+      <div className="text-xs text-muted-foreground col-span-1 text-center">
+        per ticket
+      </div>
+      
+      <div className="col-span-2 text-xs">
+        {price.section && price.row ? (
+          <div className="flex flex-col">
+            <span>Section: {price.section}</span>
+            <span>Row: {price.row}</span>
+          </div>
+        ) : (
+          <span className="text-muted-foreground italic">Section/Row info not available</span>
+        )}
+      </div>
+      
+      <div className="text-right">
+        <a 
+          href={price.url} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3"
+        >
+          Buy
+          <ExternalLink className="ml-1 h-3 w-3" />
+        </a>
+      </div>
+    </div>
+  );
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -113,45 +166,7 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
           
           <div className="divide-y divide-border/50">
             {sortPrices(cheapestAvailableCategory.prices).map((price) => (
-              <div 
-                key={price.id} 
-                className="py-4 grid grid-cols-5 gap-2 items-center"
-              >
-                <div className="col-span-2 flex items-center">
-                  <img
-                    src={price.source.logo}
-                    alt={price.source.name}
-                    className="w-8 h-8 object-contain mr-3 rounded"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = 'none';
-                    }}
-                  />
-                  <span className="font-medium">{price.source.name}</span>
-                </div>
-                
-                <div className="price-tag text-right">
-                  ${price.displayPrice.toFixed(2)}
-                  <div className="text-xs text-muted-foreground">
-                    {includeFees ? 'with fees' : 'before fees'}
-                  </div>
-                </div>
-                
-                <div className="text-right text-xs text-muted-foreground col-span-1">
-                  per ticket
-                </div>
-                
-                <div className="text-right">
-                  <a 
-                    href={price.url} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3"
-                  >
-                    Buy
-                    <ExternalLink className="ml-1 h-3 w-3" />
-                  </a>
-                </div>
-              </div>
+              <TicketPriceItem key={price.id} price={price} />
             ))}
           </div>
         </div>
@@ -174,45 +189,7 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
               
               <div className="divide-y divide-border/50">
                 {sortPrices(item.prices).map((price) => (
-                  <div 
-                    key={price.id} 
-                    className="py-4 grid grid-cols-5 gap-2 items-center"
-                  >
-                    <div className="col-span-2 flex items-center">
-                      <img
-                        src={price.source.logo}
-                        alt={price.source.name}
-                        className="w-8 h-8 object-contain mr-3 rounded"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).style.display = 'none';
-                        }}
-                      />
-                      <span className="font-medium">{price.source.name}</span>
-                    </div>
-                    
-                    <div className="price-tag text-right">
-                      ${price.displayPrice.toFixed(2)}
-                      <div className="text-xs text-muted-foreground">
-                        {includeFees ? 'with fees' : 'before fees'}
-                      </div>
-                    </div>
-                    
-                    <div className="text-right text-xs text-muted-foreground col-span-1">
-                      per ticket
-                    </div>
-                    
-                    <div className="text-right">
-                      <a 
-                        href={price.url} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3"
-                      >
-                        Buy
-                        <ExternalLink className="ml-1 h-3 w-3" />
-                      </a>
-                    </div>
-                  </div>
+                  <TicketPriceItem key={price.id} price={price} />
                 ))}
               </div>
             </div>
