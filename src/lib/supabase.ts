@@ -21,17 +21,25 @@ export const supabase = createClient(
 
 export const signInWithProvider = async (provider: 'google' | 'facebook') => {
   try {
+    // Get the current URL to construct the correct redirect URL
+    const redirectTo = `${window.location.origin}/auth/callback`;
+    console.log(`Initiating sign in with ${provider}, redirect URL: ${redirectTo}`);
+    
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo,
+        // Adding scopes for Google authentication
+        scopes: provider === 'google' ? 'profile email' : undefined
       },
     });
 
     if (error) {
+      console.error(`Error initiating ${provider} sign in:`, error);
       throw error;
     }
 
+    console.log(`${provider} auth initiated successfully`, data);
     return { data, error: null };
   } catch (error) {
     console.error('Error signing in with provider:', error);

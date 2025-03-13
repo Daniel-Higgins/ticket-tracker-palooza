@@ -24,8 +24,10 @@ export function AuthModal({ trigger }: AuthModalProps) {
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     try {
+      console.log("Initiating Google sign-in");
       const { error } = await signInWithProvider('google');
       if (error) {
+        console.error("Google sign-in error:", error);
         throw error;
       }
       // Don't close the modal here as we'll be redirected to Google
@@ -43,8 +45,10 @@ export function AuthModal({ trigger }: AuthModalProps) {
   const handleFacebookSignIn = async () => {
     setIsLoading(true);
     try {
+      console.log("Initiating Facebook sign-in");
       const { error } = await signInWithProvider('facebook');
       if (error) {
+        console.error("Facebook sign-in error:", error);
         throw error;
       }
       // Don't close the modal here as we'll be redirected to Facebook
