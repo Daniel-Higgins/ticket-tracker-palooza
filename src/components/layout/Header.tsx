@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AnimatedLogo } from '@/components/ui/AnimatedLogo';
+import { Home } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,59 +38,73 @@ export function Header() {
   return (
     <header className="w-full border-b border-border sticky top-0 bg-[#D3E4FD]/90 backdrop-blur supports-[backdrop-filter]:bg-[#D3E4FD]/70 z-50">
       <div className="container flex h-16 items-center justify-between relative">
-        <div className="flex gap-6 items-center">
+        {/* Left side - Brand */}
+        <div className="w-1/3 flex justify-start">
           <Link to="/" className="flex items-center gap-2">
             <span className="font-bold text-xl text-gray-800">FindGuy</span>
           </Link>
-          <nav className="hidden md:flex gap-6">
+        </div>
+
+        {/* Center - Navigation */}
+        <div className="w-1/3 flex justify-center">
+          <nav className="flex gap-6">
+            <NavLink to="/">
+              <div className="flex items-center gap-1">
+                <Home size={18} />
+                <span>Home</span>
+              </div>
+            </NavLink>
             <NavLink to="/teams">Teams</NavLink>
             {user && <NavLink to="/dashboard">Dashboard</NavLink>}
             {user && <NavLink to="/upload-images">Upload Images</NavLink>}
           </nav>
         </div>
 
+        {/* Right side - Auth/Avatar */}
+        <div className="w-1/3 flex justify-end">
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={user.user_metadata?.avatar_url} alt={user.user_metadata?.full_name} />
+                    <AvatarFallback>{user.user_metadata?.full_name?.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end" forceMount>
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">{user.user_metadata?.full_name}</p>
+                    <p className="text-xs leading-none text-muted-foreground">
+                      {user.email}
+                    </p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to="/dashboard">Dashboard</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/account">Account</Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleSignOut} disabled={isSigningOut}>
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Link to="/dashboard">
+              <Button>Sign In</Button>
+            </Link>
+          )}
+        </div>
+
         {/* Center logo */}
         <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
           <AnimatedLogo className="text-primary" />
         </div>
-
-        {user ? (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src={user.user_metadata?.avatar_url} alt={user.user_metadata?.full_name} />
-                  <AvatarFallback>{user.user_metadata?.full_name?.charAt(0)}</AvatarFallback>
-                </Avatar>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56" align="end" forceMount>
-              <DropdownMenuLabel className="font-normal">
-                <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none">{user.user_metadata?.full_name}</p>
-                  <p className="text-xs leading-none text-muted-foreground">
-                    {user.email}
-                  </p>
-                </div>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link to="/dashboard">Dashboard</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/account">Account</Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleSignOut} disabled={isSigningOut}>
-                Sign Out
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        ) : (
-          <Link to="/dashboard">
-            <Button>Sign In</Button>
-          </Link>
-        )}
       </div>
     </header>
   );
