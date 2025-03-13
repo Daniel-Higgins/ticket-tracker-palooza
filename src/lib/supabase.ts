@@ -22,12 +22,19 @@ export const supabase = createClient(
 export const signInWithProvider = async (provider: 'google' | 'facebook') => {
   try {
     // Get the current URL to construct the correct redirect URL
-    // Use window.location.origin to get the base URL
-    const redirectTo = `${window.location.origin}/auth/callback`;
+    const origin = window.location.origin;
+    const redirectTo = `${origin}/auth/callback`;
     
     console.log(`Starting ${provider} sign-in process`);
-    console.log(`Current origin: ${window.location.origin}`);
+    console.log(`Current origin: ${origin}`);
     console.log(`Redirect URL: ${redirectTo}`);
+    
+    // Show OAuth configuration help if needed
+    console.log('=== OAuth Configuration Guide ===');
+    console.log('If you encounter "Invalid Origin" errors, please ensure:');
+    console.log(`1. Add "${origin}" (without path or trailing slash) to Authorized JavaScript origins in Google Cloud Console`);
+    console.log(`2. Add "${redirectTo}" to Authorized redirect URIs in Google Cloud Console`);
+    console.log('===================================');
     
     // Explicitly log all options being passed to the OAuth call
     const options = {
@@ -44,7 +51,19 @@ export const signInWithProvider = async (provider: 'google' | 'facebook') => {
 
     if (error) {
       console.error(`Error initiating ${provider} sign in:`, error);
-      throw error;
+      
+      // Special handling for common OAuth errors
+      if (error.message?.includes('invalid_request') || error.message?.includes('origin')) {
+        console.error('This appears to be an OAuth configuration issue. Please check your Google Cloud Console settings.');
+        toast({
+          title: "OAuth Configuration Error",
+          description: "Please check that your application origins are correctly configured in Google Cloud Console.",
+          variant: "destructive"
+        });
+      } else {
+        throw error;
+      }
+      return { data: null, error };
     }
 
     console.log(`${provider} auth initiated successfully:`, data);
