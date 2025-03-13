@@ -1,4 +1,5 @@
-import { useState } from 'react';
+
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -19,42 +20,59 @@ interface AuthModalProps {
 export function AuthModal({ trigger }: AuthModalProps) {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
+
+  // Reset error when modal opens/closes
+  useEffect(() => {
+    setAuthError(null);
+  }, [open]);
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
+    setAuthError(null);
     try {
       console.log("Initiating Google sign-in from AuthModal");
       const { error } = await signInWithProvider('google');
       if (error) {
         console.error("Google sign-in error:", error);
+        setAuthError(error.message || "Could not sign in with Google");
         throw error;
       }
       // The page will redirect to Google, so we don't need to handle success here
     } catch (error) {
       console.error('Error in Google sign in:', error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      
+      // Log additional details that might help debugging
+      console.log('Current URL:', window.location.href);
+      console.log('Origin:', window.location.origin);
+      
+      setAuthError(errorMessage);
       toast({
         title: "Sign In Failed",
         description: "Could not sign in with Google. Please check your console for details.",
         variant: "destructive"
       });
-    } finally {
-      // In case the redirect doesn't happen for some reason
       setIsLoading(false);
     }
   };
 
   const handleFacebookSignIn = async () => {
     setIsLoading(true);
+    setAuthError(null);
     try {
       console.log("Initiating Facebook sign-in");
       const { error } = await signInWithProvider('facebook');
       if (error) {
         console.error("Facebook sign-in error:", error);
+        setAuthError(error.message || "Could not sign in with Facebook");
         throw error;
       }
       // Don't close the modal here as we'll be redirected to Facebook
     } catch (error) {
       console.error('Error in Facebook sign in:', error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      setAuthError(errorMessage);
       toast({
         title: "Sign In Failed",
         description: "Could not sign in with Facebook. Please try again.",
@@ -77,6 +95,12 @@ export function AuthModal({ trigger }: AuthModalProps) {
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col space-y-4 py-4">
+          {authError && (
+            <div className="p-3 bg-destructive/10 border border-destructive/30 rounded-md text-sm text-destructive">
+              <p className="font-medium">Authentication Error:</p>
+              <p>{authError}</p>
+            </div>
+          )}
           <Button
             variant="outline"
             className="flex items-center justify-center space-x-2 w-full h-12 transition-all duration-200 bg-white hover:bg-gray-50"

@@ -14,7 +14,8 @@ export const supabase = createClient(
     auth: {
       autoRefreshToken: true,
       persistSession: true,
-      detectSessionInUrl: true
+      detectSessionInUrl: true,
+      flowType: 'pkce' // Explicitly set PKCE flow for better security
     }
   }
 );
@@ -34,12 +35,18 @@ export const signInWithProvider = async (provider: 'google' | 'facebook') => {
     console.log('If you encounter "Invalid Origin" errors, please ensure:');
     console.log(`1. Add "${origin}" (without path or trailing slash) to Authorized JavaScript origins in Google Cloud Console`);
     console.log(`2. Add "${redirectTo}" to Authorized redirect URIs in Google Cloud Console`);
+    console.log('3. In Supabase Auth Settings, set Site URL to: "${origin}"');
+    console.log(`4. In Supabase Auth Settings, add Redirect URL: "${redirectTo}"`);
     console.log('===================================');
     
     // Explicitly log all options being passed to the OAuth call
     const options = {
       redirectTo,
-      scopes: provider === 'google' ? 'profile email' : undefined
+      scopes: provider === 'google' ? 'profile email' : undefined,
+      queryParams: { 
+        // Add a random value to avoid caching issues
+        random: Math.random().toString(36).substring(2)
+      }
     };
     
     console.log('OAuth options:', JSON.stringify(options));
@@ -55,12 +62,15 @@ export const signInWithProvider = async (provider: 'google' | 'facebook') => {
       // Special handling for common OAuth errors
       if (error.message?.includes('invalid_request') || error.message?.includes('origin')) {
         console.error('This appears to be an OAuth configuration issue. Please check your Google Cloud Console settings.');
+        console.error('Full error:', JSON.stringify(error));
+        
         toast({
           title: "OAuth Configuration Error",
           description: "Please check that your application origins are correctly configured in Google Cloud Console.",
           variant: "destructive"
         });
       } else {
+        console.error('Full error:', JSON.stringify(error));
         throw error;
       }
       return { data: null, error };
@@ -70,6 +80,8 @@ export const signInWithProvider = async (provider: 'google' | 'facebook') => {
     return { data, error: null };
   } catch (error) {
     console.error('Error signing in with provider:', error);
+    console.error('Full error:', JSON.stringify(error, null, 2));
+    
     toast({
       title: "Authentication failed",
       description: "Please check console for details and try again.",
