@@ -10,7 +10,8 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Facebook, X } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
+import { signInWithProvider } from '@/lib/supabase';
+import { toast } from '@/hooks/use-toast';
 
 interface AuthModalProps {
   trigger?: React.ReactNode;
@@ -18,23 +19,43 @@ interface AuthModalProps {
 
 export function AuthModal({ trigger }: AuthModalProps) {
   const [open, setOpen] = useState(false);
-  const { signInWithGoogle, signInWithFacebook, isLoading } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleGoogleSignIn = async () => {
+    setIsLoading(true);
     try {
-      await signInWithGoogle();
-      setOpen(false);
+      const { error } = await signInWithProvider('google');
+      if (error) {
+        throw error;
+      }
+      // Don't close the modal here as we'll be redirected to Google
     } catch (error) {
       console.error('Error in Google sign in:', error);
+      toast({
+        title: "Sign In Failed",
+        description: "Could not sign in with Google. Please try again.",
+        variant: "destructive"
+      });
+      setIsLoading(false);
     }
   };
 
   const handleFacebookSignIn = async () => {
+    setIsLoading(true);
     try {
-      await signInWithFacebook();
-      setOpen(false);
+      const { error } = await signInWithProvider('facebook');
+      if (error) {
+        throw error;
+      }
+      // Don't close the modal here as we'll be redirected to Facebook
     } catch (error) {
       console.error('Error in Facebook sign in:', error);
+      toast({
+        title: "Sign In Failed",
+        description: "Could not sign in with Facebook. Please try again.",
+        variant: "destructive"
+      });
+      setIsLoading(false);
     }
   };
 

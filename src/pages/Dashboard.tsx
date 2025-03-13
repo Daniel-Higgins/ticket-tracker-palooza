@@ -12,9 +12,12 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // If finished loading and no user, redirect to home
+    // Only redirect if not loading and no user
     if (!isLoading && !user) {
+      console.log("No user found, redirecting to home");
       navigate('/');
+    } else if (user) {
+      console.log("User authenticated:", user.email);
     }
   }, [user, isLoading, navigate]);
 

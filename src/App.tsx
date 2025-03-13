@@ -11,6 +11,7 @@ import TeamView from "./pages/TeamView";
 import Dashboard from "./pages/Dashboard";
 import Account from "./pages/Account";
 import NotFound from "./pages/NotFound";
+import AuthCallback from "./pages/AuthCallback";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ const App = () => (
             <Route path="/teams/:teamId" element={<TeamView />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/account" element={<Account />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

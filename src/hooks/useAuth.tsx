@@ -1,7 +1,7 @@
 
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { Session, User } from '@supabase/supabase-js';
-import { supabase } from '@/lib/supabase';
+import { supabase, signInWithProvider, signOut as signOutSupabase } from '@/lib/supabase';
 import { toast } from "@/hooks/use-toast";
 
 interface AuthContextProps {
@@ -23,8 +23,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const getInitialSession = async () => {
       try {
+        console.log("Fetching initial session...");
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error) throw error;
+        console.log("Initial session:", session ? "Found" : "Not found");
         setSession(session);
         setUser(session?.user || null);
       } catch (error) {
@@ -65,16 +67,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const signInWithGoogle = async () => {
-    setIsLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`
-        }
-      });
-      
-      if (error) throw error;
+      await signInWithProvider('google');
     } catch (error) {
       console.error('Error signing in with Google:', error);
       toast({
@@ -82,22 +76,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         description: "Could not sign in with Google. Please try again.",
         variant: "destructive"
       });
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const signInWithFacebook = async () => {
-    setIsLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'facebook',
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`
-        }
-      });
-      
-      if (error) throw error;
+      await signInWithProvider('facebook');
     } catch (error) {
       console.error('Error signing in with Facebook:', error);
       toast({
@@ -105,19 +89,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         description: "Could not sign in with Facebook. Please try again.",
         variant: "destructive"
       });
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const handleSignOut = async () => {
     try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      toast({
-        title: "Success",
-        description: "Successfully signed out"
-      });
+      await signOutSupabase();
     } catch (error) {
       console.error('Error signing out:', error);
       toast({
