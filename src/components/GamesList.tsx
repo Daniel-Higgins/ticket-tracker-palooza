@@ -144,7 +144,7 @@ export function GamesList({ teamId, games: propGames, showTrackOption, userId, o
     return (
       <div className="space-y-6 w-full max-w-4xl mx-auto mt-8">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="rounded-xl overflow-hidden border border-border/50">
+          <div key={i} className="rounded-xl overflow-hidden border border-border/50 bg-white">
             <Skeleton className="h-24 w-full" />
           </div>
         ))}
@@ -154,8 +154,8 @@ export function GamesList({ teamId, games: propGames, showTrackOption, userId, o
 
   if (games.length === 0) {
     return (
-      <div className="text-center py-12 px-4">
-        <h3 className="text-xl font-medium mb-2">No upcoming games found</h3>
+      <div className="text-center py-12 px-4 bg-white">
+        <h3 className="text-xl font-medium mb-2 text-black">No upcoming games found</h3>
         <p className="text-muted-foreground mb-6">
           There are no scheduled games for this team in the near future.
         </p>
@@ -179,7 +179,7 @@ export function GamesList({ teamId, games: propGames, showTrackOption, userId, o
       {games.map((game) => (
         <div
           key={game.id}
-          className="glass-card overflow-hidden transition-all duration-300 animate-fade-in"
+          className="bg-white border border-gray-200 shadow-sm rounded-xl overflow-hidden transition-all duration-300 animate-fade-in"
         >
           <div className="flex justify-between items-center px-4 pt-4">
             {showTrackOption && userId && (
@@ -266,7 +266,7 @@ export function GamesList({ teamId, games: propGames, showTrackOption, userId, o
           </div>
           
           {expandedGameId === game.id && (
-            <div className="border-t border-border/50 p-4 sm:p-6 animate-slide-up">
+            <div className="border-t border-border/50 p-4 sm:p-6 animate-slide-up bg-white">
               <TicketPriceCard 
                 gameId={game.id} 
                 includeFees={includeFees} 

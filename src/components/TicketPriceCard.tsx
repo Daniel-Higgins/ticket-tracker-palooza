@@ -139,8 +139,8 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
 
   if (priceData.length === 0) {
     return (
-      <div className="text-center py-8">
-        <h3 className="text-lg font-medium mb-2">No ticket prices available</h3>
+      <div className="text-center py-8 bg-white">
+        <h3 className="text-lg font-medium mb-2 text-black">No ticket prices available</h3>
         <p className="text-muted-foreground">
           We couldn't find any ticket listings for this game yet. Check back later for updates.
         </p>
@@ -154,7 +154,7 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
     return (
       <div 
         key={price.id} 
-        className="py-4 grid grid-cols-7 gap-2 items-center"
+        className="py-4 grid grid-cols-7 gap-2 items-center bg-white"
       >
         <div className="col-span-2 flex items-center">
           <img
@@ -210,9 +210,9 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 bg-white">
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-medium">Ticket Prices</h3>
+        <h3 className="text-lg font-medium text-black">Ticket Prices</h3>
         <Button
           variant="outline"
           size="sm"
@@ -225,10 +225,10 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
       </div>
 
       {cheapestAvailableCategory && (
-        <div className="bg-muted p-4 rounded-lg mb-4">
+        <div className="bg-white border border-gray-100 p-4 rounded-lg mb-4">
           <div className="flex items-center mb-2">
             <Ticket className="h-5 w-5 mr-2 text-primary" />
-            <h4 className="font-medium">{cheapestAvailableCategory.category.name}</h4>
+            <h4 className="font-medium text-black">{cheapestAvailableCategory.category.name}</h4>
           </div>
           <p className="text-sm text-muted-foreground mb-3">{cheapestAvailableCategory.category.description}</p>
           
@@ -251,7 +251,7 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
         </TabsList>
         
         {tabCategories.map((item) => (
-          <TabsContent key={item.category.id} value={item.category.id} className="animate-fade-in">
+          <TabsContent key={item.category.id} value={item.category.id} className="animate-fade-in bg-white">
             <div className="space-y-3">
               <p className="text-sm text-muted-foreground">{item.category.description}</p>
               
