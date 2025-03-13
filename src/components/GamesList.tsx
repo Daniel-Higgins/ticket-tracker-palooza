@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { ChevronDown, ChevronUp, Calendar, MapPin } from 'lucide-react';
@@ -11,10 +10,14 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 
 interface GamesListProps {
-  teamId: string;
+  teamId?: string;
+  games?: Game[];
+  showTrackOption?: boolean;
+  userId?: string;
+  onTrackToggle?: () => Promise<void>;
 }
 
-export function GamesList({ teamId }: GamesListProps) {
+export function GamesList({ teamId, games: propGames, showTrackOption, userId, onTrackToggle }: GamesListProps) {
   const [games, setGames] = useState<Game[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedGameId, setExpandedGameId] = useState<string | null>(null);
@@ -23,21 +26,36 @@ export function GamesList({ teamId }: GamesListProps) {
   useEffect(() => {
     const loadGames = async () => {
       setLoading(true);
-      const gamesData = await fetchTeamGames(teamId);
-      setGames(gamesData);
       
-      // Automatically expand the first game if there are games
-      if (gamesData.length > 0) {
-        setExpandedGameId(gamesData[0].id);
+      // If games are provided as props, use those
+      if (propGames && propGames.length > 0) {
+        setGames(propGames);
+        
+        // Automatically expand the first game if there are games
+        if (propGames.length > 0) {
+          setExpandedGameId(propGames[0].id);
+        }
+        
+        setLoading(false);
+        return;
+      }
+      
+      // Otherwise load games by team ID
+      if (teamId) {
+        const gamesData = await fetchTeamGames(teamId);
+        setGames(gamesData);
+        
+        // Automatically expand the first game if there are games
+        if (gamesData.length > 0) {
+          setExpandedGameId(gamesData[0].id);
+        }
       }
       
       setLoading(false);
     };
 
-    if (teamId) {
-      loadGames();
-    }
-  }, [teamId]);
+    loadGames();
+  }, [teamId, propGames]);
 
   const toggleGameExpand = (gameId: string) => {
     setExpandedGameId(expandedGameId === gameId ? null : gameId);

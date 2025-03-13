@@ -9,6 +9,7 @@ import { ChevronDown } from 'lucide-react';
 
 export default function Index() {
   const [isVisible, setIsVisible] = useState(false);
+  const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
   const heroRef = useRef<HTMLDivElement>(null);
   const featuresRef = useRef<HTMLDivElement>(null);
 
@@ -39,6 +40,11 @@ export default function Index() {
     featuresRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const handleSelectTeam = (teamId: string) => {
+    setSelectedTeamId(teamId);
+    // Navigate to team page or handle selection as needed
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -62,7 +68,10 @@ export default function Index() {
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mb-12">
-              <TeamSelector />
+              <TeamSelector 
+                selectedTeamId={selectedTeamId} 
+                onSelectTeam={handleSelectTeam}
+              />
               <span className="text-muted-foreground">or</span>
               <Link to="/teams">
                 <Button size="lg" className="rounded-full">
