@@ -1,3 +1,4 @@
+
 import { createClient } from '@supabase/supabase-js';
 import { toast } from "@/hooks/use-toast";
 
@@ -37,7 +38,7 @@ export const signInWithProvider = async (provider: 'google' | 'facebook') => {
     console.log(`3. In Supabase Auth Settings, set Site URL to: "${origin}"`);
     console.log(`4. In Supabase Auth Settings, add Redirect URL: "${redirectTo}"`);
     console.log(`5. Check browser console for any CORS errors that might indicate misconfiguration`);
-    console.log('6. Try clearing your browser cache and cookies if you\'ve previously attempted to sign in`);
+    console.log('6. Try clearing your browser cache and cookies if you\'ve previously attempted to sign in');
     console.log('===================================');
     
     // Add a timestamp to avoid any caching issues with the OAuth request
