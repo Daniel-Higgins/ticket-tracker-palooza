@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { ExternalLink, ArrowUpDown, Target, MapPin, Diamond, Home, User, Ticket, Flag, MapPinCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -212,7 +213,7 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
         <Button
           variant="outline"
           size="sm"
-          className="text-xs flex items-center gap-1 text-gray-800"
+          className="text-xs flex items-center gap-1 text-gray-800 bg-white border-gray-200"
           onClick={toggleSort}
         >
           <ArrowUpDown className="h-3 w-3 mr-1" />
@@ -237,9 +238,13 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
       )}
 
       <Tabs defaultValue={tabCategories[0]?.category.id}>
-        <TabsList className="grid grid-cols-2 sm:grid-cols-4 mb-4">
+        <TabsList className="grid grid-cols-2 sm:grid-cols-4 mb-4 bg-gray-100">
           {tabCategories.map((item) => (
-            <TabsTrigger key={item.category.id} value={item.category.id} className="text-xs sm:text-sm flex items-center text-gray-800">
+            <TabsTrigger 
+              key={item.category.id} 
+              value={item.category.id} 
+              className="text-xs sm:text-sm flex items-center text-gray-800 data-[state=active]:bg-white data-[state=active]:text-gray-900"
+            >
               {getCategoryIcon(item.category.name)}
               {item.category.name}
             </TabsTrigger>
