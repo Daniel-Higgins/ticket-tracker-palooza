@@ -1,64 +1,39 @@
 
-import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
-import { Session, User } from '@supabase/supabase-js';
-import { supabase, signInWithProvider, signOut as signOutSupabase } from '@/lib/supabase';
-import { toast } from "@/hooks/use-toast";
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { User, Session } from '@supabase/supabase-js';
+import { supabase } from '@/integrations/supabase/client';
+import { signInWithProvider, signOutSupabase } from '@/lib/supabase';
 
-interface AuthContextProps {
-  session: Session | null;
+type AuthContextType = {
   user: User | null;
+  session: Session | null;
   isLoading: boolean;
-  signInWithGoogle: () => Promise<void>;
-  signInWithFacebook: () => Promise<void>;
-  signOut: () => Promise<void>;
-}
+  signIn: (provider: 'google' | 'github') => Promise<void>;
+  signOut: () => Promise<{ error: Error | null }>;
+};
 
-const AuthContext = createContext<AuthContextProps | undefined>(undefined);
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const getInitialSession = async () => {
-      try {
-        console.log("Fetching initial session...");
-        const { data: { session }, error } = await supabase.auth.getSession();
-        if (error) throw error;
-        console.log("Initial session:", session ? "Found" : "Not found");
-        setSession(session);
-        setUser(session?.user || null);
-      } catch (error) {
-        console.error('Error getting initial session:', error);
-        toast({
-          title: "Session Error",
-          description: "Failed to retrieve your session. Please try signing in again.",
-          variant: "destructive"
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    getInitialSession();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('Auth state changed:', event, session?.user?.email);
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
-      setUser(session?.user || null);
-      
-      if (event === 'SIGNED_IN') {
-        toast({
-          title: "Welcome!",
-          description: "Successfully signed in"
-        });
-      } else if (event === 'SIGNED_OUT') {
-        toast({
-          title: "Goodbye!",
-          description: "Successfully signed out"
-        });
-      }
+      setUser(session?.user ?? null);
+      setIsLoading(false);
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setIsLoading(false);
     });
 
     return () => {
@@ -66,65 +41,45 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
   }, []);
 
-  const signInWithGoogle = async () => {
+  const signIn = async (provider: 'google' | 'github') => {
     try {
-      await signInWithProvider('google');
+      setIsLoading(true);
+      await signInWithProvider(provider);
     } catch (error) {
-      console.error('Error signing in with Google:', error);
-      toast({
-        title: "Sign In Failed",
-        description: "Could not sign in with Google. Please try again.",
-        variant: "destructive"
-      });
+      console.error('Error signing in:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const signInWithFacebook = async () => {
+  const signOut = async () => {
     try {
-      await signInWithProvider('facebook');
-    } catch (error) {
-      console.error('Error signing in with Facebook:', error);
-      toast({
-        title: "Sign In Failed",
-        description: "Could not sign in with Facebook. Please try again.",
-        variant: "destructive"
-      });
-    }
-  };
-
-  const handleSignOut = async () => {
-    try {
-      await signOutSupabase();
+      setIsLoading(true);
+      return await signOutSupabase();
     } catch (error) {
       console.error('Error signing out:', error);
-      toast({
-        title: "Sign Out Failed",
-        description: "Could not sign out. Please try again.",
-        variant: "destructive"
-      });
+      return { error: error as Error };
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  return (
-    <AuthContext.Provider
-      value={{
-        session,
-        user,
-        isLoading,
-        signInWithGoogle,
-        signInWithFacebook,
-        signOut: handleSignOut,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
-};
+  const value = {
+    session,
+    user,
+    isLoading,
+    signIn,
+    signOut,
+  };
 
-export const useAuth = () => {
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
-};
+}

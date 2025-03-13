@@ -10,6 +10,7 @@ import AuthCallback from '@/pages/AuthCallback';
 import NotFound from '@/pages/NotFound';
 import { ThemeProvider } from "@/components/ThemeProvider";
 import UploadImages from '@/pages/UploadImages';
+import { AuthProvider } from '@/hooks/useAuth';
 
 export default function App() {
   const [mounted, setMounted] = useState(false)
@@ -25,18 +26,20 @@ export default function App() {
       enableSystem
       disableTransitionOnChange
     >
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/teams" element={<AllTeams />} />
-          <Route path="/team/:teamId" element={<TeamView />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/account" element={<Account />} />
-          <Route path="/auth/callback" element={<AuthCallback />} />
-          <Route path="/upload-images" element={<UploadImages />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/teams" element={<AllTeams />} />
+            <Route path="/team/:teamId" element={<TeamView />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/account" element={<Account />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
+            <Route path="/upload-images" element={<UploadImages />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
     </ThemeProvider>
   );
 }
