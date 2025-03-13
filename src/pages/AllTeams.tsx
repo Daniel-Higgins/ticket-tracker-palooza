@@ -42,10 +42,10 @@ export default function AllTeams() {
   }, [searchQuery, teams]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#0a1e3a]">
+    <div className="min-h-screen flex flex-col bg-white">
       <Header />
       
-      <main className="flex-1 container py-24 px-4 text-white">
+      <main className="flex-1 container py-24 px-4 text-black">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl font-bold mb-8 text-center">MLB Teams</h1>
           
@@ -54,7 +54,7 @@ export default function AllTeams() {
             <Input
               type="text"
               placeholder="Search teams..."
-              className="glass pl-10"
+              className="pl-10"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -63,7 +63,7 @@ export default function AllTeams() {
           {loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               {Array.from({ length: 30 }).map((_, i) => (
-                <Skeleton key={i} className="h-36 rounded-xl bg-white/10" />
+                <Skeleton key={i} className="h-36 rounded-xl" />
               ))}
             </div>
           ) : filteredTeams.length > 0 ? (
@@ -71,7 +71,7 @@ export default function AllTeams() {
               {filteredTeams.map((team) => (
                 <Link key={team.id} to={`/teams/${team.id}`}>
                   <div 
-                    className="glass-card p-6 h-full flex flex-col items-center justify-center text-center transition-all duration-300 hover:shadow-lg animate-fade-in"
+                    className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 h-full flex flex-col items-center justify-center text-center transition-all duration-300 hover:shadow-lg animate-fade-in"
                     style={{
                       animationDelay: `${
                         filteredTeams.indexOf(team) * 0.05
