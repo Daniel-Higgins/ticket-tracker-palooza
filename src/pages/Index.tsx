@@ -52,71 +52,70 @@ export default function Index() {
       <Header />
       
       <main className="flex-1">
-        {/* Hero Section */}
+        {/* Hero Section with Stadium Background */}
         <section 
           ref={heroRef}
-          className="relative min-h-screen flex flex-col items-center justify-center text-center px-4 pt-20"
+          className="relative min-h-screen flex flex-col items-center justify-center text-center px-4 pt-20 overflow-hidden"
         >
+          {/* Full-screen stadium background image */}
+          <div className="absolute inset-0 z-0">
+            <img 
+              src="/public/lovable-uploads/21bec244-581f-4ec8-b504-420088b562c8.png" 
+              alt="Baseball stadium" 
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"></div>
+          </div>
+          
           <div 
-            className={`max-w-4xl mx-auto transition-all duration-1000 ${
+            className={`relative z-10 max-w-4xl mx-auto transition-all duration-1000 ${
               isVisible ? 'opacity-100' : 'opacity-0 transform translate-y-10'
             }`}
           >
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-black">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-white drop-shadow-lg">
               Find the Perfect MLB Tickets at the Best Price
             </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground mb-10 max-w-2xl mx-auto">
+            <p className="text-xl md:text-2xl text-white/90 mb-10 max-w-2xl mx-auto drop-shadow">
               Track ticket prices across major platforms and never miss a deal on your favorite MLB games.
             </p>
             
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mb-12">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mb-12 bg-black/30 p-6 rounded-xl backdrop-blur-sm">
               <TeamSelector 
                 selectedTeamId={selectedTeamId} 
                 onSelectTeam={handleSelectTeam}
               />
-              <span className="text-muted-foreground">or</span>
+              <span className="text-white/70">or</span>
               <Link to="/teams">
                 <Button size="lg" className="rounded-full">
                   Browse All Teams
                 </Button>
               </Link>
             </div>
-            
-            {/* Small decorative images around the hero */}
-            <div className="relative mt-8 mb-4">
-              <img 
-                src="https://images.unsplash.com/photo-1508344228533-ee2dea0aa407?w=300&h=200&crop=entropy&auto=format&fit=crop&q=80"
-                alt="Baseball stadium" 
-                className="absolute -top-24 -right-12 md:-right-24 w-16 h-16 md:w-20 md:h-20 rounded-lg shadow-md rotate-3 object-cover hidden sm:block"
-              />
-              <img 
-                src="https://images.unsplash.com/photo-1562771379-eafdca7a02f8?w=300&h=200&crop=entropy&auto=format&fit=crop&q=80"
-                alt="Baseball" 
-                className="absolute -bottom-10 -left-8 md:-left-20 w-14 h-14 md:w-16 md:h-16 rounded-lg shadow-md -rotate-6 object-cover hidden sm:block"
-              />
-            </div>
           </div>
           
           <button 
             onClick={scrollToFeatures}
-            className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-float"
+            className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce z-10"
           >
-            <ChevronDown className="h-8 w-8 text-muted-foreground" />
+            <ChevronDown className="h-8 w-8 text-white drop-shadow-md" />
           </button>
-          
-          {/* Background decoration */}
-          <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
-            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-1/3 right-1/3 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl"></div>
-          </div>
         </section>
         
         {/* Features Section */}
         <section 
           ref={featuresRef} 
-          className="py-20 px-4 bg-accent/50"
+          className="py-20 px-4 bg-accent/50 relative overflow-hidden"
         >
-          <div className="max-w-7xl mx-auto">
+          {/* Background image for features section */}
+          <div className="absolute inset-0 opacity-10 z-0">
+            <img 
+              src="/public/lovable-uploads/6b1728ff-e3aa-40b8-87c5-3fcc2ed9570f.png" 
+              alt="Baseball field" 
+              className="w-full h-full object-cover"
+            />
+          </div>
+          
+          <div className="max-w-7xl mx-auto relative z-10">
             <h2 className="text-3xl font-bold text-center mb-16">How FindGuy Works</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
@@ -130,11 +129,6 @@ export default function Index() {
                 <p className="text-muted-foreground">
                   Choose your favorite MLB team to see all upcoming games and available ticket options.
                 </p>
-                <img 
-                  src="https://images.unsplash.com/photo-1471295253337-3ceaaedca402?w=300&h=200&crop=entropy&auto=format&fit=crop&q=80"
-                  alt="Baseball team" 
-                  className="w-12 h-12 rounded-full shadow-sm mt-4 object-cover mx-auto"
-                />
               </div>
               
               <div className="glass-card p-6 animate-on-scroll" style={{ transitionDelay: '0.2s' }}>
@@ -147,11 +141,6 @@ export default function Index() {
                 <p className="text-muted-foreground">
                   View and compare ticket prices from StubHub, Ticketmaster, Gametime, and more in real-time.
                 </p>
-                <img 
-                  src="https://images.unsplash.com/photo-1519810755548-39cd217da494?w=300&h=200&crop=entropy&auto=format&fit=crop&q=80"
-                  alt="Price chart" 
-                  className="w-12 h-12 rounded-full shadow-sm mt-4 object-cover mx-auto"
-                />
               </div>
               
               <div className="glass-card p-6 animate-on-scroll" style={{ transitionDelay: '0.4s' }}>
@@ -164,18 +153,15 @@ export default function Index() {
                 <p className="text-muted-foreground">
                   Monitor how prices change as game day approaches and get notified of drops for your saved games.
                 </p>
-                <img 
-                  src="https://images.unsplash.com/photo-1593455076828-60ba88074c44?w=300&h=200&crop=entropy&auto=format&fit=crop&q=80"
-                  alt="Baseball glove" 
-                  className="w-12 h-12 rounded-full shadow-sm mt-4 object-cover mx-auto"
-                />
               </div>
             </div>
           </div>
         </section>
         
         {/* CTA Section */}
-        <section className="py-20 px-4">
+        <section className="py-20 px-4 relative">
+          <div className="absolute inset-0 -z-10 bg-gradient-to-b from-accent/30 to-transparent"></div>
+          
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl font-bold mb-6">Ready to Find the Best Deals?</h2>
             <p className="text-xl text-muted-foreground mb-10">
@@ -194,23 +180,18 @@ export default function Index() {
               </Link>
             </div>
             
-            {/* Small decorative images */}
-            <div className="relative mt-12 flex justify-center">
-              <img 
-                src="https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=300&h=200&crop=entropy&auto=format&fit=crop&q=80"
-                alt="Baseball stadium crowd" 
-                className="w-14 h-14 rounded-full shadow-md -rotate-3 object-cover mx-2"
-              />
-              <img 
-                src="https://images.unsplash.com/photo-1581509129331-61f4e5dd42a3?w=300&h=200&crop=entropy&auto=format&fit=crop&q=80"
-                alt="Baseball glove" 
-                className="w-14 h-14 rounded-full shadow-md rotate-6 object-cover mx-2"
-              />
-              <img 
-                src="https://images.unsplash.com/photo-1566577134770-3d85bb3a9cc4?w=300&h=200&crop=entropy&auto=format&fit=crop&q=80"
-                alt="Baseball field" 
-                className="w-14 h-14 rounded-full shadow-md -rotate-6 object-cover mx-2"
-              />
+            {/* Stadium image preview */}
+            <div className="mt-12">
+              <div className="relative mx-auto w-full max-w-lg h-40 rounded-xl overflow-hidden shadow-lg">
+                <img 
+                  src="/public/lovable-uploads/6b1728ff-e3aa-40b8-87c5-3fcc2ed9570f.png" 
+                  alt="Night baseball game" 
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end justify-center pb-4">
+                  <p className="text-white text-sm font-medium">Experience the atmosphere of America's favorite pastime</p>
+                </div>
+              </div>
             </div>
           </div>
         </section>
