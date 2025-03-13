@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import Index from "./pages/Index";
 import AllTeams from "./pages/AllTeams";
@@ -35,6 +35,8 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/teams" element={<AllTeams />} />
             <Route path="/team/:teamId" element={<TeamView />} />
+            {/* Add a route for plural teams/:teamId to fix the 404 issue */}
+            <Route path="/teams/:teamId" element={<TeamView />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/account" element={<Account />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
