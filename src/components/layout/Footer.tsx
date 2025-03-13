@@ -7,7 +7,7 @@ export function Footer() {
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">TicketTrack</h3>
+            <h3 className="text-lg font-semibold">FindGuy</h3>
             <p className="text-sm text-muted-foreground">
               Find the best deals on MLB tickets with real-time price tracking and comparisons.
             </p>
@@ -29,6 +29,11 @@ export function Footer() {
               <li>
                 <Link to="/dashboard" className="text-muted-foreground hover:text-foreground transition-colors">
                   Dashboard
+                </Link>
+              </li>
+              <li>
+                <Link to="/account" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Account
                 </Link>
               </li>
             </ul>
@@ -59,7 +64,7 @@ export function Footer() {
             <h4 className="font-medium mb-4">Contact</h4>
             <ul className="space-y-2 text-sm">
               <li className="text-muted-foreground">
-                support@tickettrack.com
+                support@findguy.com
               </li>
             </ul>
           </div>
@@ -67,7 +72,7 @@ export function Footer() {
         
         <div className="border-t border-border/30 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} TicketTrack. All rights reserved.
+            &copy; {new Date().getFullYear()} FindGuy. All rights reserved.
           </p>
           <div className="flex space-x-4 mt-4 md:mt-0">
             <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">

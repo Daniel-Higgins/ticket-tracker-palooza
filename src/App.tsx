@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import AllTeams from "./pages/AllTeams";
 import TeamView from "./pages/TeamView";
 import Dashboard from "./pages/Dashboard";
+import Account from "./pages/Account";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const App = () => (
             <Route path="/teams" element={<AllTeams />} />
             <Route path="/teams/:teamId" element={<TeamView />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/account" element={<Account />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

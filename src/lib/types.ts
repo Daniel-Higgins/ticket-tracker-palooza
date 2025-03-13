@@ -68,3 +68,18 @@ export interface UserPreferences {
   maxPrice?: number;
   preferredSources?: string[];
 }
+
+export interface PriceAlert {
+  id: string;
+  userId: string;
+  gameId: string;
+  targetPrice: number;
+  categoryId?: string;
+  isActive: boolean;
+  createdAt: string;
+}
+
+export interface PriceAlertWithGame extends PriceAlert {
+  game: Game;
+  category?: TicketCategory;
+}

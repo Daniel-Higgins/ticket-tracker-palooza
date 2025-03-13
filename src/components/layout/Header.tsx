@@ -72,6 +72,16 @@ export function Header() {
               Dashboard
             </Button>
           </Link>
+          {user && (
+            <Link to="/account">
+              <Button
+                variant={location.pathname.includes('/account') ? 'default' : 'ghost'}
+                className="rounded-full px-4"
+              >
+                Account
+              </Button>
+            </Link>
+          )}
         </nav>
 
         <div className="flex items-center space-x-4">
@@ -104,9 +114,9 @@ export function Header() {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link to="/settings" className="cursor-pointer w-full flex items-center">
+                  <Link to="/account" className="cursor-pointer w-full flex items-center">
                     <Settings className="mr-2 h-4 w-4" />
-                    Settings
+                    Account
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
@@ -145,6 +155,11 @@ export function Header() {
               <DropdownMenuItem asChild>
                 <Link to="/dashboard" className="cursor-pointer">Dashboard</Link>
               </DropdownMenuItem>
+              {user && (
+                <DropdownMenuItem asChild>
+                  <Link to="/account" className="cursor-pointer">Account</Link>
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
