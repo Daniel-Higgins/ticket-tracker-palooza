@@ -10,8 +10,8 @@ export const trackGame = async (userId: string, gameId: string): Promise<boolean
     const { error } = await supabase
       .from('user_tracked_games')
       .insert({
-        userId: userId,
-        gameId: gameId
+        userid: userId,
+        gameid: gameId
       });
     
     if (error) {
@@ -45,8 +45,8 @@ export const untrackGame = async (userId: string, gameId: string): Promise<boole
     const { error } = await supabase
       .from('user_tracked_games')
       .delete()
-      .eq('userId', userId)
-      .eq('gameId', gameId);
+      .eq('userid', userId)
+      .eq('gameid', gameId);
     
     if (error) throw error;
     
@@ -72,8 +72,8 @@ export const fetchUserTrackedGames = async (userId: string): Promise<Game[]> => 
   try {
     const { data, error } = await supabase
       .from('user_tracked_games')
-      .select('gameId')
-      .eq('userId', userId);
+      .select('gameid')
+      .eq('userid', userId);
     
     if (error) throw error;
     
@@ -82,7 +82,7 @@ export const fetchUserTrackedGames = async (userId: string): Promise<Game[]> => 
     }
     
     // Get game IDs from tracked games
-    const gameIds = data.map(tracked => tracked.gameId);
+    const gameIds = data.map(tracked => tracked.gameid);
     
     // Get games from favorite teams first
     const favoriteTeams = await import('./favorites').then(m => m.fetchUserFavoriteTeams(userId));
@@ -151,8 +151,8 @@ export const isGameTracked = async (userId: string, gameId: string): Promise<boo
     const { data, error } = await supabase
       .from('user_tracked_games')
       .select('id')
-      .eq('userId', userId)
-      .eq('gameId', gameId)
+      .eq('userid', userId)
+      .eq('gameid', gameId)
       .single();
     
     if (error) {

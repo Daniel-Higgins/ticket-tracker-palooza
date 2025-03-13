@@ -15,12 +15,12 @@ export const createPriceAlert = async (
     const { error } = await supabase
       .from('price_alerts')
       .insert({
-        userId,
-        gameId,
-        targetPrice,
-        categoryId,
-        isActive: true,
-        createdAt: new Date().toISOString()
+        userid: userId,
+        gameid: gameId,
+        targetprice: targetPrice,
+        categoryid: categoryId,
+        isactive: true,
+        createdat: new Date().toISOString()
       });
     
     if (error) throw error;
@@ -49,8 +49,8 @@ export const fetchUserPriceAlerts = async (userId: string): Promise<PriceAlertWi
     const { data, error } = await supabase
       .from('price_alerts')
       .select('*')
-      .eq('userId', userId)
-      .order('createdAt', { ascending: false });
+      .eq('userid', userId)
+      .order('createdat', { ascending: false });
     
     if (error) throw error;
     
@@ -72,13 +72,19 @@ export const fetchUserPriceAlerts = async (userId: string): Promise<PriceAlertWi
       }
       
       // Find the game that matches this alert
-      const game = allGames.find(g => g.id === alert.gameId);
+      const game = allGames.find(g => g.id === alert.gameid);
       
       // If we found the game, add it to the result
       if (game) {
         alertsWithGames.push({
-          ...alert,
-          game
+          id: alert.id,
+          userId: alert.userid,
+          gameId: alert.gameid,
+          targetPrice: alert.targetprice,
+          isActive: alert.isactive,
+          createdAt: alert.createdat,
+          categoryId: alert.categoryid,
+          game: game
         });
       }
     }
@@ -127,7 +133,7 @@ export const togglePriceAlert = async (alertId: string, isActive: boolean): Prom
   try {
     const { error } = await supabase
       .from('price_alerts')
-      .update({ isActive })
+      .update({ isactive: isActive })
       .eq('id', alertId);
     
     if (error) throw error;
