@@ -110,44 +110,44 @@ export default function Index() {
         {/* Features Section */}
         <section 
           ref={featuresRef} 
-          className="py-20 px-4 bg-accent/30 relative"
+          className="py-20 px-4 bg-white relative"
         >
           <div className="max-w-7xl mx-auto relative z-10">
-            <h2 className="text-3xl font-bold text-center mb-16">How FindGuy Works</h2>
+            <h2 className="text-3xl font-bold text-center mb-16 text-black">How FindGuy Works</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-              <div className="glass-card p-6 animate-on-scroll">
+              <div className="bg-white shadow-md rounded-xl p-6 animate-on-scroll">
                 <div className="w-12 h-12 flex items-center justify-center rounded-full bg-primary/10 text-primary mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-medium mb-2">Select Your Team</h3>
-                <p className="text-foreground">
+                <h3 className="text-xl font-medium mb-2 text-black">Select Your Team</h3>
+                <p className="text-black">
                   Choose your favorite MLB team to see all upcoming games and available ticket options.
                 </p>
               </div>
               
-              <div className="glass-card p-6 animate-on-scroll" style={{ transitionDelay: '0.2s' }}>
+              <div className="bg-white shadow-md rounded-xl p-6 animate-on-scroll" style={{ transitionDelay: '0.2s' }}>
                 <div className="w-12 h-12 flex items-center justify-center rounded-full bg-primary/10 text-primary mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-medium mb-2">Compare Prices</h3>
-                <p className="text-foreground">
+                <h3 className="text-xl font-medium mb-2 text-black">Compare Prices</h3>
+                <p className="text-black">
                   View and compare ticket prices from StubHub, Ticketmaster, Gametime, and more in real-time.
                 </p>
               </div>
               
-              <div className="glass-card p-6 animate-on-scroll" style={{ transitionDelay: '0.4s' }}>
+              <div className="bg-white shadow-md rounded-xl p-6 animate-on-scroll" style={{ transitionDelay: '0.4s' }}>
                 <div className="w-12 h-12 flex items-center justify-center rounded-full bg-primary/10 text-primary mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-medium mb-2">Track Over Time</h3>
-                <p className="text-foreground">
+                <h3 className="text-xl font-medium mb-2 text-black">Track Over Time</h3>
+                <p className="text-black">
                   Monitor how prices change as game day approaches and get notified of drops for your saved games.
                 </p>
               </div>
@@ -156,10 +156,10 @@ export default function Index() {
         </section>
         
         {/* CTA Section */}
-        <section className="py-20 px-4 relative">          
+        <section className="py-20 px-4 bg-gray-50 relative">          
           <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl font-bold mb-6">Ready to Find the Best Deals?</h2>
-            <p className="text-xl text-foreground mb-10">
+            <h2 className="text-3xl font-bold mb-6 text-black">Ready to Find the Best Deals?</h2>
+            <p className="text-xl text-black mb-10">
               Create an account to save your favorite teams, track price changes, and get alerts when prices drop.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
