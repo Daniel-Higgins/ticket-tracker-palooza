@@ -4,7 +4,7 @@ import { toast } from "@/hooks/use-toast";
 
 // Make sure these values are set in your .env file
 const supabaseUrl = 'https://phwyrjrdlpzirfiyjqep.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFuY3dweWhnamZta2JocnJmZXV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDA3NTQ2NTcsImV4cCI6MjAxNjMzMDY1N30.WCZM_rF2ApJ9NXPzqk2nX9FCVOcVDHVJ1QIzHtAKEPY';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBod3lyanJkbHB6aXJmaXlqcWVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE4MTA1MzIsImV4cCI6MjA1NzM4NjUzMn0.UDmctXpGuEFndhNwQYN8d_l_nESJEs1Q5P04oVLensc';
 
 // Initialize the Supabase client with proper configuration
 export const supabase = createClient(
