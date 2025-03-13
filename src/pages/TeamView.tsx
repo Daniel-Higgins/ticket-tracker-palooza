@@ -48,7 +48,7 @@ export default function TeamView() {
   }, [teamId]);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-white">
       <Header />
       
       <main className="flex-1 container py-16 px-4 md:py-24">
@@ -80,13 +80,13 @@ export default function TeamView() {
                   />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold">{team.name}</h1>
+                  <h1 className="text-3xl font-bold text-black">{team.name}</h1>
                   <p className="text-muted-foreground">{team.city}</p>
                 </div>
               </div>
             ) : (
               <div className="text-center py-12">
-                <h2 className="text-2xl font-medium mb-2">Team Not Found</h2>
+                <h2 className="text-2xl font-medium mb-2 text-black">Team Not Found</h2>
                 <p className="text-muted-foreground mb-6">
                   Sorry, we couldn't find the team you're looking for.
                 </p>
@@ -99,7 +99,7 @@ export default function TeamView() {
           
           {team && teamId && (
             <section>
-              <h2 className="text-xl font-medium mb-6">Upcoming Games</h2>
+              <h2 className="text-xl font-medium mb-6 text-black">Upcoming Games</h2>
               <GamesList teamId={teamId} />
             </section>
           )}
