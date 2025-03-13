@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import Index from '@/pages/Index';
@@ -8,9 +9,7 @@ import Account from '@/pages/Account';
 import AuthCallback from '@/pages/AuthCallback';
 import NotFound from '@/pages/NotFound';
 import { ThemeProvider } from "@/components/ThemeProvider";
-import UploadImages from '@/pages/UploadImages';
 import { AuthProvider } from '@/hooks/useAuth';
-import ImageManager from '@/pages/ImageManager';
 
 export default function App() {
   const [mounted, setMounted] = useState(false)
@@ -35,8 +34,6 @@ export default function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/account" element={<Account />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
-            <Route path="/upload-images" element={<UploadImages />} />
-            <Route path="/image-manager" element={<ImageManager />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
