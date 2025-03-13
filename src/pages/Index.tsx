@@ -81,6 +81,20 @@ export default function Index() {
                 </Button>
               </Link>
             </div>
+            
+            {/* Small decorative images around the hero */}
+            <div className="relative mt-8 mb-4">
+              <img 
+                src="https://images.unsplash.com/photo-1508344228533-ee2dea0aa407?w=300&h=200&crop=entropy&auto=format&fit=crop&q=80"
+                alt="Baseball stadium" 
+                className="absolute -top-24 -right-12 md:-right-24 w-16 h-16 md:w-20 md:h-20 rounded-lg shadow-md rotate-3 object-cover hidden sm:block"
+              />
+              <img 
+                src="https://images.unsplash.com/photo-1562771379-eafdca7a02f8?w=300&h=200&crop=entropy&auto=format&fit=crop&q=80"
+                alt="Baseball" 
+                className="absolute -bottom-10 -left-8 md:-left-20 w-14 h-14 md:w-16 md:h-16 rounded-lg shadow-md -rotate-6 object-cover hidden sm:block"
+              />
+            </div>
           </div>
           
           <button 
@@ -116,6 +130,11 @@ export default function Index() {
                 <p className="text-muted-foreground">
                   Choose your favorite MLB team to see all upcoming games and available ticket options.
                 </p>
+                <img 
+                  src="https://images.unsplash.com/photo-1471295253337-3ceaaedca402?w=300&h=200&crop=entropy&auto=format&fit=crop&q=80"
+                  alt="Baseball team" 
+                  className="w-12 h-12 rounded-full shadow-sm mt-4 object-cover mx-auto"
+                />
               </div>
               
               <div className="glass-card p-6 animate-on-scroll" style={{ transitionDelay: '0.2s' }}>
@@ -128,6 +147,11 @@ export default function Index() {
                 <p className="text-muted-foreground">
                   View and compare ticket prices from StubHub, Ticketmaster, Gametime, and more in real-time.
                 </p>
+                <img 
+                  src="https://images.unsplash.com/photo-1519810755548-39cd217da494?w=300&h=200&crop=entropy&auto=format&fit=crop&q=80"
+                  alt="Price chart" 
+                  className="w-12 h-12 rounded-full shadow-sm mt-4 object-cover mx-auto"
+                />
               </div>
               
               <div className="glass-card p-6 animate-on-scroll" style={{ transitionDelay: '0.4s' }}>
@@ -140,6 +164,11 @@ export default function Index() {
                 <p className="text-muted-foreground">
                   Monitor how prices change as game day approaches and get notified of drops for your saved games.
                 </p>
+                <img 
+                  src="https://images.unsplash.com/photo-1593455076828-60ba88074c44?w=300&h=200&crop=entropy&auto=format&fit=crop&q=80"
+                  alt="Baseball glove" 
+                  className="w-12 h-12 rounded-full shadow-sm mt-4 object-cover mx-auto"
+                />
               </div>
             </div>
           </div>
@@ -163,6 +192,25 @@ export default function Index() {
                   Create Account
                 </Button>
               </Link>
+            </div>
+            
+            {/* Small decorative images */}
+            <div className="relative mt-12 flex justify-center">
+              <img 
+                src="https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=300&h=200&crop=entropy&auto=format&fit=crop&q=80"
+                alt="Baseball stadium crowd" 
+                className="w-14 h-14 rounded-full shadow-md -rotate-3 object-cover mx-2"
+              />
+              <img 
+                src="https://images.unsplash.com/photo-1581509129331-61f4e5dd42a3?w=300&h=200&crop=entropy&auto=format&fit=crop&q=80"
+                alt="Baseball glove" 
+                className="w-14 h-14 rounded-full shadow-md rotate-6 object-cover mx-2"
+              />
+              <img 
+                src="https://images.unsplash.com/photo-1566577134770-3d85bb3a9cc4?w=300&h=200&crop=entropy&auto=format&fit=crop&q=80"
+                alt="Baseball field" 
+                className="w-14 h-14 rounded-full shadow-md -rotate-6 object-cover mx-2"
+              />
             </div>
           </div>
         </section>
