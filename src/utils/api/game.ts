@@ -1,6 +1,7 @@
 import { Game, Team } from '@/lib/types';
 import { supabase } from '@/lib/supabase';
 import { toast } from "@/hooks/use-toast";
+import { mlbTeams } from '@/utils/staticData';
 
 // Sample static games data for demo purposes
 const demoGames: Game[] = [
@@ -131,10 +132,107 @@ const demoGames: Game[] = [
   }
 ];
 
+// Fetch real MLB games from the odds API
+export const fetchRealMlbGames = async (): Promise<Game[]> => {
+  try {
+    const apiUrl = 'https://api.the-odds-api.com/v4/sports/baseball_mlb/events?apiKey=c80f14133d3748d3c465f41d78bf57e5&dateFormat=iso';
+    
+    const response = await fetch(apiUrl);
+    if (!response.ok) {
+      throw new Error(`API request failed with status ${response.status}`);
+    }
+    
+    const data = await response.json();
+    console.log('Odds API data:', data);
+    
+    // Transform the API response to our Game type format
+    return data.map((event: any) => {
+      // Find teams in our static data to get logos and colors
+      const homeTeamData = findTeamByName(event.home_team);
+      const awayTeamData = findTeamByName(event.away_team);
+      
+      // Convert ISO date string to date and time format we use
+      const gameDate = new Date(event.commence_time);
+      const date = gameDate.toISOString().split('T')[0];
+      const time = gameDate.toLocaleTimeString('en-US', { 
+        hour: 'numeric', 
+        minute: '2-digit',
+        hour12: true 
+      });
+      
+      return {
+        id: event.id,
+        homeTeam: homeTeamData,
+        awayTeam: awayTeamData,
+        date: date,
+        time: time,
+        venue: `${homeTeamData.city} Stadium`, // Venue info not provided by API
+        status: 'scheduled' // Status info needs to be mapped from API
+      };
+    });
+  } catch (error) {
+    console.error('Error fetching MLB games from odds API:', error);
+    throw error;
+  }
+};
+
+// Helper function to find team by name in our static data
+const findTeamByName = (teamName: string): Team => {
+  // Try to find a match in our MLB teams data
+  const team = mlbTeams.find(t => 
+    t.name.toLowerCase().includes(teamName.toLowerCase()) || 
+    teamName.toLowerCase().includes(t.name.toLowerCase()) ||
+    t.city.toLowerCase().includes(teamName.toLowerCase()) ||
+    teamName.toLowerCase().includes(t.city.toLowerCase())
+  );
+  
+  if (team) return team;
+  
+  // If no match, return a placeholder team
+  return {
+    id: teamName.replace(/\s+/g, '-').toLowerCase(),
+    name: teamName,
+    shortName: teamName.split(' ').pop() || teamName,
+    city: teamName.split(' ')[0] || "Unknown",
+    logo: "", // No logo available
+    primaryColor: "#333333",
+    secondaryColor: "#ffffff"
+  };
+};
+
 // Fetch future games for a team
 export const fetchTeamGames = async (teamId: string): Promise<Game[]> => {
   try {
     console.log('Fetching games for team:', teamId);
+    
+    // Try to fetch real games first
+    try {
+      const realGames = await fetchRealMlbGames();
+      
+      // Find the team name for the given ID
+      const team = mlbTeams.find(t => t.id === teamId);
+      if (!team) throw new Error('Team not found');
+      
+      // Filter games for this team
+      const teamGames = realGames.filter(game => 
+        (game.homeTeam.id === teamId || 
+         game.homeTeam.name.includes(team.name) || 
+         game.homeTeam.city.includes(team.city)) ||
+        (game.awayTeam.id === teamId || 
+         game.awayTeam.name.includes(team.name) || 
+         game.awayTeam.city.includes(team.city))
+      );
+      
+      if (teamGames.length > 0) {
+        console.log('Found real games for team:', teamGames.length);
+        return teamGames;
+      }
+    } catch (error) {
+      console.error('Error fetching real MLB games:', error);
+      // Continue to fallback options
+    }
+    
+    // Try to fetch from Supabase
     const today = new Date().toISOString().split('T')[0];
     
     const { data, error } = await supabase
