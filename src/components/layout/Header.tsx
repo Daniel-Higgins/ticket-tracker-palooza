@@ -35,11 +35,11 @@ export function Header() {
   };
 
   return (
-    <header className="w-full border-b border-border sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50">
+    <header className="w-full border-b border-border sticky top-0 bg-[#D3E4FD]/90 backdrop-blur supports-[backdrop-filter]:bg-[#D3E4FD]/70 z-50">
       <div className="container flex h-16 items-center justify-between relative">
         <div className="flex gap-6 items-center">
           <Link to="/" className="flex items-center gap-2">
-            <span className="font-bold text-xl">FindGuy</span>
+            <span className="font-bold text-xl text-gray-800">FindGuy</span>
           </Link>
           <nav className="hidden md:flex gap-6">
             <NavLink to="/teams">Teams</NavLink>
