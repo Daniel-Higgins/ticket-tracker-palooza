@@ -1,3 +1,4 @@
+
 import { Team } from '@/lib/types';
 import { supabase } from '@/lib/supabase';
 import { toast } from "@/hooks/use-toast";
@@ -15,7 +16,17 @@ export const fetchTeams = async (): Promise<Team[]> => {
     
     // If we have data from Supabase, use it
     if (data && data.length > 0) {
-      return data;
+      console.log('Retrieved teams from database:', data.length);
+      // Map column names to match our Team interface
+      return data.map(team => ({
+        id: team.id,
+        name: team.name,
+        shortName: team.shortname,
+        city: team.city,
+        logo: team.logo,
+        primaryColor: team.primarycolor,
+        secondaryColor: team.secondarycolor
+      }));
     }
     
     // Otherwise fall back to static data
