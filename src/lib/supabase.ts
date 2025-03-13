@@ -30,6 +30,17 @@ export const signInWithProvider = async (provider: 'google' | 'facebook') => {
     console.log(`Current origin: ${origin}`);
     console.log(`Redirect URL: ${redirectTo}`);
     
+    // Specific guidance for Google auth connection issues
+    if (provider === 'google') {
+      console.log('=== Google OAuth Troubleshooting ===');
+      console.log(`If you're seeing "accounts.google.com refused to connect" error:`);
+      console.log('1. Check that your Google OAuth credentials are correctly configured');
+      console.log(`2. Ensure both your app domain and Supabase domain are added as authorized JavaScript origins`);
+      console.log(`3. Verify that your OAuth Client ID is correctly added in Supabase Authentication > Providers > Google`);
+      console.log(`4. Check the Network tab in DevTools for any specific error messages in the redirect/callback`);
+      console.log('===================================');
+    }
+    
     // Detailed troubleshooting information
     console.log('=== OAuth Configuration Guide ===');
     console.log('If you encounter "Invalid Origin" errors, please ensure:');
@@ -65,8 +76,18 @@ export const signInWithProvider = async (provider: 'google' | 'facebook') => {
     if (error) {
       console.error(`Error initiating ${provider} sign in:`, error);
       
-      // Special handling for common OAuth errors
-      if (error.message?.includes('invalid_request') || error.message?.includes('origin')) {
+      // Enhanced error handling for OAuth connection issues
+      if (error.message?.includes('refused to connect') || error.message?.includes('failed to fetch')) {
+        console.error('This appears to be a connection issue with the OAuth provider.');
+        console.error('Likely causes: incorrect credentials, unauthorized origins, or network issues.');
+        console.error('Full error:', JSON.stringify(error, null, 2));
+        
+        toast({
+          title: `${provider} Connection Error`,
+          description: "The authentication server refused the connection. Please check your OAuth configuration.",
+          variant: "destructive"
+        });
+      } else if (error.message?.includes('invalid_request') || error.message?.includes('origin')) {
         console.error('This appears to be an OAuth configuration issue. Please check your OAuth settings.');
         console.error('Full error:', JSON.stringify(error, null, 2));
         
