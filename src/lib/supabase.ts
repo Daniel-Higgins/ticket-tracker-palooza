@@ -1,4 +1,3 @@
-
 import { createClient } from '@supabase/supabase-js';
 import { toast } from "@/hooks/use-toast";
 
@@ -30,26 +29,32 @@ export const signInWithProvider = async (provider: 'google' | 'facebook') => {
     console.log(`Current origin: ${origin}`);
     console.log(`Redirect URL: ${redirectTo}`);
     
-    // Show OAuth configuration help if needed
+    // Detailed troubleshooting information
     console.log('=== OAuth Configuration Guide ===');
     console.log('If you encounter "Invalid Origin" errors, please ensure:');
     console.log(`1. Add "${origin}" (without path or trailing slash) to Authorized JavaScript origins in Google Cloud Console`);
     console.log(`2. Add "${redirectTo}" to Authorized redirect URIs in Google Cloud Console`);
-    console.log('3. In Supabase Auth Settings, set Site URL to: "${origin}"');
+    console.log(`3. In Supabase Auth Settings, set Site URL to: "${origin}"`);
     console.log(`4. In Supabase Auth Settings, add Redirect URL: "${redirectTo}"`);
+    console.log(`5. Check browser console for any CORS errors that might indicate misconfiguration`);
+    console.log('6. Try clearing your browser cache and cookies if you\'ve previously attempted to sign in`);
     console.log('===================================');
+    
+    // Add a timestamp to avoid any caching issues with the OAuth request
+    const timestamp = new Date().getTime();
     
     // Explicitly log all options being passed to the OAuth call
     const options = {
       redirectTo,
       scopes: provider === 'google' ? 'profile email' : undefined,
       queryParams: { 
-        // Add a random value to avoid caching issues
-        random: Math.random().toString(36).substring(2)
+        // Add random values to avoid caching issues
+        random: Math.random().toString(36).substring(2),
+        timestamp: timestamp.toString()
       }
     };
     
-    console.log('OAuth options:', JSON.stringify(options));
+    console.log('OAuth options:', JSON.stringify(options, null, 2));
     
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider,
@@ -61,22 +66,40 @@ export const signInWithProvider = async (provider: 'google' | 'facebook') => {
       
       // Special handling for common OAuth errors
       if (error.message?.includes('invalid_request') || error.message?.includes('origin')) {
-        console.error('This appears to be an OAuth configuration issue. Please check your Google Cloud Console settings.');
-        console.error('Full error:', JSON.stringify(error));
+        console.error('This appears to be an OAuth configuration issue. Please check your OAuth settings.');
+        console.error('Full error:', JSON.stringify(error, null, 2));
         
         toast({
           title: "OAuth Configuration Error",
-          description: "Please check that your application origins are correctly configured in Google Cloud Console.",
+          description: "Please check that your application origins are correctly configured in OAuth settings.",
           variant: "destructive"
         });
       } else {
-        console.error('Full error:', JSON.stringify(error));
+        console.error('Full error:', JSON.stringify(error, null, 2));
         throw error;
       }
       return { data: null, error };
     }
 
     console.log(`${provider} auth initiated successfully:`, data);
+    
+    // Log the URL we're being redirected to
+    if (data?.url) {
+      console.log('Redirect URL from Supabase:', data.url);
+      
+      // Parse and log the redirect URL components
+      try {
+        const redirectUrl = new URL(data.url);
+        console.log('Parsed redirect URL:');
+        console.log('- Protocol:', redirectUrl.protocol);
+        console.log('- Host:', redirectUrl.host);
+        console.log('- Pathname:', redirectUrl.pathname);
+        console.log('- Search:', redirectUrl.search);
+      } catch (e) {
+        console.error('Could not parse redirect URL:', e);
+      }
+    }
+    
     return { data, error: null };
   } catch (error) {
     console.error('Error signing in with provider:', error);

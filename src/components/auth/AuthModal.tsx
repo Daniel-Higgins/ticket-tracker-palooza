@@ -12,6 +12,7 @@ import {
 import { Facebook, X } from 'lucide-react';
 import { signInWithProvider } from '@/lib/supabase';
 import { toast } from '@/hooks/use-toast';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface AuthModalProps {
   trigger?: React.ReactNode;
@@ -21,26 +22,47 @@ export function AuthModal({ trigger }: AuthModalProps) {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
+  const [providerName, setProviderName] = useState<string | null>(null);
 
   // Reset error when modal opens/closes
   useEffect(() => {
     setAuthError(null);
   }, [open]);
 
-  const handleGoogleSignIn = async () => {
+  const handleSignIn = async (provider: 'google' | 'facebook') => {
     setIsLoading(true);
     setAuthError(null);
+    setProviderName(provider);
+    
     try {
-      console.log("Initiating Google sign-in from AuthModal");
-      const { error } = await signInWithProvider('google');
+      console.log(`Initiating ${provider} sign-in from AuthModal`);
+      
+      // Log the current URL details before sign-in
+      console.log('Current location details:');
+      console.log('- Origin:', window.location.origin);
+      console.log('- Hostname:', window.location.hostname);
+      console.log('- Pathname:', window.location.pathname);
+      console.log('- Full URL:', window.location.href);
+      
+      const { error } = await signInWithProvider(provider);
+      
       if (error) {
-        console.error("Google sign-in error:", error);
-        setAuthError(error.message || "Could not sign in with Google");
+        console.error(`${provider} sign-in error:`, error);
+        console.error('Full error:', JSON.stringify(error, null, 2));
+        
+        let errorMessage = error.message || `Could not sign in with ${provider}`;
+        
+        // Check for common OAuth errors
+        if (errorMessage.includes('origin')) {
+          errorMessage += ". Please check Supabase and Google OAuth configurations.";
+        }
+        
+        setAuthError(errorMessage);
         throw error;
       }
       // The page will redirect to Google, so we don't need to handle success here
     } catch (error) {
-      console.error('Error in Google sign in:', error);
+      console.error(`Error in ${provider} sign in:`, error);
       const errorMessage = error instanceof Error ? error.message : String(error);
       
       // Log additional details that might help debugging
@@ -50,37 +72,16 @@ export function AuthModal({ trigger }: AuthModalProps) {
       setAuthError(errorMessage);
       toast({
         title: "Sign In Failed",
-        description: "Could not sign in with Google. Please check your console for details.",
+        description: `Could not sign in with ${provider}. Please check your console for details.`,
         variant: "destructive"
       });
+    } finally {
       setIsLoading(false);
     }
   };
 
-  const handleFacebookSignIn = async () => {
-    setIsLoading(true);
-    setAuthError(null);
-    try {
-      console.log("Initiating Facebook sign-in");
-      const { error } = await signInWithProvider('facebook');
-      if (error) {
-        console.error("Facebook sign-in error:", error);
-        setAuthError(error.message || "Could not sign in with Facebook");
-        throw error;
-      }
-      // Don't close the modal here as we'll be redirected to Facebook
-    } catch (error) {
-      console.error('Error in Facebook sign in:', error);
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      setAuthError(errorMessage);
-      toast({
-        title: "Sign In Failed",
-        description: "Could not sign in with Facebook. Please try again.",
-        variant: "destructive"
-      });
-      setIsLoading(false);
-    }
-  };
+  const handleGoogleSignIn = () => handleSignIn('google');
+  const handleFacebookSignIn = () => handleSignIn('facebook');
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -96,10 +97,17 @@ export function AuthModal({ trigger }: AuthModalProps) {
         </DialogHeader>
         <div className="flex flex-col space-y-4 py-4">
           {authError && (
-            <div className="p-3 bg-destructive/10 border border-destructive/30 rounded-md text-sm text-destructive">
-              <p className="font-medium">Authentication Error:</p>
-              <p>{authError}</p>
-            </div>
+            <Alert variant="destructive" className="text-sm">
+              <AlertDescription>
+                <div className="space-y-2">
+                  <p><strong>{providerName} Authentication Error:</strong></p>
+                  <p>{authError}</p>
+                  <p className="text-xs mt-1">
+                    Please make sure your Supabase and {providerName} OAuth configurations are correct.
+                  </p>
+                </div>
+              </AlertDescription>
+            </Alert>
           )}
           <Button
             variant="outline"
@@ -125,7 +133,7 @@ export function AuthModal({ trigger }: AuthModalProps) {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
               />
             </svg>
-            {isLoading ? 'Signing in...' : 'Continue with Google'}
+            {isLoading && providerName === 'google' ? 'Signing in...' : 'Continue with Google'}
           </Button>
           <Button
             variant="outline"
@@ -134,7 +142,7 @@ export function AuthModal({ trigger }: AuthModalProps) {
             disabled={isLoading}
           >
             <Facebook className="mr-2 h-5 w-5" />
-            {isLoading ? 'Signing in...' : 'Continue with Facebook'}
+            {isLoading && providerName === 'facebook' ? 'Signing in...' : 'Continue with Facebook'}
           </Button>
         </div>
         <div className="flex items-center justify-center">
