@@ -57,7 +57,6 @@ export function Header() {
             </NavLink>
             <NavLink to="/teams">Teams</NavLink>
             {user && <NavLink to="/dashboard">Dashboard</NavLink>}
-            {user && <NavLink to="/upload-images">Upload Images</NavLink>}
           </nav>
         </div>
 
