@@ -1,8 +1,9 @@
+
 import { createClient } from '@supabase/supabase-js';
 import { toast } from "@/hooks/use-toast";
 
 // Make sure these values are set in your .env file
-const supabaseUrl = 'https://qncwpyhgjfmkbhrrfeuu.supabase.co';
+const supabaseUrl = 'https://phwyrjrdlpzirfiyjqep.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFuY3dweWhnamZta2JocnJmZXV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDA3NTQ2NTcsImV4cCI6MjAxNjMzMDY1N30.WCZM_rF2ApJ9NXPzqk2nX9FCVOcVDHVJ1QIzHtAKEPY';
 
 // Initialize the Supabase client with proper configuration
