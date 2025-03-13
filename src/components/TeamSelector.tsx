@@ -24,6 +24,7 @@ interface TeamSelectorProps {
   showFavoriteOption?: boolean;
   userId?: string;
   onFavoriteToggle?: (teamId: string) => void;
+  autoFavoriteOnSelect?: boolean;
 }
 
 export function TeamSelector({ 
@@ -31,7 +32,8 @@ export function TeamSelector({
   onSelectTeam, 
   showFavoriteOption = false,
   userId,
-  onFavoriteToggle
+  onFavoriteToggle,
+  autoFavoriteOnSelect = false
 }: TeamSelectorProps) {
   const [teams, setTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState(true);
@@ -75,16 +77,18 @@ export function TeamSelector({
     loadFavorites();
   }, [teams, userId, showFavoriteOption]);
 
-  const handleTeamChange = async (teamId: string) => {
-    console.log(`Team selected: ${teamId}`);
-    onSelectTeam(teamId);
+  const handleAddFavorite = async (teamId: string) => {
+    if (!userId) {
+      console.log("No userId provided, cannot add favorite");
+      return false;
+    }
     
-    // If favorites are enabled and user is logged in, automatically favorite the selected team
-    if (showFavoriteOption && userId) {
-      try {
-        console.log(`Auto-favoriting team: ${teamId} for user: ${userId}`);
-        await addFavoriteTeam(userId, teamId);
-        
+    try {
+      console.log(`Adding team ${teamId} to favorites for user ${userId}`);
+      setToggleLoading(teamId);
+      const success = await addFavoriteTeam(userId, teamId);
+      
+      if (success) {
         // Update local state
         setFavorites(prev => ({
           ...prev,
@@ -96,20 +100,38 @@ export function TeamSelector({
           description: "You'll see updates for this team on your dashboard"
         });
         
-        // Call the callback if provided
         if (onFavoriteToggle) {
           console.log("Calling onFavoriteToggle callback");
           onFavoriteToggle(teamId);
         }
-      } catch (error) {
-        console.error('Error adding favorite team:', error);
-        toast({
-          title: "Error",
-          description: "Could not automatically favorite team",
-          variant: "destructive"
-        });
+        
+        return true;
       }
+      return false;
+    } catch (error) {
+      console.error('Error adding favorite team:', error);
+      toast({
+        title: "Error",
+        description: "Could not add team to favorites",
+        variant: "destructive"
+      });
+      return false;
+    } finally {
+      setToggleLoading(null);
     }
+  };
+
+  const handleTeamChange = async (teamId: string) => {
+    console.log(`Team selected: ${teamId}`);
+    
+    // If autoFavoriteOnSelect is true and the team is not already a favorite, add it
+    if (autoFavoriteOnSelect && userId && !favorites[teamId]) {
+      console.log(`Auto-favoriting team: ${teamId} for user: ${userId}`);
+      await handleAddFavorite(teamId);
+    }
+    
+    // Call the parent callback
+    onSelectTeam(teamId);
   };
 
   const handleImageError = (teamId: string) => {

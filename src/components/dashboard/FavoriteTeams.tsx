@@ -40,7 +40,7 @@ export function FavoriteTeams({ userId, onDataUpdated }: FavoriteTeamsProps) {
   };
 
   useEffect(() => {
-    console.log("FavoriteTeams component mounted or userId changed:", userId);
+    console.log("FavoriteTeams component mounted or userId/refreshTrigger changed:", userId, refreshTrigger);
     loadFavoriteTeams();
   }, [userId, refreshTrigger]);
 
@@ -54,8 +54,10 @@ export function FavoriteTeams({ userId, onDataUpdated }: FavoriteTeamsProps) {
   };
 
   const handleTeamSelect = (teamId: string) => {
-    console.log("Team selected from selector:", teamId);
-    // This is intentionally empty as the TeamSelector component will handle favoriting
+    console.log("Team selected from selector in FavoriteTeams:", teamId);
+    // After the team is selected, we'll refresh to show the updated favorites
+    // The actual favoriting happens in the TeamSelector component
+    handleFavoriteToggle(teamId);
   };
 
   const favoriteTeamsContent = (
@@ -89,6 +91,7 @@ export function FavoriteTeams({ userId, onDataUpdated }: FavoriteTeamsProps) {
             showFavoriteOption={true}
             userId={userId}
             onFavoriteToggle={handleFavoriteToggle}
+            autoFavoriteOnSelect={true}
           />
         </div>
       )}
@@ -102,6 +105,7 @@ export function FavoriteTeams({ userId, onDataUpdated }: FavoriteTeamsProps) {
       onFavoriteToggle={handleFavoriteToggle}
       showFavoriteOption={true}
       userId={userId}
+      autoFavoriteOnSelect={true}
     />
   );
 
