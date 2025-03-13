@@ -1,5 +1,6 @@
+
 import { useState, useEffect } from 'react';
-import { ExternalLink, ArrowUpDown, Target, MapPin, Diamond, Home, User, Ticket } from 'lucide-react';
+import { ExternalLink, ArrowUpDown, Target, MapPin, Diamond, Home, User, Ticket, Flag, MapPinCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -10,6 +11,8 @@ interface TicketPriceCardProps {
   gameId: string;
   includeFees: boolean;
 }
+
+type AreaType = '1B' | '3B' | 'LF' | 'RF' | 'Outfield Upper' | 'Outfield Lower' | 'Plate' | 'Upper Deck' | 'Unknown';
 
 export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
   const [priceData, setPriceData] = useState<TicketPriceByCategory[]>([]);
@@ -37,6 +40,63 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
         ? b.displayPrice - a.displayPrice
         : a.displayPrice - b.displayPrice;
     });
+  };
+
+  const determineArea = (section?: string): AreaType => {
+    if (!section) return 'Unknown';
+    
+    const sectionNumber = parseInt(section, 10);
+    
+    // Common section number patterns in MLB stadiums
+    if (isNaN(sectionNumber)) {
+      // Handle non-numeric sections
+      const lowerSection = section.toLowerCase();
+      
+      if (lowerSection.includes('dugout') || lowerSection.includes('box')) {
+        return lowerSection.includes('1b') || lowerSection.includes('first') ? '1B' : 
+               lowerSection.includes('3b') || lowerSection.includes('third') ? '3B' : 'Unknown';
+      }
+      
+      if (lowerSection.includes('home') || lowerSection.includes('plate')) return 'Plate';
+      if (lowerSection.includes('upper') && lowerSection.includes('deck')) return 'Upper Deck';
+      if (lowerSection.includes('outfield')) {
+        return lowerSection.includes('upper') ? 'Outfield Upper' : 'Outfield Lower';
+      }
+      
+      return 'Unknown';
+    }
+    
+    // Basic section number patterns (this is a simplification as actual patterns vary by stadium)
+    if (sectionNumber >= 1 && sectionNumber <= 12) return 'Plate';
+    if (sectionNumber >= 13 && sectionNumber <= 33) return '1B';
+    if (sectionNumber >= 34 && sectionNumber <= 45) return 'RF';
+    if (sectionNumber >= 46 && sectionNumber <= 60) return 'Outfield Lower';
+    if (sectionNumber >= 61 && sectionNumber <= 70) return 'Outfield Upper';
+    if (sectionNumber >= 71 && sectionNumber <= 95) return 'LF';
+    if (sectionNumber >= 96 && sectionNumber <= 133) return '3B';
+    if (sectionNumber >= 134 && sectionNumber <= 165) return 'Upper Deck';
+    
+    return 'Unknown';
+  };
+
+  const getAreaIcon = (area: AreaType) => {
+    switch(area) {
+      case '1B':
+      case '3B':
+        return <Diamond className="h-4 w-4 mr-1" />;
+      case 'RF':
+      case 'LF':
+        return <Flag className="h-4 w-4 mr-1" />;
+      case 'Outfield Upper':
+      case 'Outfield Lower':
+        return <MapPin className="h-4 w-4 mr-1" />;
+      case 'Plate':
+        return <Target className="h-4 w-4 mr-1" />;
+      case 'Upper Deck':
+        return <MapPinCheck className="h-4 w-4 mr-1" />;
+      default:
+        return null;
+    }
   };
 
   const getCategoryIcon = (categoryName: string) => {
@@ -88,58 +148,66 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
     );
   }
 
-  const TicketPriceItem = ({ price }: { price: TicketPriceWithSource }) => (
-    <div 
-      key={price.id} 
-      className="py-4 grid grid-cols-7 gap-2 items-center"
-    >
-      <div className="col-span-2 flex items-center">
-        <img
-          src={price.source.logo}
-          alt={price.source.name}
-          className="w-8 h-8 object-contain mr-3 rounded"
-          onError={(e) => {
-            (e.target as HTMLImageElement).style.display = 'none';
-          }}
-        />
-        <span className="font-medium">{price.source.name}</span>
-      </div>
-      
-      <div className="price-tag text-right">
-        ${price.displayPrice.toFixed(2)}
-        <div className="text-xs text-muted-foreground">
-          {includeFees ? 'with fees' : 'before fees'}
+  const TicketPriceItem = ({ price }: { price: TicketPriceWithSource }) => {
+    const area = determineArea(price.section);
+    
+    return (
+      <div 
+        key={price.id} 
+        className="py-4 grid grid-cols-7 gap-2 items-center"
+      >
+        <div className="col-span-2 flex items-center">
+          <img
+            src={price.source.logo}
+            alt={price.source.name}
+            className="w-8 h-8 object-contain mr-3 rounded"
+            onError={(e) => {
+              (e.target as HTMLImageElement).style.display = 'none';
+            }}
+          />
+          <span className="font-medium">{price.source.name}</span>
+        </div>
+        
+        <div className="price-tag text-right">
+          ${price.displayPrice.toFixed(2)}
+          <div className="text-xs text-muted-foreground">
+            {includeFees ? 'with fees' : 'before fees'}
+          </div>
+        </div>
+        
+        <div className="text-xs text-muted-foreground col-span-1 text-center">
+          per ticket
+        </div>
+        
+        <div className="col-span-2 text-xs">
+          {price.section ? (
+            <div className="flex flex-col">
+              <span>Section: {price.section}</span>
+              {price.row && <span>Row: {price.row}</span>}
+              <span className="flex items-center mt-1">
+                {getAreaIcon(area)}
+                Area: {area}
+              </span>
+            </div>
+          ) : (
+            <span className="text-muted-foreground italic">Section/Row info not available</span>
+          )}
+        </div>
+        
+        <div className="text-right">
+          <a 
+            href={price.url} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3"
+          >
+            Buy
+            <ExternalLink className="ml-1 h-3 w-3" />
+          </a>
         </div>
       </div>
-      
-      <div className="text-xs text-muted-foreground col-span-1 text-center">
-        per ticket
-      </div>
-      
-      <div className="col-span-2 text-xs">
-        {price.section && price.row ? (
-          <div className="flex flex-col">
-            <span>Section: {price.section}</span>
-            <span>Row: {price.row}</span>
-          </div>
-        ) : (
-          <span className="text-muted-foreground italic">Section/Row info not available</span>
-        )}
-      </div>
-      
-      <div className="text-right">
-        <a 
-          href={price.url} 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="inline-flex items-center justify-center text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3"
-        >
-          Buy
-          <ExternalLink className="ml-1 h-3 w-3" />
-        </a>
-      </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div className="space-y-6">
