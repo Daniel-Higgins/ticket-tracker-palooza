@@ -21,6 +21,7 @@ export function FavoriteTeams({ userId, onDataUpdated }: FavoriteTeamsProps) {
     setLoading(true);
     try {
       const teams = await fetchUserFavoriteTeams(userId);
+      console.log("Loaded favorite teams:", teams);
       setFavoriteTeams(teams);
     } catch (error) {
       console.error('Error loading favorite teams:', error);
@@ -39,6 +40,7 @@ export function FavoriteTeams({ userId, onDataUpdated }: FavoriteTeamsProps) {
   }, [userId]);
 
   const handleFavoriteToggle = () => {
+    console.log("FavoriteToggle callback triggered, refreshing teams");
     loadFavoriteTeams();
     if (onDataUpdated) onDataUpdated();
   };

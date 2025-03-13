@@ -66,12 +66,38 @@ export function TeamSelector({
     loadFavorites();
   }, [teams, userId, showFavoriteOption]);
 
-  const handleTeamChange = (teamId: string) => {
+  const handleTeamChange = async (teamId: string) => {
     onSelectTeam(teamId);
     
     // If favorites are enabled and user is logged in, automatically favorite the selected team
     if (showFavoriteOption && userId && !favorites[teamId]) {
-      handleToggleFavorite(null, teamId, true);
+      console.log("Auto-favoriting team:", teamId);
+      try {
+        await addFavoriteTeam(userId, teamId);
+        
+        // Update local state
+        setFavorites(prev => ({
+          ...prev,
+          [teamId]: true
+        }));
+        
+        toast({
+          title: "Team added to favorites",
+          description: "You'll see updates for this team on your dashboard"
+        });
+        
+        // Call the callback if provided
+        if (onFavoriteToggle) {
+          onFavoriteToggle(teamId);
+        }
+      } catch (error) {
+        console.error('Error adding favorite team:', error);
+        toast({
+          title: "Error",
+          description: "Could not automatically favorite team",
+          variant: "destructive"
+        });
+      }
     }
   };
 
@@ -82,7 +108,7 @@ export function TeamSelector({
     }));
   };
 
-  const handleToggleFavorite = async (e: React.MouseEvent | null, teamId: string, autoSelect = false) => {
+  const handleToggleFavorite = async (e: React.MouseEvent | null, teamId: string) => {
     if (e) e.stopPropagation();
     if (!userId) return;
     
@@ -116,7 +142,7 @@ export function TeamSelector({
       console.error('Error toggling favorite:', error);
       toast({
         title: "Error",
-        description: autoSelect ? "Could not automatically favorite team" : "Could not update favorite status",
+        description: "Could not update favorite status",
         variant: "destructive"
       });
     } finally {
