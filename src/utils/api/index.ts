@@ -4,3 +4,6 @@ export * from './team';
 export * from './game';
 export * from './ticket';
 export * from './user';
+export * from './user/favorites';
+export * from './user/trackedGames';
+export * from './alerts';
