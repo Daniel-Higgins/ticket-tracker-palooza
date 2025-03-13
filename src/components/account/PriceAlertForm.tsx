@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -17,34 +17,36 @@ import {
 import { toast } from '@/hooks/use-toast';
 
 interface PriceAlertFormProps {
-  game: Game;
-  onSuccess: () => void;
+  userId: string;
+  onAlertCreated: () => void;
+  trackedGames?: Game[];
+  game?: Game;
 }
 
-export function PriceAlertForm({ game, onSuccess }: PriceAlertFormProps) {
-  const { user } = useAuth();
+export function PriceAlertForm({ userId, onAlertCreated, trackedGames, game }: PriceAlertFormProps) {
+  const [selectedGame, setSelectedGame] = useState<Game | null>(game || null);
   const [targetPrice, setTargetPrice] = useState<string>('');
   const [categoryId, setCategoryId] = useState<string>('');
   const [categories, setCategories] = useState<TicketCategory[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   // Load ticket categories
-  useState(() => {
+  useEffect(() => {
     const loadCategories = async () => {
       const data = await fetchTicketCategories();
       setCategories(data);
     };
     
     loadCategories();
-  });
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!user) {
+    if (!selectedGame) {
       toast({
-        title: "Not signed in",
-        description: "You must be signed in to create price alerts",
+        title: "No game selected",
+        description: "Please select a game for your price alert",
         variant: "destructive"
       });
       return;
@@ -63,8 +65,8 @@ export function PriceAlertForm({ game, onSuccess }: PriceAlertFormProps) {
     
     try {
       const success = await createPriceAlert(
-        user.id,
-        game.id,
+        userId,
+        selectedGame.id,
         parseFloat(targetPrice),
         categoryId || undefined
       );
@@ -72,7 +74,7 @@ export function PriceAlertForm({ game, onSuccess }: PriceAlertFormProps) {
       if (success) {
         setTargetPrice('');
         setCategoryId('');
-        onSuccess();
+        onAlertCreated();
       }
     } catch (error) {
       console.error('Error creating alert:', error);
@@ -86,9 +88,33 @@ export function PriceAlertForm({ game, onSuccess }: PriceAlertFormProps) {
       <div className="mb-4">
         <h3 className="text-lg font-medium mb-2">Create Price Alert</h3>
         <p className="text-sm text-muted-foreground">
-          Get notified when tickets for {game.homeTeam.name} vs {game.awayTeam.name} drop below your target price.
+          Get notified when tickets drop below your target price.
         </p>
       </div>
+      
+      {!game && trackedGames && (
+        <div className="space-y-2">
+          <Label htmlFor="game">Select Game</Label>
+          <Select 
+            value={selectedGame?.id} 
+            onValueChange={(gameId) => {
+              const game = trackedGames.find(g => g.id === gameId);
+              setSelectedGame(game || null);
+            }}
+          >
+            <SelectTrigger id="game">
+              <SelectValue placeholder="Choose a game" />
+            </SelectTrigger>
+            <SelectContent>
+              {trackedGames.map((game) => (
+                <SelectItem key={game.id} value={game.id}>
+                  {game.homeTeam.name} vs {game.awayTeam.name} ({game.date})
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
       
       <div className="space-y-2">
         <Label htmlFor="price">Target Price</Label>
@@ -130,7 +156,7 @@ export function PriceAlertForm({ game, onSuccess }: PriceAlertFormProps) {
         </p>
       </div>
       
-      <Button type="submit" className="w-full" disabled={isLoading}>
+      <Button type="submit" className="w-full" disabled={isLoading || !selectedGame}>
         {isLoading ? 'Creating Alert...' : 'Create Alert'}
       </Button>
     </form>

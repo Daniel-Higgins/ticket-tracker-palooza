@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { PriceAlertWithGame } from '@/lib/types';
@@ -19,7 +18,13 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-export function PriceAlertsList() {
+interface PriceAlertsListProps {
+  alerts?: PriceAlertWithGame[];
+  onToggle?: (alertId: string, isActive: boolean) => Promise<void>;
+  onDelete?: (alertId: string) => Promise<void>;
+}
+
+export function PriceAlertsList({ alerts: propsAlerts, onToggle, onDelete }: PriceAlertsListProps) {
   const { user } = useAuth();
   const [alerts, setAlerts] = useState<PriceAlertWithGame[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -39,22 +44,35 @@ export function PriceAlertsList() {
   };
   
   useEffect(() => {
-    loadAlerts();
-  }, [user]);
+    if (propsAlerts) {
+      setAlerts(propsAlerts);
+      setIsLoading(false);
+    } else {
+      loadAlerts();
+    }
+  }, [user, propsAlerts]);
   
   const handleToggle = async (alertId: string, newState: boolean) => {
-    const success = await togglePriceAlert(alertId, newState);
-    if (success) {
-      setAlerts(alerts.map(alert => 
-        alert.id === alertId ? { ...alert, isActive: newState } : alert
-      ));
+    if (onToggle) {
+      await onToggle(alertId, newState);
+    } else {
+      const success = await togglePriceAlert(alertId, newState);
+      if (success) {
+        setAlerts(alerts.map(alert => 
+          alert.id === alertId ? { ...alert, isActive: newState } : alert
+        ));
+      }
     }
   };
   
   const handleDelete = async (alertId: string) => {
-    const success = await deletePriceAlert(alertId);
-    if (success) {
-      setAlerts(alerts.filter(alert => alert.id !== alertId));
+    if (onDelete) {
+      await onDelete(alertId);
+    } else {
+      const success = await deletePriceAlert(alertId);
+      if (success) {
+        setAlerts(alerts.filter(alert => alert.id !== alertId));
+      }
     }
   };
   
@@ -81,8 +99,6 @@ export function PriceAlertsList() {
   
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-semibold mb-4">Your Price Alerts</h2>
-      
       <div className="grid gap-4">
         {alerts.map((alert) => (
           <div key={alert.id} className="border border-border rounded-lg p-4">
