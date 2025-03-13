@@ -48,47 +48,7 @@ export default function Index() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col relative">
-      {/* Left side ad box */}
-      <div className="hidden lg:block fixed top-1/2 left-4 transform -translate-y-1/2 z-10">
-        <div className="w-[160px] h-[600px] bg-gray-100 border border-gray-200 rounded-lg shadow-sm flex flex-col items-center justify-center">
-          <div className="text-center text-gray-500 font-medium">
-            <p>Your</p>
-            <p className="text-xl mb-2">Ad</p>
-            <p>Here</p>
-          </div>
-          <div className="w-16 h-16 border-2 border-dashed border-gray-300 rounded-full flex items-center justify-center mt-4">
-            <span className="text-3xl text-gray-300">+</span>
-          </div>
-          <p className="text-xs text-gray-400 mt-4">160 x 600</p>
-        </div>
-      </div>
-      
-      {/* Right side ad box */}
-      <div className="hidden lg:block fixed top-1/2 right-4 transform -translate-y-1/2 z-10">
-        <div className="w-[160px] h-[600px] bg-gray-100 border border-gray-200 rounded-lg shadow-sm flex flex-col items-center justify-center">
-          <div className="text-center text-gray-500 font-medium">
-            <p>Your</p>
-            <p className="text-xl mb-2">Ad</p>
-            <p>Here</p>
-          </div>
-          <div className="w-16 h-16 border-2 border-dashed border-gray-300 rounded-full flex items-center justify-center mt-4">
-            <span className="text-3xl text-gray-300">+</span>
-          </div>
-          <p className="text-xs text-gray-400 mt-4">160 x 600</p>
-        </div>
-      </div>
-      
-      {/* Smaller top ad for mobile */}
-      <div className="lg:hidden w-full max-w-xs mx-auto mt-4 mb-2 z-10">
-        <div className="w-full h-[100px] bg-gray-100 border border-gray-200 rounded-lg shadow-sm flex items-center justify-center">
-          <div className="text-center text-gray-500">
-            <p className="font-medium">Your Ad Here</p>
-            <p className="text-xs text-gray-400 mt-1">320 x 100</p>
-          </div>
-        </div>
-      </div>
-      
+    <div className="min-h-screen flex flex-col">
       <Header />
       
       <main className="flex-1">
@@ -136,16 +96,6 @@ export default function Index() {
             <div className="absolute bottom-1/3 right-1/3 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl"></div>
           </div>
         </section>
-        
-        {/* Rectangle ad below hero section */}
-        <div className="w-full max-w-3xl mx-auto mb-8 px-4">
-          <div className="w-full h-[90px] bg-gray-100 border border-gray-200 rounded-lg shadow-sm flex items-center justify-center">
-            <div className="text-center text-gray-500">
-              <p className="font-medium">Your Ad Here</p>
-              <p className="text-xs text-gray-400 mt-1">728 x 90</p>
-            </div>
-          </div>
-        </div>
         
         {/* Features Section */}
         <section 
@@ -195,21 +145,6 @@ export default function Index() {
           </div>
         </section>
         
-        {/* Small square ad in the middle of the content */}
-        <div className="w-full max-w-xs mx-auto my-12">
-          <div className="w-full h-[250px] bg-gray-100 border border-gray-200 rounded-lg shadow-sm flex flex-col items-center justify-center">
-            <div className="text-center text-gray-500 font-medium">
-              <p>Your</p>
-              <p className="text-xl mb-2">Ad</p>
-              <p>Here</p>
-            </div>
-            <div className="w-16 h-16 border-2 border-dashed border-gray-300 rounded-full flex items-center justify-center mt-4">
-              <span className="text-3xl text-gray-300">+</span>
-            </div>
-            <p className="text-xs text-gray-400 mt-4">300 x 250</p>
-          </div>
-        </div>
-        
         {/* CTA Section */}
         <section className="py-20 px-4">
           <div className="max-w-3xl mx-auto text-center">
@@ -232,6 +167,18 @@ export default function Index() {
           </div>
         </section>
       </main>
+      
+      {/* Small banner ad at the bottom of the page */}
+      <div className="w-full py-4 border-t border-gray-100">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="w-full h-[50px] bg-gray-100 border border-gray-200 rounded-md shadow-sm flex items-center justify-center">
+            <div className="text-center text-gray-500">
+              <span className="text-sm font-medium">Your Ad Here</span>
+              <span className="text-xs text-gray-400 ml-2">728 x 50</span>
+            </div>
+          </div>
+        </div>
+      </div>
       
       <Footer />
     </div>
