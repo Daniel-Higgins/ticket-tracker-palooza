@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -24,20 +23,22 @@ export function AuthModal({ trigger }: AuthModalProps) {
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     try {
-      console.log("Initiating Google sign-in");
+      console.log("Initiating Google sign-in from AuthModal");
       const { error } = await signInWithProvider('google');
       if (error) {
         console.error("Google sign-in error:", error);
         throw error;
       }
-      // Don't close the modal here as we'll be redirected to Google
+      // The page will redirect to Google, so we don't need to handle success here
     } catch (error) {
       console.error('Error in Google sign in:', error);
       toast({
         title: "Sign In Failed",
-        description: "Could not sign in with Google. Please try again.",
+        description: "Could not sign in with Google. Please check your console for details.",
         variant: "destructive"
       });
+    } finally {
+      // In case the redirect doesn't happen for some reason
       setIsLoading(false);
     }
   };

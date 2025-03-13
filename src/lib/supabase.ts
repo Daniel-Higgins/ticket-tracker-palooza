@@ -22,16 +22,24 @@ export const supabase = createClient(
 export const signInWithProvider = async (provider: 'google' | 'facebook') => {
   try {
     // Get the current URL to construct the correct redirect URL
+    // Use window.location.origin to get the base URL
     const redirectTo = `${window.location.origin}/auth/callback`;
-    console.log(`Initiating sign in with ${provider}, redirect URL: ${redirectTo}`);
+    
+    console.log(`Starting ${provider} sign-in process`);
+    console.log(`Current origin: ${window.location.origin}`);
+    console.log(`Redirect URL: ${redirectTo}`);
+    
+    // Explicitly log all options being passed to the OAuth call
+    const options = {
+      redirectTo,
+      scopes: provider === 'google' ? 'profile email' : undefined
+    };
+    
+    console.log('OAuth options:', JSON.stringify(options));
     
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider,
-      options: {
-        redirectTo,
-        // Adding scopes for Google authentication
-        scopes: provider === 'google' ? 'profile email' : undefined
-      },
+      options,
     });
 
     if (error) {
@@ -39,13 +47,13 @@ export const signInWithProvider = async (provider: 'google' | 'facebook') => {
       throw error;
     }
 
-    console.log(`${provider} auth initiated successfully`, data);
+    console.log(`${provider} auth initiated successfully:`, data);
     return { data, error: null };
   } catch (error) {
     console.error('Error signing in with provider:', error);
     toast({
       title: "Authentication failed",
-      description: "Please try again.",
+      description: "Please check console for details and try again.",
       variant: "destructive"
     });
     return { data: null, error };
