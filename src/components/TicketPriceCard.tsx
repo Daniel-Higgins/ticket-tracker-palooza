@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { ExternalLink, ArrowUpDown } from 'lucide-react';
+import { ExternalLink, ArrowUpDown, Target, MapPin, Diamond, Home, Flag, User, Ticket } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -38,6 +38,28 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
         ? b.displayPrice - a.displayPrice
         : a.displayPrice - b.displayPrice;
     });
+  };
+
+  // Get the appropriate icon for each section category
+  const getCategoryIcon = (categoryName: string) => {
+    switch(categoryName.toLowerCase()) {
+      case 'behind the plate':
+        return <Target className="h-4 w-4 mr-1" />;
+      case 'field level':
+        return <MapPin className="h-4 w-4 mr-1" />;
+      case 'behind dugouts':
+        return <User className="h-4 w-4 mr-1" />;
+      case 'home run territory':
+        return <Home className="h-4 w-4 mr-1" />;
+      case 'fair territory':
+        return <Flag className="h-4 w-4 mr-1" />;
+      case 'behind the diamond':
+        return <Diamond className="h-4 w-4 mr-1" />;
+      case 'cheapest available':
+        return <Ticket className="h-4 w-4 mr-1" />;
+      default:
+        return null;
+    }
   };
 
   if (loading) {
@@ -82,7 +104,8 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
       <Tabs defaultValue={priceData[0].category.id}>
         <TabsList className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 mb-4">
           {priceData.map((item) => (
-            <TabsTrigger key={item.category.id} value={item.category.id} className="text-xs sm:text-sm">
+            <TabsTrigger key={item.category.id} value={item.category.id} className="text-xs sm:text-sm flex items-center">
+              {getCategoryIcon(item.category.name)}
               {item.category.name}
             </TabsTrigger>
           ))}

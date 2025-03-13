@@ -2,27 +2,42 @@ import { TicketCategory, TicketSource, TicketPriceByCategory } from '@/lib/types
 import { supabase } from '@/lib/supabase';
 import { toast } from "@/hooks/use-toast";
 
-// Demo ticket categories
+// Demo ticket categories - updated to baseball-specific locations
 const demoCategories: TicketCategory[] = [
   {
     id: "cat-1",
-    name: "Premium",
-    description: "Best seats with club access and included food & beverages"
+    name: "Behind the Plate",
+    description: "Premium seats directly behind home plate with perfect views of pitches"
   },
   {
     id: "cat-2",
     name: "Field Level",
-    description: "Excellent views close to the action"
+    description: "Excellent views close to the action along the baselines"
   },
   {
     id: "cat-3",
-    name: "Mezzanine",
-    description: "Great views from the middle level"
+    name: "Behind Dugouts",
+    description: "Great seats behind the team dugouts with player access"
   },
   {
     id: "cat-4",
-    name: "Upper Deck",
-    description: "Affordable seats with a stadium overview"
+    name: "Home Run Territory",
+    description: "Outfield sections with chances to catch home run balls"
+  },
+  {
+    id: "cat-5",
+    name: "Fair Territory",
+    description: "Seating along the foul lines with potential for foul ball catches"
+  },
+  {
+    id: "cat-6",
+    name: "Behind the Diamond",
+    description: "Central view of the entire infield and pitcher's mound"
+  },
+  {
+    id: "cat-7",
+    name: "Cheapest Available",
+    description: "Most affordable tickets available for this game"
   }
 ];
 
@@ -54,11 +69,11 @@ const demoSources: TicketSource[] = [
   }
 ];
 
-// Demo ticket pricing by game
+// Update the demo pricing to include our new categories
 const demoPricing: Record<string, TicketPriceByCategory[]> = {
   "game-1": [
     {
-      category: demoCategories[0],
+      category: demoCategories[0], // Behind the Plate
       prices: [
         {
           id: "price-1",
@@ -89,7 +104,7 @@ const demoPricing: Record<string, TicketPriceByCategory[]> = {
       ]
     },
     {
-      category: demoCategories[1],
+      category: demoCategories[1], // Field Level
       prices: [
         {
           id: "price-3",
@@ -120,43 +135,48 @@ const demoPricing: Record<string, TicketPriceByCategory[]> = {
       ]
     },
     {
-      category: demoCategories[2],
+      category: demoCategories[2], // Behind Dugouts
       prices: [
         {
           id: "price-5",
           gameId: "game-1",
           ticketCategoryId: "cat-3",
           sourceId: "source-4",
-          price: 95.00,
-          serviceFee: 18.00,
-          totalPrice: 113.00,
+          price: 110.00,
+          serviceFee: 20.00,
+          totalPrice: 130.00,
           url: "https://gametime.co",
           lastUpdated: new Date().toISOString(),
           source: demoSources[3],
-          displayPrice: 113.00
+          displayPrice: 130.00
         }
       ]
     },
     {
-      category: demoCategories[3],
+      category: demoCategories[3], // Home Run Territory
       prices: [
         {
           id: "price-6",
           gameId: "game-1",
           ticketCategoryId: "cat-4",
           sourceId: "source-2",
-          price: 45.00,
-          serviceFee: 12.50,
-          totalPrice: 57.50,
+          price: 85.00,
+          serviceFee: 18.50,
+          totalPrice: 103.50,
           url: "https://www.stubhub.com",
           lastUpdated: new Date().toISOString(),
           source: demoSources[1],
-          displayPrice: 57.50
-        },
+          displayPrice: 103.50
+        }
+      ]
+    },
+    {
+      category: demoCategories[6], // Cheapest Available
+      prices: [
         {
           id: "price-7",
           gameId: "game-1",
-          ticketCategoryId: "cat-4",
+          ticketCategoryId: "cat-7",
           sourceId: "source-3",
           price: 48.00,
           serviceFee: 11.00,
@@ -171,7 +191,7 @@ const demoPricing: Record<string, TicketPriceByCategory[]> = {
   ],
   "game-2": [
     {
-      category: demoCategories[0],
+      category: demoCategories[0], // Behind the Plate
       prices: [
         {
           id: "price-8",
@@ -189,7 +209,7 @@ const demoPricing: Record<string, TicketPriceByCategory[]> = {
       ]
     },
     {
-      category: demoCategories[1],
+      category: demoCategories[1], // Field Level
       prices: [
         {
           id: "price-9",
@@ -220,12 +240,12 @@ const demoPricing: Record<string, TicketPriceByCategory[]> = {
       ]
     },
     {
-      category: demoCategories[3],
+      category: demoCategories[6], // Cheapest Available
       prices: [
         {
           id: "price-11",
           gameId: "game-2",
-          ticketCategoryId: "cat-4",
+          ticketCategoryId: "cat-7",
           sourceId: "source-3",
           price: 35.00,
           serviceFee: 9.00,
@@ -240,12 +260,12 @@ const demoPricing: Record<string, TicketPriceByCategory[]> = {
   ],
   "game-3": [
     {
-      category: demoCategories[1],
+      category: demoCategories[5], // Behind the Diamond
       prices: [
         {
           id: "price-12",
           gameId: "game-3",
-          ticketCategoryId: "cat-2",
+          ticketCategoryId: "cat-6",
           sourceId: "source-2",
           price: 185.00,
           serviceFee: 32.00,
@@ -258,12 +278,12 @@ const demoPricing: Record<string, TicketPriceByCategory[]> = {
       ]
     },
     {
-      category: demoCategories[2],
+      category: demoCategories[4], // Fair Territory
       prices: [
         {
           id: "price-13",
           gameId: "game-3",
-          ticketCategoryId: "cat-3",
+          ticketCategoryId: "cat-5",
           sourceId: "source-1",
           price: 110.00,
           serviceFee: 20.00,
@@ -276,7 +296,7 @@ const demoPricing: Record<string, TicketPriceByCategory[]> = {
         {
           id: "price-14",
           gameId: "game-3",
-          ticketCategoryId: "cat-3",
+          ticketCategoryId: "cat-5",
           sourceId: "source-3",
           price: 108.00,
           serviceFee: 18.50,
@@ -289,12 +309,12 @@ const demoPricing: Record<string, TicketPriceByCategory[]> = {
       ]
     },
     {
-      category: demoCategories[3],
+      category: demoCategories[6], // Cheapest Available
       prices: [
         {
           id: "price-15",
           gameId: "game-3",
-          ticketCategoryId: "cat-4",
+          ticketCategoryId: "cat-7",
           sourceId: "source-4",
           price: 52.00,
           serviceFee: 13.00,
