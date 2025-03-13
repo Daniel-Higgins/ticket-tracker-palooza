@@ -62,7 +62,7 @@ export default function Index() {
               isVisible ? 'opacity-100' : 'opacity-0 transform translate-y-10'
             }`}
           >
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-foreground">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-primary">
               Find the Perfect MLB Tickets at the Best Price
             </h1>
             
@@ -75,7 +75,7 @@ export default function Index() {
                   alt="Baseball stadium" 
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]"></div>
+                <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]"></div>
               </div>
               
               <div className="p-8 relative z-10">
