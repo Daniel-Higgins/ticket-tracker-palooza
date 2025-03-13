@@ -31,7 +31,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/teams" element={<AllTeams />} />
-            <Route path="/team/:teamId" element={<TeamView />} />
+            <Route path="/teams/:teamId" element={<TeamView />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/account" element={<Account />} />
             <Route path="/auth/callback" element={<AuthCallback />} />

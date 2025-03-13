@@ -43,8 +43,8 @@ export default function Index() {
 
   const handleSelectTeam = (teamId: string) => {
     setSelectedTeamId(teamId);
-    // Navigate to team page when a team is selected
-    navigate(`/team/${teamId}`);
+    // Navigate to team page when a team is selected - use correct path
+    navigate(`/teams/${teamId}`);
   };
 
   return (
