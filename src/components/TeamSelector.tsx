@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -67,9 +66,16 @@ export function TeamSelector({
       
       console.log("Loading favorite status for teams with userId:", userId);
       const favStatus: Record<string, boolean> = {};
+      
       for (const team of teams) {
-        favStatus[team.id] = await isTeamFavorite(userId, team.id);
+        try {
+          favStatus[team.id] = await isTeamFavorite(userId, team.id);
+        } catch (error) {
+          console.error(`Error checking favorite status for team ${team.id}:`, error);
+          favStatus[team.id] = false;
+        }
       }
+      
       console.log("Favorites status loaded:", favStatus);
       setFavorites(favStatus);
     };
@@ -80,6 +86,11 @@ export function TeamSelector({
   const handleAddFavorite = async (teamId: string) => {
     if (!userId) {
       console.log("No userId provided, cannot add favorite");
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to add favorites",
+        variant: "destructive"
+      });
       return false;
     }
     
@@ -94,11 +105,6 @@ export function TeamSelector({
           ...prev,
           [teamId]: true
         }));
-        
-        toast({
-          title: "Team added to favorites",
-          description: "You'll see updates for this team on your dashboard"
-        });
         
         if (onFavoriteToggle) {
           console.log("Calling onFavoriteToggle callback");
@@ -143,7 +149,14 @@ export function TeamSelector({
 
   const handleToggleFavorite = async (e: React.MouseEvent | null, teamId: string) => {
     if (e) e.stopPropagation();
-    if (!userId) return;
+    if (!userId) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to add favorites",
+        variant: "destructive"
+      });
+      return;
+    }
     
     console.log(`Toggling favorite for team: ${teamId}`);
     setToggleLoading(teamId);
@@ -154,21 +167,9 @@ export function TeamSelector({
       if (isCurrentlyFavorite) {
         console.log(`Removing team ${teamId} from favorites`);
         success = await removeFavoriteTeam(userId, teamId);
-        if (success) {
-          toast({
-            title: "Team removed from favorites",
-            description: "Team has been removed from your favorites"
-          });
-        }
       } else {
         console.log(`Adding team ${teamId} to favorites`);
         success = await addFavoriteTeam(userId, teamId);
-        if (success) {
-          toast({
-            title: "Team added to favorites",
-            description: "You'll see updates for this team on your dashboard"
-          });
-        }
       }
       
       if (success) {
