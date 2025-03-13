@@ -10,12 +10,17 @@ export const addFavoriteTeam = async (userId: string, teamId: string): Promise<b
     console.log(`API: Adding team ${teamId} to favorites for user ${userId}`);
     
     // Check if the favorite already exists
-    const { data: existingFavorite } = await supabase
+    const { data: existingFavorite, error: checkError } = await supabase
       .from('favorites')
       .select('*')
       .eq('userid', userId)
       .eq('teamid', teamId)
       .single();
+    
+    if (checkError && checkError.code !== 'PGRST116') {
+      console.error('Error checking existing favorite:', checkError);
+      return false;
+    }
       
     if (existingFavorite) {
       console.log(`Team ${teamId} is already a favorite for user ${userId}`);
@@ -23,14 +28,20 @@ export const addFavoriteTeam = async (userId: string, teamId: string): Promise<b
     }
     
     // Add the favorite
-    const { error } = await supabase
+    console.log('Inserting new favorite with:', { userid: userId, teamid: teamId, type: 'team' });
+    const { error: insertError } = await supabase
       .from('favorites')
       .insert([
         { userid: userId, teamid: teamId, type: 'team' }
       ]);
     
-    if (error) {
-      console.error('Error adding favorite team:', error);
+    if (insertError) {
+      console.error('Error adding favorite team:', insertError);
+      toast({
+        title: "Could not add favorite",
+        description: insertError.message,
+        variant: "destructive"
+      });
       return false;
     }
     
@@ -38,6 +49,11 @@ export const addFavoriteTeam = async (userId: string, teamId: string): Promise<b
     return true;
   } catch (error) {
     console.error('Error adding favorite team:', error);
+    toast({
+      title: "Error adding favorite",
+      description: "An unexpected error occurred",
+      variant: "destructive"
+    });
     return false;
   }
 };
@@ -56,6 +72,11 @@ export const removeFavoriteTeam = async (userId: string, teamId: string): Promis
     
     if (error) {
       console.error('Error removing favorite team:', error);
+      toast({
+        title: "Could not remove favorite",
+        description: error.message,
+        variant: "destructive"
+      });
       return false;
     }
     
@@ -63,6 +84,11 @@ export const removeFavoriteTeam = async (userId: string, teamId: string): Promis
     return true;
   } catch (error) {
     console.error('Error removing favorite team:', error);
+    toast({
+      title: "Error removing favorite",
+      description: "An unexpected error occurred",
+      variant: "destructive"
+    });
     return false;
   }
 };
@@ -73,13 +99,20 @@ export const toggleFavoriteTeam = async (userId: string, teamId: string): Promis
     console.log(`API: Toggling favorite status for team ${teamId} for user ${userId}`);
     
     // Check if the team is already a favorite
-    const { data: existingFavorite } = await supabase
+    const { data: existingFavorite, error: checkError } = await supabase
       .from('favorites')
       .select('*')
       .eq('userid', userId)
       .eq('teamid', teamId)
       .eq('type', 'team')
       .single();
+    
+    if (checkError && checkError.code !== 'PGRST116') {
+      console.error('Error checking if team is favorite:', checkError);
+      return false;
+    }
+    
+    console.log('Existing favorite check result:', existingFavorite);
     
     if (existingFavorite) {
       // If it's already a favorite, remove it
@@ -90,6 +123,11 @@ export const toggleFavoriteTeam = async (userId: string, teamId: string): Promis
     }
   } catch (error) {
     console.error('Error toggling favorite team:', error);
+    toast({
+      title: "Error updating favorites",
+      description: "An unexpected error occurred",
+      variant: "destructive"
+    });
     return false;
   }
 };
@@ -107,6 +145,7 @@ export const fetchUserFavoriteTeams = async (userId: string): Promise<Team[]> =>
       .eq('type', 'team');
     
     if (error) {
+      console.error('Error fetching favorites:', error);
       throw error;
     }
     
@@ -140,6 +179,8 @@ export const isTeamFavorite = async (userId: string, teamId: string): Promise<bo
   try {
     if (!userId || !teamId) return false;
     
+    console.log(`Checking if team ${teamId} is favorite for user ${userId}`);
+    
     const { data, error } = await supabase
       .from('favorites')
       .select('*')
@@ -153,6 +194,7 @@ export const isTeamFavorite = async (userId: string, teamId: string): Promise<bo
       return false;
     }
     
+    console.log('Is team favorite result:', !!data);
     return !!data;
   } catch (error) {
     console.error('Error checking if team is favorite:', error);

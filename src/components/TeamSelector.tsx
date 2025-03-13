@@ -148,32 +148,41 @@ export function TeamSelector({
     console.log(`Toggling favorite for team: ${teamId}`);
     setToggleLoading(teamId);
     try {
-      if (favorites[teamId]) {
+      const isCurrentlyFavorite = favorites[teamId];
+      let success: boolean;
+      
+      if (isCurrentlyFavorite) {
         console.log(`Removing team ${teamId} from favorites`);
-        await removeFavoriteTeam(userId, teamId);
-        toast({
-          title: "Team removed from favorites",
-          description: "Team has been removed from your favorites"
-        });
+        success = await removeFavoriteTeam(userId, teamId);
+        if (success) {
+          toast({
+            title: "Team removed from favorites",
+            description: "Team has been removed from your favorites"
+          });
+        }
       } else {
         console.log(`Adding team ${teamId} to favorites`);
-        await addFavoriteTeam(userId, teamId);
-        toast({
-          title: "Team added to favorites",
-          description: "You'll see updates for this team on your dashboard"
-        });
+        success = await addFavoriteTeam(userId, teamId);
+        if (success) {
+          toast({
+            title: "Team added to favorites",
+            description: "You'll see updates for this team on your dashboard"
+          });
+        }
       }
       
-      // Update local state
-      setFavorites(prev => ({
-        ...prev,
-        [teamId]: !prev[teamId]
-      }));
-      
-      // Call the callback if provided
-      if (onFavoriteToggle) {
-        console.log("Calling onFavoriteToggle callback after toggle");
-        onFavoriteToggle(teamId);
+      if (success) {
+        // Update local state
+        setFavorites(prev => ({
+          ...prev,
+          [teamId]: !prev[teamId]
+        }));
+        
+        // Call the callback if provided
+        if (onFavoriteToggle) {
+          console.log("Calling onFavoriteToggle callback after toggle");
+          onFavoriteToggle(teamId);
+        }
       }
     } catch (error) {
       console.error('Error toggling favorite:', error);
