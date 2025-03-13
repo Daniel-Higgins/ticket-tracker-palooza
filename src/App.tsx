@@ -8,7 +8,7 @@ import Dashboard from '@/pages/Dashboard';
 import Account from '@/pages/Account';
 import AuthCallback from '@/pages/AuthCallback';
 import NotFound from '@/pages/NotFound';
-import { ThemeProvider } from "@/components/ThemeProvider"
+import { ThemeProvider } from "@/components/ThemeProvider";
 import UploadImages from '@/pages/UploadImages';
 
 export default function App() {
