@@ -101,7 +101,7 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
         </Button>
       </div>
 
-      <Tabs defaultValue={priceData[0].category.id}>
+      <Tabs defaultValue={priceData[0]?.category.id}>
         <TabsList className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 mb-4">
           {priceData.map((item) => (
             <TabsTrigger key={item.category.id} value={item.category.id} className="text-xs sm:text-sm flex items-center">
