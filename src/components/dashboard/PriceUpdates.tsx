@@ -2,12 +2,37 @@
 import { Game } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useState, useEffect } from 'react';
+
+interface PriceUpdate {
+  gameId: string;
+  priceChange: number;
+  timestamp: string;
+}
 
 interface PriceUpdatesProps {
   trackedGames: Game[];
 }
 
 export function PriceUpdates({ trackedGames }: PriceUpdatesProps) {
+  const [priceUpdates, setPriceUpdates] = useState<Record<string, number>>({});
+
+  // Simulate price updates for demonstration purposes
+  useEffect(() => {
+    if (trackedGames.length === 0) return;
+    
+    // Generate consistent price updates based on game ID
+    const updates: Record<string, number> = {};
+    trackedGames.forEach(game => {
+      // Using the game ID hash to generate a consistent price change
+      const gameIdSum = game.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+      const priceChange = (gameIdSum % 20) - 10; // Range from -10 to +10
+      updates[game.id] = priceChange;
+    });
+    
+    setPriceUpdates(updates);
+  }, [trackedGames]);
+
   if (trackedGames.length === 0) {
     return (
       <div className="glass-card p-6 mb-8">
@@ -35,8 +60,8 @@ export function PriceUpdates({ trackedGames }: PriceUpdatesProps) {
                 <img src={game.awayTeam.logo || '/placeholder.svg'} alt={game.awayTeam.name} className="w-6 h-6 mr-2" />
                 <span>{game.awayTeam.name}</span>
               </div>
-              <Badge variant={Math.random() > 0.5 ? "destructive" : "default"}>
-                {Math.random() > 0.5 ? "↑ $12" : "↓ $8"}
+              <Badge variant={priceUpdates[game.id] > 0 ? "destructive" : "default"}>
+                {priceUpdates[game.id] > 0 ? `↑ $${Math.abs(priceUpdates[game.id])}` : `↓ $${Math.abs(priceUpdates[game.id])}`}
               </Badge>
             </div>
             <div className="text-sm text-muted-foreground">

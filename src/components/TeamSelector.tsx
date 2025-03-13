@@ -11,10 +11,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
-import { fetchTeams, isTeamFavorite, addFavoriteTeam, removeFavoriteTeam } from '@/utils/api';
+import { fetchTeams } from '@/utils/api/team';
+import { isTeamFavorite, addFavoriteTeam, removeFavoriteTeam } from '@/utils/api/user/favorites';
 import { Team } from '@/lib/types';
 import { Button } from './ui/button';
 import { Heart } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 
 interface TeamSelectorProps {
   selectedTeamId: string | null;
@@ -66,6 +68,11 @@ export function TeamSelector({
 
   const handleTeamChange = (teamId: string) => {
     onSelectTeam(teamId);
+    
+    // If favorites are enabled and user is logged in, automatically favorite the selected team
+    if (showFavoriteOption && userId && !favorites[teamId]) {
+      handleToggleFavorite(null, teamId, true);
+    }
   };
 
   const handleImageError = (teamId: string) => {
@@ -75,16 +82,24 @@ export function TeamSelector({
     }));
   };
 
-  const handleToggleFavorite = async (e: React.MouseEvent, teamId: string) => {
-    e.stopPropagation();
+  const handleToggleFavorite = async (e: React.MouseEvent | null, teamId: string, autoSelect = false) => {
+    if (e) e.stopPropagation();
     if (!userId) return;
     
     setToggleLoading(teamId);
     try {
       if (favorites[teamId]) {
         await removeFavoriteTeam(userId, teamId);
+        toast({
+          title: "Team removed from favorites",
+          description: "Team has been removed from your favorites"
+        });
       } else {
         await addFavoriteTeam(userId, teamId);
+        toast({
+          title: "Team added to favorites",
+          description: "You'll see updates for this team on your dashboard"
+        });
       }
       
       // Update local state
@@ -99,6 +114,11 @@ export function TeamSelector({
       }
     } catch (error) {
       console.error('Error toggling favorite:', error);
+      toast({
+        title: "Error",
+        description: autoSelect ? "Could not automatically favorite team" : "Could not update favorite status",
+        variant: "destructive"
+      });
     } finally {
       setToggleLoading(null);
     }

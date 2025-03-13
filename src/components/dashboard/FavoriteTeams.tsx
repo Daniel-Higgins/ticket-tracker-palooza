@@ -6,6 +6,7 @@ import { Team } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { TeamSelector } from '@/components/TeamSelector';
 import { DashboardCard } from './DashboardCard';
+import { toast } from '@/hooks/use-toast';
 
 interface FavoriteTeamsProps {
   userId: string;
@@ -23,6 +24,11 @@ export function FavoriteTeams({ userId, onDataUpdated }: FavoriteTeamsProps) {
       setFavoriteTeams(teams);
     } catch (error) {
       console.error('Error loading favorite teams:', error);
+      toast({
+        title: "Error loading favorites",
+        description: "We couldn't load your favorite teams",
+        variant: "destructive"
+      });
     } finally {
       setLoading(false);
     }
@@ -62,11 +68,13 @@ export function FavoriteTeams({ userId, onDataUpdated }: FavoriteTeamsProps) {
           <p className="text-muted-foreground mb-4">
             You haven't added any favorite teams yet.
           </p>
-          <Link to="/teams">
-            <Button variant="outline" size="sm" className="w-full">
-              Browse Teams
-            </Button>
-          </Link>
+          <TeamSelector
+            selectedTeamId={null}
+            onSelectTeam={() => {}}
+            showFavoriteOption={true}
+            userId={userId}
+            onFavoriteToggle={handleFavoriteToggle}
+          />
         </div>
       )}
     </>
