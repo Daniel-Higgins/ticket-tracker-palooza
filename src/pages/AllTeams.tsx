@@ -42,10 +42,10 @@ export default function AllTeams() {
   }, [searchQuery, teams]);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-[#0a1e3a]">
       <Header />
       
-      <main className="flex-1 container py-24 px-4">
+      <main className="flex-1 container py-24 px-4 text-white">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl font-bold mb-8 text-center">MLB Teams</h1>
           
@@ -63,7 +63,7 @@ export default function AllTeams() {
           {loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               {Array.from({ length: 30 }).map((_, i) => (
-                <Skeleton key={i} className="h-36 rounded-xl" />
+                <Skeleton key={i} className="h-36 rounded-xl bg-white/10" />
               ))}
             </div>
           ) : filteredTeams.length > 0 ? (
