@@ -1,4 +1,3 @@
-
 import { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -6,48 +5,16 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { TeamSelector } from '@/components/TeamSelector';
 import { ChevronDown } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
 
 export default function Index() {
   const [isVisible, setIsVisible] = useState(false);
   const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
-  const [stadiumImageUrl, setStadiumImageUrl] = useState<string | null>(null);
   const heroRef = useRef<HTMLDivElement>(null);
   const featuresRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     setIsVisible(true);
-    
-    // Get the stadium image from Supabase storage
-    const fetchStadiumImage = async () => {
-      try {
-        // Check if there are images in the bucket
-        const { data: files } = await supabase.storage
-          .from('site-images')
-          .list();
-        
-        // If we have images, get the URL of the first one
-        if (files && files.length > 0) {
-          const { data } = supabase.storage
-            .from('site-images')
-            .getPublicUrl(files[0].name);
-          
-          if (data) {
-            setStadiumImageUrl(data.publicUrl);
-          }
-        } else {
-          // Use a placeholder image if no images are found
-          setStadiumImageUrl('/placeholder.svg');
-        }
-      } catch (error) {
-        console.error('Error fetching stadium image:', error);
-        // Use a placeholder image if there's an error
-        setStadiumImageUrl('/placeholder.svg');
-      }
-    };
-    
-    fetchStadiumImage();
     
     const observer = new IntersectionObserver(
       (entries) => {
@@ -78,6 +45,9 @@ export default function Index() {
     // Navigate to team page when a team is selected - use correct path
     navigate(`/teams/${teamId}`);
   };
+
+  // AWS S3 URL for the stadium image - replace with your actual S3 bucket URL and image name
+  const stadiumImageUrl = "https://your-s3-bucket.s3.amazonaws.com/stadium-image.jpg";
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
@@ -198,7 +168,7 @@ export default function Index() {
             <div className="mt-12">
               <div className="relative mx-auto w-full max-w-lg h-40 rounded-xl overflow-hidden shadow-lg">
                 <img 
-                  src={stadiumImageUrl || '/placeholder.svg'} 
+                  src={stadiumImageUrl} 
                   alt="Night baseball game" 
                   className="w-full h-full object-cover"
                 />
