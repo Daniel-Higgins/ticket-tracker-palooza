@@ -9,6 +9,38 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      favorites: {
+        Row: {
+          created_at: string
+          id: string
+          teamid: string
+          type: string
+          userid: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          teamid: string
+          type?: string
+          userid: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          teamid?: string
+          type?: string
+          userid?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "favorites_teamid_fkey"
+            columns: ["teamid"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       games: {
         Row: {
           awayteamid: string
