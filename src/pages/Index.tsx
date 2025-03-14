@@ -1,4 +1,3 @@
-
 import { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -43,11 +42,9 @@ export default function Index() {
 
   const handleSelectTeam = (teamId: string) => {
     setSelectedTeamId(teamId);
-    // Navigate to team page when a team is selected - use correct path
     navigate(`/teams/${teamId}`);
   };
 
-  // S3 URL for the team logo - this is a public URL that doesn't require credentials
   const bravesLogoUrl = "https://hsw-logo-bucket.s3.amazonaws.com/mlb/Atlanta-Braves-Emblem.png";
 
   return (
