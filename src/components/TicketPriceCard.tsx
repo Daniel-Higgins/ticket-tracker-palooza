@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { ExternalLink, ArrowUpDown, Target, MapPin, Diamond, Home, User, Ticket, Flag, MapPinCheck, X, ChevronDown, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -285,6 +286,23 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
   const ExactSectionSearch = () => {
     const uniqueSections = getUniqueSections();
     
+    // Get all tickets for selected sections and sort them by price
+    const getFilteredAndSortedTickets = () => {
+      if (selectedSections.length === 0) return [];
+      
+      // Get all tickets for the selected sections
+      const filteredTickets = priceData.flatMap(category => 
+        category.prices.filter(price => 
+          price.section && selectedSections.includes(price.section)
+        )
+      );
+      
+      // Sort by price (always lowest to highest for exact search)
+      return filteredTickets.sort((a, b) => a.displayPrice - b.displayPrice);
+    };
+    
+    const filteredAndSortedTickets = getFilteredAndSortedTickets();
+    
     return (
       <div className="mb-6">
         <h4 className="text-md font-medium mb-3 text-gray-900">Search by Exact Section</h4>
@@ -357,13 +375,11 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
           
           {selectedSections.length > 0 ? (
             <div className="grid grid-cols-1 gap-4">
-              {priceData.flatMap(category => 
-                filterBySection(sortPrices(category.prices)).map(price => (
-                  <TicketPriceItem key={price.id} price={price} />
-                ))
-              )}
+              {filteredAndSortedTickets.map(price => (
+                <TicketPriceItem key={price.id} price={price} />
+              ))}
               
-              {filterBySection(priceData.flatMap(category => category.prices)).length === 0 && (
+              {filteredAndSortedTickets.length === 0 && (
                 <div className="col-span-full text-center py-6 text-gray-500">
                   No tickets found for selected sections. Try different sections.
                 </div>
