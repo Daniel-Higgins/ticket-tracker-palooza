@@ -1,3 +1,4 @@
+
 import { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -46,8 +47,8 @@ export default function Index() {
     navigate(`/teams/${teamId}`);
   };
 
-  // AWS S3 URL for the stadium image - replace with your actual S3 bucket URL and image name
-  const stadiumImageUrl = "https://your-s3-bucket.s3.amazonaws.com/stadium-image.jpg";
+  // S3 URL for the team logo - this is a public URL that doesn't require credentials
+  const bravesLogoUrl = "https://hsw-logo-bucket.s3.amazonaws.com/mlb/Atlanta-Braves-Emblem.png";
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
@@ -164,16 +165,16 @@ export default function Index() {
               </Link>
             </div>
             
-            {/* Stadium image preview */}
+            {/* Team logo preview */}
             <div className="mt-12">
               <div className="relative mx-auto w-full max-w-lg h-40 rounded-xl overflow-hidden shadow-lg">
                 <img 
-                  src={stadiumImageUrl} 
-                  alt="Night baseball game" 
-                  className="w-full h-full object-cover"
+                  src={bravesLogoUrl} 
+                  alt="Atlanta Braves Logo" 
+                  className="w-full h-full object-contain"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end justify-center pb-4">
-                  <p className="text-white text-sm font-medium">Experience the atmosphere of America's favorite pastime</p>
+                  <p className="text-white text-sm font-medium">Find tickets for your favorite MLB teams</p>
                 </div>
               </div>
             </div>
