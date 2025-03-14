@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { signOut } from '@/lib/supabase';
 import { useToast } from '@/hooks/use-toast';
+import { AuthModal } from '@/components/auth/AuthModal';
 
 export function Header() {
   const { user } = useAuth();
@@ -95,9 +96,9 @@ export function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Link to="/dashboard">
-              <Button>Sign In</Button>
-            </Link>
+            <AuthModal 
+              trigger={<Button>Sign In</Button>}
+            />
           )}
         </div>
       </div>
