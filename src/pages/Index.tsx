@@ -101,7 +101,8 @@ export default function Index() {
           className="py-20 px-4 bg-white relative"
         >
           <div className="max-w-7xl mx-auto relative z-10">
-            <h2 className="text-3xl font-bold text-center mb-16 text-black">How FindGuy Works</h2>
+            <h2 className="text-3xl font-bold text-center mb-4 text-black">How FindGuy Works</h2>
+            <p className="text-sm text-gray-500 text-center mb-12 italic">Are you tired of getting hosed by ticket companies?</p>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
               <div className="bg-white shadow-md rounded-xl p-6 animate-on-scroll">
