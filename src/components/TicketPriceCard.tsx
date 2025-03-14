@@ -1,11 +1,12 @@
-
 import { useState, useEffect } from 'react';
 import { ExternalLink, ArrowUpDown, Target, MapPin, Diamond, Home, User, Ticket, Flag, MapPinCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { fetchTicketPrices } from '@/utils/api';
 import { TicketPriceByCategory, TicketPriceWithSource } from '@/lib/types';
+import { Input } from '@/components/ui/input';
 
 interface TicketPriceCardProps {
   gameId: string;
@@ -13,11 +14,15 @@ interface TicketPriceCardProps {
 }
 
 type AreaType = '1B' | '3B' | 'LF' | 'RF' | 'Outfield Upper' | 'Outfield Lower' | 'Plate' | 'Upper Deck' | 'Unknown';
+type SearchMode = 'general' | 'exact';
 
 export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
   const [priceData, setPriceData] = useState<TicketPriceByCategory[]>([]);
   const [loading, setLoading] = useState(true);
+  const [expandedGameId, setExpandedGameId] = useState<string | null>(null);
   const [sortDescending, setSortDescending] = useState(false);
+  const [searchMode, setSearchMode] = useState<SearchMode>('general');
+  const [sectionFilter, setSectionFilter] = useState<string>('');
 
   useEffect(() => {
     const loadPrices = async () => {
@@ -40,6 +45,16 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
         ? b.displayPrice - a.displayPrice
         : a.displayPrice - b.displayPrice;
     });
+  };
+
+  const filterBySection = (prices: TicketPriceWithSource[]) => {
+    if (searchMode !== 'exact' || !sectionFilter) {
+      return prices;
+    }
+    
+    return prices.filter(price => 
+      price.section && price.section.toLowerCase().includes(sectionFilter.toLowerCase())
+    );
   };
 
   const determineArea = (section?: string): AreaType => {
@@ -111,6 +126,20 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
       default:
         return null;
     }
+  };
+
+  const getUniqueSections = () => {
+    const sections = new Set<string>();
+    
+    priceData.forEach(category => {
+      category.prices.forEach(price => {
+        if (price.section) {
+          sections.add(price.section);
+        }
+      });
+    });
+    
+    return Array.from(sections).sort();
   };
 
   const cheapestAvailableCategory = priceData.find(item => 
@@ -206,65 +235,123 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
     );
   };
 
-  return (
-    <div className="space-y-6 bg-white">
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-medium text-gray-900">Ticket Prices</h3>
-        <Button
-          variant="outline"
-          size="sm"
-          className="text-xs flex items-center gap-1 text-gray-800 bg-white border-gray-200"
-          onClick={toggleSort}
-        >
-          <ArrowUpDown className="h-3 w-3 mr-1" />
-          {sortDescending ? 'Price: High to Low' : 'Price: Low to High'}
-        </Button>
-      </div>
-
-      {cheapestAvailableCategory && (
-        <div className="bg-white border border-gray-100 p-4 rounded-lg mb-4">
-          <div className="flex items-center mb-2">
-            <Ticket className="h-5 w-5 mr-2 text-primary" />
-            <h4 className="font-medium text-gray-900">{cheapestAvailableCategory.category.name}</h4>
-          </div>
-          <p className="text-sm text-gray-600 mb-3">{cheapestAvailableCategory.category.description}</p>
+  const ExactSectionSearch = () => {
+    const uniqueSections = getUniqueSections();
+    
+    return (
+      <div className="mb-6">
+        <h4 className="text-md font-medium mb-3 text-gray-900">Search by Exact Section</h4>
+        <div className="flex flex-col gap-4">
+          <Input
+            type="text"
+            placeholder="Enter section number or name..."
+            value={sectionFilter}
+            onChange={(e) => setSectionFilter(e.target.value)}
+            className="w-full"
+          />
           
-          <div className="divide-y divide-border/50">
-            {sortPrices(cheapestAvailableCategory.prices).map((price) => (
-              <TicketPriceItem key={price.id} price={price} />
-            ))}
+          <div className="grid grid-cols-1 gap-4">
+            {priceData.flatMap(category => 
+              filterBySection(sortPrices(category.prices)).map(price => (
+                <TicketPriceItem key={price.id} price={price} />
+              ))
+            )}
+            
+            {filterBySection(priceData.flatMap(category => category.prices)).length === 0 && (
+              <div className="col-span-full text-center py-6 text-gray-500">
+                No tickets found for section "{sectionFilter}". Try a different section number.
+              </div>
+            )}
           </div>
         </div>
-      )}
+      </div>
+    );
+  };
 
-      <Tabs defaultValue={tabCategories[0]?.category.id}>
-        <TabsList className="grid grid-cols-2 sm:grid-cols-4 mb-4 bg-gray-100">
-          {tabCategories.map((item) => (
-            <TabsTrigger 
-              key={item.category.id} 
-              value={item.category.id} 
-              className="text-xs sm:text-sm flex items-center text-gray-800 data-[state=active]:bg-white data-[state=active]:text-gray-900"
-            >
-              {getCategoryIcon(item.category.name)}
-              {item.category.name}
-            </TabsTrigger>
-          ))}
-        </TabsList>
+  return (
+    <div className="space-y-6 bg-white">
+      <div className="flex flex-wrap justify-between items-center gap-4">
+        <h3 className="text-lg font-medium text-gray-900">Ticket Prices</h3>
         
-        {tabCategories.map((item) => (
-          <TabsContent key={item.category.id} value={item.category.id} className="animate-fade-in bg-white">
-            <div className="space-y-3">
-              <p className="text-sm text-gray-600">{item.category.description}</p>
+        <div className="flex flex-wrap items-center gap-3">
+          <ToggleGroup 
+            type="single" 
+            value={searchMode}
+            onValueChange={(value) => {
+              if (value) setSearchMode(value as SearchMode);
+            }}
+            className="border rounded bg-gray-50"
+          >
+            <ToggleGroupItem value="general" className="text-xs">
+              General Search
+            </ToggleGroupItem>
+            <ToggleGroupItem value="exact" className="text-xs">
+              Exact Section Search
+            </ToggleGroupItem>
+          </ToggleGroup>
+          
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-xs flex items-center gap-1 text-gray-800 bg-white border-gray-200"
+            onClick={toggleSort}
+          >
+            <ArrowUpDown className="h-3 w-3 mr-1" />
+            {sortDescending ? 'Price: High to Low' : 'Price: Low to High'}
+          </Button>
+        </div>
+      </div>
+
+      {searchMode === 'exact' ? (
+        <ExactSectionSearch />
+      ) : (
+        <>
+          {cheapestAvailableCategory && (
+            <div className="bg-white border border-gray-100 p-4 rounded-lg mb-4">
+              <div className="flex items-center mb-2">
+                <Ticket className="h-5 w-5 mr-2 text-primary" />
+                <h4 className="font-medium text-gray-900">{cheapestAvailableCategory.category.name}</h4>
+              </div>
+              <p className="text-sm text-gray-600 mb-3">{cheapestAvailableCategory.category.description}</p>
               
               <div className="divide-y divide-border/50">
-                {sortPrices(item.prices).map((price) => (
+                {sortPrices(cheapestAvailableCategory.prices).map((price) => (
                   <TicketPriceItem key={price.id} price={price} />
                 ))}
               </div>
             </div>
-          </TabsContent>
-        ))}
-      </Tabs>
+          )}
+
+          <Tabs defaultValue={tabCategories[0]?.category.id}>
+            <TabsList className="grid grid-cols-2 sm:grid-cols-4 mb-4 bg-gray-100">
+              {tabCategories.map((item) => (
+                <TabsTrigger 
+                  key={item.category.id} 
+                  value={item.category.id} 
+                  className="text-xs sm:text-sm flex items-center text-gray-800 data-[state=active]:bg-white data-[state=active]:text-gray-900"
+                >
+                  {getCategoryIcon(item.category.name)}
+                  {item.category.name}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            
+            {tabCategories.map((item) => (
+              <TabsContent key={item.category.id} value={item.category.id} className="animate-fade-in bg-white">
+                <div className="space-y-3">
+                  <p className="text-sm text-gray-600">{item.category.description}</p>
+                  
+                  <div className="divide-y divide-border/50">
+                    {sortPrices(item.prices).map((price) => (
+                      <TicketPriceItem key={price.id} price={price} />
+                    ))}
+                  </div>
+                </div>
+              </TabsContent>
+            ))}
+          </Tabs>
+        </>
+      )}
       
       <div className="text-xs text-gray-500 italic text-center pt-2">
         Prices updated {new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}
