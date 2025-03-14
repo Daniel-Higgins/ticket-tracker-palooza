@@ -1,6 +1,5 @@
-
 import { useState, useEffect } from 'react';
-import { ExternalLink, ArrowUpDown, Target, MapPin, Diamond, Home, User, Ticket, Flag, MapPinCheck, X } from 'lucide-react';
+import { ExternalLink, ArrowUpDown, Target, MapPin, Diamond, Home, User, Ticket, Flag, MapPinCheck, X, ChevronDown, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -84,7 +83,6 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
 
   const handleSectionSelect = (section: string) => {
     setSelectedSections(prev => {
-      // If already selected, remove it; otherwise, add it
       if (prev.includes(section)) {
         return prev.filter(s => s !== section);
       } else {
@@ -180,7 +178,6 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
     });
     
     return Array.from(sections).sort((a, b) => {
-      // Try to convert to numbers for natural numeric sorting
       const numA = parseInt(a, 10);
       const numB = parseInt(b, 10);
       
@@ -188,7 +185,6 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
         return numA - numB;
       }
       
-      // Fall back to string comparison
       return a.localeCompare(b);
     });
   };
