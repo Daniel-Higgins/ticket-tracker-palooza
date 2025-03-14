@@ -12,6 +12,17 @@ import { Team } from '@/lib/types';
 import { toast } from "@/hooks/use-toast";
 import { mlbTeams } from '@/utils/staticData';
 
+// Map of team IDs to their home stadiums
+const teamStadiums: Record<string, string> = {
+  "17": "Fenway Park", // Boston Red Sox
+  "18": "Yankee Stadium", // New York Yankees
+  "19": "Tropicana Field", // Tampa Bay Rays
+  "13": "Dodger Stadium", // Los Angeles Dodgers
+  "28": "Oracle Park", // San Francisco Giants
+  "10": "Oakland Coliseum", // Oakland Athletics
+  // Add other team stadiums as needed
+};
+
 export default function TeamView() {
   const { teamId } = useParams<{ teamId: string }>();
   const [team, setTeam] = useState<Team | null>(null);
@@ -82,6 +93,9 @@ export default function TeamView() {
                 <div>
                   <h1 className="text-3xl font-bold text-black">{team.name}</h1>
                   <p className="text-muted-foreground">{team.city}</p>
+                  {teamStadiums[teamId || ''] && (
+                    <p className="text-muted-foreground">Home Stadium: {teamStadiums[teamId || '']}</p>
+                  )}
                 </div>
               </div>
             ) : (
@@ -100,7 +114,7 @@ export default function TeamView() {
           {team && teamId && (
             <section>
               <h2 className="text-xl font-medium mb-6 text-black">Upcoming Games</h2>
-              <GamesList teamId={teamId} />
+              <GamesList teamId={teamId} teamStadiums={teamStadiums} />
             </section>
           )}
         </div>

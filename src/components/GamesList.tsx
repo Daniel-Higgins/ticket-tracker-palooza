@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { ChevronDown, ChevronUp, Calendar, MapPin } from 'lucide-react';
@@ -18,9 +17,10 @@ interface GamesListProps {
   showTrackOption?: boolean;
   userId?: string;
   onTrackToggle?: () => Promise<void>;
+  teamStadiums?: Record<string, string>;
 }
 
-export function GamesList({ teamId, games: propGames, showTrackOption, userId, onTrackToggle }: GamesListProps) {
+export function GamesList({ teamId, games: propGames, showTrackOption, userId, onTrackToggle, teamStadiums }: GamesListProps) {
   const [games, setGames] = useState<Game[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedGameId, setExpandedGameId] = useState<string | null>(null);
@@ -32,11 +32,9 @@ export function GamesList({ teamId, games: propGames, showTrackOption, userId, o
     const loadGames = async () => {
       setLoading(true);
       
-      // If games are provided as props, use those
       if (propGames && propGames.length > 0) {
         setGames(propGames);
         
-        // Automatically expand the first game if there are games
         if (propGames.length > 0) {
           setExpandedGameId(propGames[0].id);
         }
@@ -45,12 +43,10 @@ export function GamesList({ teamId, games: propGames, showTrackOption, userId, o
         return;
       }
       
-      // Otherwise load games by team ID
       if (teamId) {
         const gamesData = await fetchTeamGames(teamId);
         setGames(gamesData);
         
-        // Automatically expand the first game if there are games
         if (gamesData.length > 0) {
           setExpandedGameId(gamesData[0].id);
         }
@@ -62,14 +58,12 @@ export function GamesList({ teamId, games: propGames, showTrackOption, userId, o
     loadGames();
   }, [teamId, propGames]);
 
-  // Load tracked game status
   useEffect(() => {
     const loadTrackedGames = async () => {
       if (!showTrackOption || !userId) return;
 
       const tracked = new Set<string>();
       
-      // Check tracked status for each game
       for (const game of games) {
         const isTracked = await isGameTracked(userId, game.id);
         if (isTracked) {
@@ -124,7 +118,6 @@ export function GamesList({ teamId, games: propGames, showTrackOption, userId, o
         }
       }
       
-      // Call the onTrackToggle callback if provided
       if (success && onTrackToggle) {
         await onTrackToggle();
       }
@@ -138,6 +131,20 @@ export function GamesList({ teamId, games: propGames, showTrackOption, userId, o
     } finally {
       setTrackingLoading(null);
     }
+  };
+
+  const getStadiumName = (game: Game) => {
+    if (!teamStadiums) return game.venue;
+    
+    if (teamId && game.homeTeam.id === teamId && teamStadiums[teamId]) {
+      return teamStadiums[teamId];
+    }
+    
+    if (game.homeTeam.id && teamStadiums[game.homeTeam.id]) {
+      return teamStadiums[game.homeTeam.id];
+    }
+    
+    return game.venue;
   };
 
   if (loading) {
@@ -248,7 +255,7 @@ export function GamesList({ teamId, games: propGames, showTrackOption, userId, o
               
               <div className="flex items-center gap-2 text-sm text-gray-600 mt-2">
                 <MapPin className="h-4 w-4" />
-                <span>{game.venue}</span>
+                <span>{getStadiumName(game)}</span>
               </div>
             </div>
             
