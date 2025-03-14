@@ -8,7 +8,7 @@ export const fetchTeams = async (): Promise<Team[]> => {
   try {
     console.log('Using MLB teams from S3 bucket, total count:', mlbTeams.length);
     if (mlbTeams.length > 0) {
-      console.log('Sample logo URL from S3:', mlbTeams[0].logo);
+      console.log('Sample logo URL from updated S3 bucket:', mlbTeams[0].logo);
     }
     
     return mlbTeams;
