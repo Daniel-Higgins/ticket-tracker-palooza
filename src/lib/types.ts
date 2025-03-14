@@ -1,4 +1,3 @@
-
 export interface Team {
   id: string;
   name: string;
@@ -7,6 +6,10 @@ export interface Team {
   logo: string;
   primaryColor: string;
   secondaryColor: string;
+  location?: {
+    city: string;
+    state: string;
+  };
 }
 
 export interface Game {
@@ -36,8 +39,8 @@ export interface TicketPrice {
   totalPrice: number;
   url: string;
   lastUpdated: string;
-  section?: string; // Added section property
-  row?: string; // Added row property
+  section?: string;
+  row?: string;
 }
 
 export interface TicketCategory {

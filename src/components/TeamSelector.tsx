@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -61,7 +60,6 @@ export function TeamSelector({
   }, []);
 
   useEffect(() => {
-    // Load favorite status for each team if userId is provided
     const loadFavorites = async () => {
       if (!userId || !showFavoriteOption || teams.length === 0) return;
       
@@ -101,7 +99,6 @@ export function TeamSelector({
       const success = await addFavoriteTeam(userId, teamId);
       
       if (success) {
-        // Update local state
         setFavorites(prev => ({
           ...prev,
           [teamId]: true
@@ -131,13 +128,11 @@ export function TeamSelector({
   const handleTeamChange = async (teamId: string) => {
     console.log(`Team selected: ${teamId}`);
     
-    // If autoFavoriteOnSelect is true and the team is not already a favorite, add it
     if (autoFavoriteOnSelect && userId && !favorites[teamId]) {
       console.log(`Auto-favoriting team: ${teamId} for user: ${userId}`);
       await handleAddFavorite(teamId);
     }
     
-    // Call the parent callback
     onSelectTeam(teamId);
   };
 
@@ -175,13 +170,11 @@ export function TeamSelector({
       }
       
       if (success) {
-        // Update local state
         setFavorites(prev => ({
           ...prev,
           [teamId]: !prev[teamId]
         }));
         
-        // Call the callback if provided
         if (onFavoriteToggle) {
           console.log("Calling onFavoriteToggle callback after toggle");
           onFavoriteToggle(teamId);
@@ -197,6 +190,13 @@ export function TeamSelector({
     } finally {
       setToggleLoading(null);
     }
+  };
+
+  const formatLocation = (team: Team) => {
+    if (team.location) {
+      return `${team.location.city}, ${team.location.state}`;
+    }
+    return team.city;
   };
 
   if (loading) {
@@ -228,7 +228,10 @@ export function TeamSelector({
                       {team.shortName?.substring(0, 1) || team.name.substring(0, 1)}
                     </div>
                   )}
-                  {team.name}
+                  <div>
+                    <span>{team.name}</span>
+                    <span className="text-xs block text-muted-foreground">{formatLocation(team)}</span>
+                  </div>
                 </div>
                 {showFavoriteOption && userId && (
                   <Button 

@@ -48,7 +48,9 @@ export default function AllTeams() {
       const filtered = teams.filter(
         (team) =>
           team.name.toLowerCase().includes(query) ||
-          team.city.toLowerCase().includes(query)
+          team.city.toLowerCase().includes(query) ||
+          team.location?.city.toLowerCase().includes(query) ||
+          team.location?.state.toLowerCase().includes(query)
       );
       setFilteredTeams(filtered);
     }
@@ -60,6 +62,14 @@ export default function AllTeams() {
       ...prev,
       [teamId]: true
     }));
+  };
+
+  // Helper function to format location
+  const formatLocation = (team: Team) => {
+    if (team.location) {
+      return `${team.location.city}, ${team.location.state}`;
+    }
+    return team.city;
   };
 
   return (
@@ -113,7 +123,7 @@ export default function AllTeams() {
                       </div>
                     )}
                     <h3 className="font-semibold text-lg">{team.name}</h3>
-                    <p className="text-muted-foreground text-sm">{team.city}</p>
+                    <p className="text-muted-foreground text-sm">{formatLocation(team)}</p>
                   </div>
                 </Link>
               ))}
