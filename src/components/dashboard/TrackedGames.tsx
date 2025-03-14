@@ -79,15 +79,6 @@ export function TrackedGames({ userId, favoriteTeams, onDataUpdated }: TrackedGa
     </>
   );
 
-  // If there's a favorite team, create a link to add more games
-  const addMoreAction = favoriteTeams.length > 0 ? (
-    <Link to={`/team/${favoriteTeams[0]?.id}`}>
-      <Button variant="outline" size="sm">
-        Add More
-      </Button>
-    </Link>
-  ) : undefined;
-
   return (
     <DashboardCard 
       title="Tracked Games"
