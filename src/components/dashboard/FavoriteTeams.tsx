@@ -1,12 +1,13 @@
 
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchUserFavoriteTeams } from '@/utils/api/user/favorites';
+import { fetchUserFavoriteTeams, removeFavoriteTeam } from '@/utils/api/user/favorites';
 import { Team } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { TeamSelector } from '@/components/TeamSelector';
 import { DashboardCard } from './DashboardCard';
 import { toast } from '@/hooks/use-toast';
+import { Trash } from 'lucide-react';
 
 interface FavoriteTeamsProps {
   userId: string;
@@ -16,6 +17,7 @@ interface FavoriteTeamsProps {
 export function FavoriteTeams({ userId, onDataUpdated }: FavoriteTeamsProps) {
   const [favoriteTeams, setFavoriteTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState(true);
+  const [removingTeamId, setRemovingTeamId] = useState<string | null>(null);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const loadFavoriteTeams = async () => {
@@ -60,6 +62,35 @@ export function FavoriteTeams({ userId, onDataUpdated }: FavoriteTeamsProps) {
     handleFavoriteToggle(teamId);
   };
 
+  const handleRemoveTeam = async (teamId: string) => {
+    if (!userId) return;
+    
+    setRemovingTeamId(teamId);
+    try {
+      console.log(`Removing team ${teamId} from favorites`);
+      const success = await removeFavoriteTeam(userId, teamId);
+      
+      if (success) {
+        console.log(`Team ${teamId} removed successfully`);
+        // Update local state by removing the team
+        setFavoriteTeams(prevTeams => prevTeams.filter(team => team.id !== teamId));
+        
+        if (onDataUpdated) {
+          onDataUpdated();
+        }
+      }
+    } catch (error) {
+      console.error('Error removing team from favorites:', error);
+      toast({
+        title: "Error removing team",
+        description: "We couldn't remove this team from your favorites",
+        variant: "destructive"
+      });
+    } finally {
+      setRemovingTeamId(null);
+    }
+  };
+
   const favoriteTeamsContent = (
     <>
       {favoriteTeams.length > 0 ? (
@@ -74,9 +105,24 @@ export function FavoriteTeams({ userId, onDataUpdated }: FavoriteTeamsProps) {
                 />
               )}
               <span className="font-medium">{team.name}</span>
-              <Link to={`/team/${team.id}`} className="ml-auto">
-                <Button variant="ghost" size="sm">View</Button>
-              </Link>
+              <div className="ml-auto flex items-center gap-2">
+                <Link to={`/team/${team.id}`}>
+                  <Button variant="ghost" size="sm">View</Button>
+                </Link>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-8 w-8 text-destructive hover:bg-destructive/10"
+                  onClick={() => handleRemoveTeam(team.id)}
+                  disabled={removingTeamId === team.id}
+                >
+                  {removingTeamId === team.id ? (
+                    <div className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <Trash className="h-4 w-4" />
+                  )}
+                </Button>
+              </div>
             </div>
           ))}
         </div>
