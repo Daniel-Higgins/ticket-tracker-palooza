@@ -1,12 +1,36 @@
+
 import { useState, useEffect } from 'react';
-import { ExternalLink, ArrowUpDown, Target, MapPin, Diamond, Home, User, Ticket, Flag, MapPinCheck } from 'lucide-react';
+import { ExternalLink, ArrowUpDown, Target, MapPin, Diamond, Home, User, Ticket, Flag, MapPinCheck, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { fetchTicketPrices } from '@/utils/api';
 import { TicketPriceByCategory, TicketPriceWithSource } from '@/lib/types';
-import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
 
 interface TicketPriceCardProps {
   gameId: string;
@@ -22,7 +46,8 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
   const [expandedGameId, setExpandedGameId] = useState<string | null>(null);
   const [sortDescending, setSortDescending] = useState(false);
   const [searchMode, setSearchMode] = useState<SearchMode>('general');
-  const [sectionFilter, setSectionFilter] = useState<string>('');
+  const [selectedSections, setSelectedSections] = useState<string[]>([]);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
     const loadPrices = async () => {
@@ -48,13 +73,28 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
   };
 
   const filterBySection = (prices: TicketPriceWithSource[]) => {
-    if (searchMode !== 'exact' || !sectionFilter) {
+    if (searchMode !== 'exact' || selectedSections.length === 0) {
       return prices;
     }
     
     return prices.filter(price => 
-      price.section && price.section.toLowerCase().includes(sectionFilter.toLowerCase())
+      price.section && selectedSections.includes(price.section)
     );
+  };
+
+  const handleSectionSelect = (section: string) => {
+    setSelectedSections(prev => {
+      // If already selected, remove it; otherwise, add it
+      if (prev.includes(section)) {
+        return prev.filter(s => s !== section);
+      } else {
+        return [...prev, section];
+      }
+    });
+  };
+
+  const clearSelectedSections = () => {
+    setSelectedSections([]);
   };
 
   const determineArea = (section?: string): AreaType => {
@@ -139,7 +179,18 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
       });
     });
     
-    return Array.from(sections).sort();
+    return Array.from(sections).sort((a, b) => {
+      // Try to convert to numbers for natural numeric sorting
+      const numA = parseInt(a, 10);
+      const numB = parseInt(b, 10);
+      
+      if (!isNaN(numA) && !isNaN(numB)) {
+        return numA - numB;
+      }
+      
+      // Fall back to string comparison
+      return a.localeCompare(b);
+    });
   };
 
   const cheapestAvailableCategory = priceData.find(item => 
@@ -242,27 +293,91 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
       <div className="mb-6">
         <h4 className="text-md font-medium mb-3 text-gray-900">Search by Exact Section</h4>
         <div className="flex flex-col gap-4">
-          <Input
-            type="text"
-            placeholder="Enter section number or name..."
-            value={sectionFilter}
-            onChange={(e) => setSectionFilter(e.target.value)}
-            className="w-full"
-          />
-          
-          <div className="grid grid-cols-1 gap-4">
-            {priceData.flatMap(category => 
-              filterBySection(sortPrices(category.prices)).map(price => (
-                <TicketPriceItem key={price.id} price={price} />
-              ))
-            )}
+          <div className="flex flex-wrap gap-2 items-center">
+            <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="flex items-center gap-2">
+                  Select Sections
+                  <ChevronDown className="h-4 w-4 opacity-50" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56 bg-white max-h-[300px] overflow-y-auto">
+                <DropdownMenuLabel>Available Sections</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <Command>
+                  <CommandInput placeholder="Search sections..." className="h-9" />
+                  <CommandList>
+                    <CommandEmpty>No sections found.</CommandEmpty>
+                    <CommandGroup>
+                      {uniqueSections.map((section) => (
+                        <CommandItem 
+                          key={section}
+                          onSelect={() => handleSectionSelect(section)}
+                          className="flex items-center gap-2 cursor-pointer"
+                        >
+                          <div className={selectedSections.includes(section) ? "text-primary" : ""}>
+                            {section}
+                          </div>
+                          {selectedSections.includes(section) && (
+                            <Check className="h-4 w-4 ml-auto text-primary" />
+                          )}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </DropdownMenuContent>
+            </DropdownMenu>
             
-            {filterBySection(priceData.flatMap(category => category.prices)).length === 0 && (
-              <div className="col-span-full text-center py-6 text-gray-500">
-                No tickets found for section "{sectionFilter}". Try a different section number.
-              </div>
+            {selectedSections.length > 0 && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={clearSelectedSections}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                Clear Selection
+              </Button>
             )}
           </div>
+          
+          {selectedSections.length > 0 && (
+            <div className="flex flex-wrap gap-2 my-2">
+              {selectedSections.map(section => (
+                <Badge 
+                  key={section} 
+                  variant="outline"
+                  className="flex items-center gap-1 bg-gray-100"
+                >
+                  {section}
+                  <X 
+                    className="h-3 w-3 ml-1 cursor-pointer" 
+                    onClick={() => handleSectionSelect(section)}
+                  />
+                </Badge>
+              ))}
+            </div>
+          )}
+          
+          {selectedSections.length > 0 ? (
+            <div className="grid grid-cols-1 gap-4">
+              {priceData.flatMap(category => 
+                filterBySection(sortPrices(category.prices)).map(price => (
+                  <TicketPriceItem key={price.id} price={price} />
+                ))
+              )}
+              
+              {filterBySection(priceData.flatMap(category => category.prices)).length === 0 && (
+                <div className="col-span-full text-center py-6 text-gray-500">
+                  No tickets found for selected sections. Try different sections.
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="text-center py-6 text-gray-500">
+              Please select at least one section to view available tickets.
+            </div>
+          )}
         </div>
       </div>
     );
