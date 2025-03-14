@@ -261,7 +261,7 @@ export const mlbTeams: Team[] = [
     primaryColor: "#003831",
     secondaryColor: "#EFB21E",
     location: {
-      city: "Oakland",
+      city: "California",
       state: "CA"
     }
   },
