@@ -14,6 +14,7 @@ export default function AllTeams() {
   const [filteredTeams, setFilteredTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     const loadTeams = async () => {
@@ -40,6 +41,13 @@ export default function AllTeams() {
       setFilteredTeams(filtered);
     }
   }, [searchQuery, teams]);
+
+  const handleImageError = (teamId: string) => {
+    setImageErrors(prev => ({
+      ...prev,
+      [teamId]: true
+    }));
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
@@ -78,14 +86,18 @@ export default function AllTeams() {
                       }s`,
                     }}
                   >
-                    <img
-                      src={team.logo}
-                      alt={team.name}
-                      className="w-16 h-16 object-contain mb-4"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = 'none';
-                      }}
-                    />
+                    {!imageErrors[team.id] ? (
+                      <img
+                        src={team.logo}
+                        alt={team.name}
+                        className="w-16 h-16 object-contain mb-4"
+                        onError={() => handleImageError(team.id)}
+                      />
+                    ) : (
+                      <div className="w-16 h-16 flex items-center justify-center bg-gray-100 rounded-full mb-4 text-lg font-bold">
+                        {team.shortName?.substring(0, 1) || team.name.substring(0, 1)}
+                      </div>
+                    )}
                     <h3 className="font-semibold text-lg">{team.name}</h3>
                     <p className="text-muted-foreground text-sm">{team.city}</p>
                   </div>
