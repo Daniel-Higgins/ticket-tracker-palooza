@@ -8,6 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { fetchTeams } from '@/utils/api';
 import { Team } from '@/lib/types';
 import { Search } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 
 export default function AllTeams() {
   const [teams, setTeams] = useState<Team[]>([]);
@@ -18,11 +19,22 @@ export default function AllTeams() {
 
   useEffect(() => {
     const loadTeams = async () => {
-      setLoading(true);
-      const teamsData = await fetchTeams();
-      setTeams(teamsData);
-      setFilteredTeams(teamsData);
-      setLoading(false);
+      try {
+        setLoading(true);
+        const teamsData = await fetchTeams();
+        console.log('Loaded team data:', teamsData);
+        setTeams(teamsData);
+        setFilteredTeams(teamsData);
+      } catch (error) {
+        console.error('Error loading teams:', error);
+        toast({
+          title: "Error loading teams",
+          description: "Failed to load team data. Please try again later.",
+          variant: "destructive"
+        });
+      } finally {
+        setLoading(false);
+      }
     };
 
     loadTeams();
@@ -43,6 +55,7 @@ export default function AllTeams() {
   }, [searchQuery, teams]);
 
   const handleImageError = (teamId: string) => {
+    console.log(`Image error for team ID: ${teamId}`);
     setImageErrors(prev => ({
       ...prev,
       [teamId]: true
@@ -92,6 +105,7 @@ export default function AllTeams() {
                         alt={team.name}
                         className="w-16 h-16 object-contain mb-4"
                         onError={() => handleImageError(team.id)}
+                        onLoad={() => console.log(`Successfully loaded image for ${team.name}: ${team.logo}`)}
                       />
                     ) : (
                       <div className="w-16 h-16 flex items-center justify-center bg-gray-100 rounded-full mb-4 text-lg font-bold">

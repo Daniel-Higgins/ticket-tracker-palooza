@@ -17,13 +17,15 @@ export const fetchTeams = async (): Promise<Team[]> => {
     // If we have data from Supabase, use it
     if (data && data.length > 0) {
       console.log('Retrieved teams from database:', data.length);
+      console.log('Sample logo URL from DB:', data[0].logo);
+      
       // Map column names to match our Team interface
       return data.map(team => ({
         id: team.id,
         name: team.name,
         shortName: team.shortname,
         city: team.city,
-        logo: team.logo,
+        logo: team.logo, // Use the URL directly from the database
         primaryColor: team.primarycolor,
         secondaryColor: team.secondarycolor
       }));
