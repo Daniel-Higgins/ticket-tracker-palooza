@@ -1,4 +1,3 @@
-
 import { Team } from "@/lib/types";
 
 // S3 bucket base URL
@@ -249,7 +248,7 @@ export const mlbTeams: Team[] = [
     primaryColor: "#0C2340",
     secondaryColor: "#C4CED3",
     location: {
-      city: "Bronx",
+      city: "The Bronx",
       state: "NY"
     }
   },
