@@ -45,7 +45,7 @@ export default function Index() {
     navigate(`/teams/${teamId}`);
   };
 
-  const bravesLogoUrl = "https://hsw-logo-bucket.s3.amazonaws.com/mlb/Atlanta-Braves-Emblem.png";
+  const bravesLogoUrl = "https://hsw-logo-bucket.s3.us-east-2.amazonaws.com/mlb/Atlanta-Braves-Emblem.png";
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
@@ -118,7 +118,7 @@ export default function Index() {
               <div className="bg-white shadow-md rounded-xl p-6 animate-on-scroll" style={{ transitionDelay: '0.2s' }}>
                 <div className="w-12 h-12 flex items-center justify-center rounded-full bg-primary/10 text-primary mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 11-18 0 3 3 0 0118 0z" />
                   </svg>
                 </div>
                 <h3 className="text-xl font-medium mb-2 text-black">Compare Prices</h3>

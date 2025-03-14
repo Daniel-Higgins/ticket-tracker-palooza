@@ -1,8 +1,8 @@
 
 import { Team } from "@/lib/types";
 
-// Base S3 URL for team logos
-const S3_BUCKET_URL = "https://hsw-logo-bucket.s3.amazonaws.com/mlb";
+// Base S3 URL for team logos - adding the correct region format
+const S3_BUCKET_URL = "https://hsw-logo-bucket.s3.us-east-2.amazonaws.com/mlb";
 
 // Static data for MLB teams to use as fallback
 export const mlbTeams: Team[] = [
