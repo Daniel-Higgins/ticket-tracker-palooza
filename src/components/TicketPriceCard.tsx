@@ -447,13 +447,13 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
                 value={ticketQuantity}
                 onValueChange={setTicketQuantity}
               >
-                <SelectTrigger className="w-[90px] h-8 text-xs bg-white">
-                  <SelectValue placeholder="Quantity" />
+                <SelectTrigger className="w-[60px] h-8 text-xs bg-white">
+                  <SelectValue placeholder="Qty" />
                 </SelectTrigger>
                 <SelectContent className="bg-white">
                   {[2, 3, 4, 5, 6, 7, 8].map((num) => (
                     <SelectItem key={num} value={num.toString()}>
-                      {num} tickets
+                      {num}
                     </SelectItem>
                   ))}
                 </SelectContent>
