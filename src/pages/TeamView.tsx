@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ChevronLeft, MapPin } from 'lucide-react';
@@ -14,13 +13,36 @@ import { mlbTeams } from '@/utils/staticData';
 
 // Map of team IDs to their home stadiums
 const teamStadiums: Record<string, string> = {
+  "11": "Chase Field", // Arizona Diamondbacks
+  "1": "Truist Park", // Atlanta Braves
+  "16": "Oriole Park at Camden Yards", // Baltimore Orioles
   "17": "Fenway Park", // Boston Red Sox
-  "18": "Yankee Stadium", // New York Yankees
-  "19": "Tropicana Field", // Tampa Bay Rays
+  "6": "Wrigley Field", // Chicago Cubs
+  "21": "Guaranteed Rate Field", // Chicago White Sox
+  "7": "Great American Ball Park", // Cincinnati Reds
+  "22": "Progressive Field", // Cleveland Guardians
+  "12": "Coors Field", // Colorado Rockies
+  "23": "Comerica Park", // Detroit Tigers
+  "26": "Minute Maid Park", // Houston Astros
+  "24": "Kauffman Stadium", // Kansas City Royals
+  "27": "Angel Stadium", // Los Angeles Angels
   "13": "Dodger Stadium", // Los Angeles Dodgers
-  "28": "Oracle Park", // San Francisco Giants
-  "10": "Oakland Coliseum", // Oakland Athletics
-  // Add other team stadiums as needed
+  "2": "LoanDepot Park", // Miami Marlins
+  "8": "American Family Field", // Milwaukee Brewers
+  "25": "Target Field", // Minnesota Twins
+  "3": "Citi Field", // New York Mets
+  "18": "Yankee Stadium", // New York Yankees
+  "28": "Oakland Coliseum", // Oakland Athletics
+  "4": "Citizens Bank Park", // Philadelphia Phillies
+  "9": "PNC Park", // Pittsburgh Pirates
+  "14": "Petco Park", // San Diego Padres
+  "15": "Oracle Park", // San Francisco Giants
+  "29": "T-Mobile Park", // Seattle Mariners
+  "10": "Busch Stadium", // St. Louis Cardinals
+  "19": "Tropicana Field", // Tampa Bay Rays
+  "30": "Globe Life Field", // Texas Rangers
+  "20": "Rogers Centre", // Toronto Blue Jays
+  "5": "Nationals Park"  // Washington Nationals
 };
 
 export default function TeamView() {
