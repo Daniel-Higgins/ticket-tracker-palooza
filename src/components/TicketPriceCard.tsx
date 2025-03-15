@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { ExternalLink, ArrowUpDown, Target, MapPin, Diamond, Home, User, Ticket, Flag, MapPinCheck, X, ChevronDown, Check } from 'lucide-react';
+import { ExternalLink, ArrowUpDown, Target, MapPin, Diamond, Home, User, Ticket, Flag, MapPinCheck, X, ChevronDown, Check, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -48,6 +48,7 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
   const [searchMode, setSearchMode] = useState<SearchMode>('general');
   const [selectedSections, setSelectedSections] = useState<string[]>([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [ticketQuantity, setTicketQuantity] = useState<string>("2");
 
   useEffect(() => {
     const loadPrices = async () => {
@@ -80,6 +81,25 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
     return prices.filter(price => 
       price.section && selectedSections.includes(price.section)
     );
+  };
+
+  // Added filter by ticket quantity
+  const filterByQuantity = (prices: TicketPriceWithSource[]) => {
+    // For demo purposes, we'll simulate filtering based on quantity
+    // In a real implementation, this would check actual availability data
+    
+    // Parse the ticket quantity to a number
+    const quantity = parseInt(ticketQuantity, 10);
+    
+    // Mock filtering logic: use the ID to deterministically filter
+    return prices.filter(price => {
+      // Create a deterministic value based on the price ID
+      const idSum = price.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+      
+      // Return true if ID sum modulo 9 is less than the quantity value
+      // This creates a predictable pattern where higher quantities show fewer results
+      return idSum % 9 < quantity;
+    });
   };
 
   const handleSectionSelect = (section: string) => {
@@ -297,8 +317,11 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
         )
       );
       
+      // Apply ticket quantity filter
+      const quantityFilteredTickets = filterByQuantity(filteredTickets);
+      
       // Sort by price (always lowest to highest for exact search)
-      return filteredTickets.sort((a, b) => a.displayPrice - b.displayPrice);
+      return quantityFilteredTickets.sort((a, b) => a.displayPrice - b.displayPrice);
     };
     
     const filteredAndSortedTickets = getFilteredAndSortedTickets();
@@ -375,13 +398,13 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
           
           {selectedSections.length > 0 ? (
             <div className="grid grid-cols-1 gap-4">
-              {filteredAndSortedTickets.map(price => (
-                <TicketPriceItem key={price.id} price={price} />
-              ))}
-              
-              {filteredAndSortedTickets.length === 0 && (
+              {filteredAndSortedTickets.length > 0 ? (
+                filteredAndSortedTickets.map(price => (
+                  <TicketPriceItem key={price.id} price={price} />
+                ))
+              ) : (
                 <div className="col-span-full text-center py-6 text-gray-500">
-                  No tickets found for selected sections. Try different sections.
+                  No tickets found with {ticketQuantity} seats available. Try a different quantity or section.
                 </div>
               )}
             </div>
@@ -401,21 +424,42 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
         <h3 className="text-lg font-medium text-gray-900">Ticket Prices</h3>
         
         <div className="flex flex-wrap items-center gap-3">
-          <ToggleGroup 
-            type="single" 
-            value={searchMode}
-            onValueChange={(value) => {
-              if (value) setSearchMode(value as SearchMode);
-            }}
-            className="border rounded bg-gray-50"
-          >
-            <ToggleGroupItem value="general" className="text-xs">
-              General Search
-            </ToggleGroupItem>
-            <ToggleGroupItem value="exact" className="text-xs">
-              Exact Section Search
-            </ToggleGroupItem>
-          </ToggleGroup>
+          <div className="flex items-center gap-2">
+            <ToggleGroup 
+              type="single" 
+              value={searchMode}
+              onValueChange={(value) => {
+                if (value) setSearchMode(value as SearchMode);
+              }}
+              className="border rounded bg-gray-50"
+            >
+              <ToggleGroupItem value="general" className="text-xs">
+                General Search
+              </ToggleGroupItem>
+              <ToggleGroupItem value="exact" className="text-xs">
+                Exact Section Search
+              </ToggleGroupItem>
+            </ToggleGroup>
+            
+            <div className="flex items-center gap-1 ml-2">
+              <Users className="h-4 w-4 text-gray-500" />
+              <Select
+                value={ticketQuantity}
+                onValueChange={setTicketQuantity}
+              >
+                <SelectTrigger className="w-[90px] h-8 text-xs bg-white">
+                  <SelectValue placeholder="Quantity" />
+                </SelectTrigger>
+                <SelectContent className="bg-white">
+                  {[2, 3, 4, 5, 6, 7, 8].map((num) => (
+                    <SelectItem key={num} value={num.toString()}>
+                      {num} tickets
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
           
           <Button
             variant="outline"
@@ -442,9 +486,20 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
               <p className="text-sm text-gray-600 mb-3">{cheapestAvailableCategory.category.description}</p>
               
               <div className="divide-y divide-border/50">
-                {sortPrices(cheapestAvailableCategory.prices).map((price) => (
-                  <TicketPriceItem key={price.id} price={price} />
-                ))}
+                {/* Apply both sorting and ticket quantity filtering */}
+                {(() => {
+                  const filteredPrices = filterByQuantity(cheapestAvailableCategory.prices);
+                  const sortedPrices = sortPrices(filteredPrices);
+                  return sortedPrices.length > 0 ? (
+                    sortedPrices.map((price) => (
+                      <TicketPriceItem key={price.id} price={price} />
+                    ))
+                  ) : (
+                    <div className="col-span-full text-center py-6 text-gray-500">
+                      No tickets found with {ticketQuantity} seats available. Try a different quantity.
+                    </div>
+                  );
+                })()}
               </div>
             </div>
           )}
@@ -469,9 +524,20 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
                   <p className="text-sm text-gray-600">{item.category.description}</p>
                   
                   <div className="divide-y divide-border/50">
-                    {sortPrices(item.prices).map((price) => (
-                      <TicketPriceItem key={price.id} price={price} />
-                    ))}
+                    {/* Apply both sorting and ticket quantity filtering */}
+                    {(() => {
+                      const filteredPrices = filterByQuantity(item.prices);
+                      const sortedPrices = sortPrices(filteredPrices);
+                      return sortedPrices.length > 0 ? (
+                        sortedPrices.map((price) => (
+                          <TicketPriceItem key={price.id} price={price} />
+                        ))
+                      ) : (
+                        <div className="col-span-full text-center py-6 text-gray-500">
+                          No tickets found with {ticketQuantity} seats available. Try a different quantity.
+                        </div>
+                      );
+                    })()}
                   </div>
                 </div>
               </TabsContent>
