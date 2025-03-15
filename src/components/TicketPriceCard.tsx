@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { ExternalLink, ArrowUpDown, Target, MapPin, Diamond, Home, User, Ticket, Flag, MapPinCheck, X, ChevronDown, Check, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -450,7 +449,7 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
                 <SelectTrigger className="w-[60px] h-8 text-xs bg-white">
                   <SelectValue placeholder="Qty" />
                 </SelectTrigger>
-                <SelectContent className="bg-white">
+                <SelectContent className="bg-white w-[60px]">
                   {[2, 3, 4, 5, 6, 7, 8].map((num) => (
                     <SelectItem key={num} value={num.toString()}>
                       {num}
@@ -486,7 +485,6 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
               <p className="text-sm text-gray-600 mb-3">{cheapestAvailableCategory.category.description}</p>
               
               <div className="divide-y divide-border/50">
-                {/* Apply both sorting and ticket quantity filtering */}
                 {(() => {
                   const filteredPrices = filterByQuantity(cheapestAvailableCategory.prices);
                   const sortedPrices = sortPrices(filteredPrices);
@@ -524,7 +522,6 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
                   <p className="text-sm text-gray-600">{item.category.description}</p>
                   
                   <div className="divide-y divide-border/50">
-                    {/* Apply both sorting and ticket quantity filtering */}
                     {(() => {
                       const filteredPrices = filterByQuantity(item.prices);
                       const sortedPrices = sortPrices(filteredPrices);
