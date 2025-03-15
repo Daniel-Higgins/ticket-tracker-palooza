@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, MapPin } from 'lucide-react';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { GamesList } from '@/components/GamesList';
@@ -58,6 +58,14 @@ export default function TeamView() {
     loadTeam();
   }, [teamId]);
 
+  // Helper function to format location
+  const formatLocation = (team: Team) => {
+    if (team.location) {
+      return team.location.city;
+    }
+    return team.city;
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Header />
@@ -78,25 +86,31 @@ export default function TeamView() {
                 <Skeleton className="h-4 w-32" />
               </div>
             ) : team ? (
-              <div className="flex items-center gap-4 animate-fade-in">
-                <div className="w-16 h-16 flex items-center justify-center rounded-full overflow-hidden bg-primary/10">
-                  <img
-                    src={team.logo}
-                    alt={team.name}
-                    className="w-16 h-16 object-contain"
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                      e.currentTarget.parentElement!.innerHTML = `<div class="w-full h-full flex items-center justify-center font-bold text-2xl text-primary">${team.name.charAt(0)}</div>`;
-                    }}
-                  />
+              <div className="animate-fade-in">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-16 h-16 flex items-center justify-center rounded-full overflow-hidden bg-primary/10">
+                    <img
+                      src={team.logo}
+                      alt={team.name}
+                      className="w-16 h-16 object-contain"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                        e.currentTarget.parentElement!.innerHTML = `<div class="w-full h-full flex items-center justify-center font-bold text-2xl text-primary">${team.name.charAt(0)}</div>`;
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <h1 className="text-3xl font-bold text-black">{team.name}</h1>
+                    <p className="text-lg text-muted-foreground">{formatLocation(team)}</p>
+                  </div>
                 </div>
-                <div>
-                  <h1 className="text-3xl font-bold text-black">{team.name}</h1>
-                  <p className="text-muted-foreground">{team.city}</p>
-                  {teamStadiums[teamId || ''] && (
-                    <p className="text-muted-foreground">Home Stadium: {teamStadiums[teamId || '']}</p>
-                  )}
-                </div>
+                
+                {teamStadiums[teamId || ''] && (
+                  <div className="flex items-center gap-2 text-muted-foreground mb-6">
+                    <MapPin className="h-4 w-4" />
+                    <p>Home Stadium: {teamStadiums[teamId || '']}</p>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="text-center py-12">
