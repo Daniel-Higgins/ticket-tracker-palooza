@@ -6,3 +6,4 @@ export * from './prices';
 export * from './demo-pricing';
 export * from './stubhub';
 export * from './ticketmaster';
+export * from './testToken';
