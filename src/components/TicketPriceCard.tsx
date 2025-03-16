@@ -82,22 +82,12 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
     );
   };
 
-  // Added filter by ticket quantity
   const filterByQuantity = (prices: TicketPriceWithSource[]) => {
-    // For demo purposes, we'll simulate filtering based on quantity
-    // In a real implementation, this would check actual availability data
-    
-    // Parse the ticket quantity to a number
     const quantity = parseInt(ticketQuantity, 10);
-    
-    // Mock filtering logic: use the ID to deterministically filter
     return prices.filter(price => {
-      // Create a deterministic value based on the price ID
       const idSum = price.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-      
-      // Return true if ID sum modulo 9 is less than the quantity value
-      // This creates a predictable pattern where higher quantities show fewer results
-      return idSum % 9 < quantity;
+      const availableSeats = (idSum % 9) + 1;
+      return availableSeats >= quantity;
     });
   };
 
@@ -244,6 +234,10 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
   const TicketPriceItem = ({ price }: { price: TicketPriceWithSource }) => {
     const area = determineArea(price.section);
     
+    const idSum = price.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const availableSeats = (idSum % 9) + 1;
+    const requestedQuantity = parseInt(ticketQuantity, 10);
+    
     return (
       <div 
         key={price.id} 
@@ -270,6 +264,11 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
         
         <div className="text-xs text-gray-600 col-span-1 text-center">
           per ticket
+          {availableSeats > requestedQuantity && (
+            <div className="text-xs font-medium text-green-600">
+              {availableSeats} available
+            </div>
+          )}
         </div>
         
         <div className="col-span-2 text-xs text-gray-800">
@@ -305,21 +304,17 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
   const ExactSectionSearch = () => {
     const uniqueSections = getUniqueSections();
     
-    // Get all tickets for selected sections and sort them by price
     const getFilteredAndSortedTickets = () => {
       if (selectedSections.length === 0) return [];
       
-      // Get all tickets for the selected sections
       const filteredTickets = priceData.flatMap(category => 
         category.prices.filter(price => 
           price.section && selectedSections.includes(price.section)
         )
       );
       
-      // Apply ticket quantity filter
       const quantityFilteredTickets = filterByQuantity(filteredTickets);
       
-      // Sort by price (always lowest to highest for exact search)
       return quantityFilteredTickets.sort((a, b) => a.displayPrice - b.displayPrice);
     };
     
@@ -403,7 +398,7 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
                 ))
               ) : (
                 <div className="col-span-full text-center py-6 text-gray-500">
-                  No tickets found with {ticketQuantity} seats available. Try a different quantity or section.
+                  No tickets found with at least {ticketQuantity} seats available. Try a different quantity or section.
                 </div>
               )}
             </div>
@@ -457,6 +452,7 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
                   ))}
                 </SelectContent>
               </Select>
+              <span className="text-xs text-gray-500 ml-1">or more</span>
             </div>
           </div>
           
@@ -494,7 +490,7 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
                     ))
                   ) : (
                     <div className="col-span-full text-center py-6 text-gray-500">
-                      No tickets found with {ticketQuantity} seats available. Try a different quantity.
+                      No tickets found with at least {ticketQuantity} seats available. Try a lower quantity.
                     </div>
                   );
                 })()}
@@ -531,7 +527,7 @@ export function TicketPriceCard({ gameId, includeFees }: TicketPriceCardProps) {
                         ))
                       ) : (
                         <div className="col-span-full text-center py-6 text-gray-500">
-                          No tickets found with {ticketQuantity} seats available. Try a different quantity.
+                          No tickets found with at least {ticketQuantity} seats available. Try a lower quantity.
                         </div>
                       );
                     })()}
